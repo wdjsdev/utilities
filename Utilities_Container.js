@@ -31,6 +31,7 @@ var scriptLog = "";
 var errorLog = "";
 var templatesNeeded = "";
 var logDest = [];
+var errorList = [];
 
 
 
@@ -338,4 +339,73 @@ function intersects(item,dest)
 function getRandom(min,max)
 {
 	return Math.floor(Math.random() * (max - min + 1) + min);
+}
+
+function getPPLay(layers)
+{
+	var len = layers.length;
+	var result, lay, subLay, subLayLen;
+	var pat = /^[a-z]{2}[-_].*/i;
+	for(var x=0;x<len && !result;x++)
+	{
+		lay = layers[x];
+		if(pat.test(lay.name))
+		{
+			subLayLen = lay.layers.length;
+			for(var y=0;y<subLayLen && !result;y++)
+			{
+				subLay = lay.layers[y];
+				if(subLay.name === "Prepress" && subLay.layers.length > 0 && subLay.layers[0].pageItems.length > 0)
+				{
+					result = subLay;
+				}
+			}
+		}
+	}
+	return result;
+}
+
+function coord(ppLay)
+{
+	var coords = {};
+	var curSize,thisPiece,pieceName;
+	var ppLen = ppLay.layers.length;
+	var subLen;
+
+	if(ppLen > 0 && ppLay.layers[0].pageItems.length > 0)
+	{
+		for(var a=0;a<ppLay.layers.length;a++)
+		{
+			curSize = ppLay.layers[a].name;
+			coords[curSize] = {};
+			subLen = ppLay.layers[a].groupItems.length;
+			for(var b=0;b<subLen;b++)
+			{
+				thisPiece = ppLay.layers[a].groupItems[b];
+				pieceName = thisPiece.name;
+				coords[curSize][pieceName] = [];
+				coords[curSize][pieceName][0] = (Math.floor(thisPiece.left *1000)/1000);
+				coords[curSize][pieceName][1] = (Math.floor(thisPiece.top *1000)/1000);
+			} 	
+		}
+		return coords;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+function getCode(layName)
+{
+	var pat = /(.*)([-_][\d]{3,}([-_][a-z])?)/i;
+	return layName.match(pat)[1];
+}
+
+
+//sendErrors Function Description
+//Display any errors to the user in a preformatted list
+function sendErrors(errorList)
+{
+	alert("The Following Errors Occurred:\n" + errorList.join("\n"));
 }
