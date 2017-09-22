@@ -298,8 +298,6 @@ if(!this.JSON){this.JSON={}}(function(){function f(n){return n<10?"0"+n:n}if(typ
 
 function intersects(item,dest)
 {
-	var result = true;
-
 	//item coordinates
 	var IL = item.left;
 	var IT = item.top;
@@ -314,17 +312,7 @@ function intersects(item,dest)
 
 	//check for anything that could make overlap false
 	//if any of these conditions are true, an intersection is impossible
-	if(
-			IL > DR ||
-			IR < DL ||
-			IT < DB ||
-			IB > DT
-	)
-	{
-		result = false;
-	}
-
-	return result;
+	return !(IL > DR || IR < DL || IT < DB || IB > DT ) 
 
 }
 
@@ -402,10 +390,67 @@ function getCode(layName)
 	return layName.match(pat)[1];
 }
 
+function getStyleNum(layName)
+{
+	var pat = /(.*)[-_]([\d]{3,}([-_][a-z])?)/i;
+	return layName.match(pat)[2];
+}
+
 
 //sendErrors Function Description
 //Display any errors to the user in a preformatted list
 function sendErrors(errorList)
 {
 	alert("The Following Errors Occurred:\n" + errorList.join("\n"));
+}
+
+
+function includeComponents(dev,prod)
+{
+	var result;
+	var compFolder,comps,thisComp;
+	if(user === "will.dowling")
+	{
+		var w = new Window("dialog", "Which components?");
+			var btnGroup = w.add("group");
+				btnGroup.orientation = "column";
+				var devBtn = btnGroup.add("button",undefined,"Development");
+					devBtn.onClick = function()
+					{
+						compFolder = new Folder(dev);
+						w.close();
+					}
+				var prodBtn = btnGroup.add("button", undefined, "Production");
+					prodBtn.onClick = function()
+					{
+						compFolder = new Folder(prod);
+						w.close();
+					}
+				var cancel = btnGroup.add("button", undefined, "Cancel");
+					cancel.onClick = function()
+					{
+						w.close();
+					}
+		w.show();
+	}
+	else
+	{
+		compFolder = new Folder(prod);
+	}
+
+	if(compFolder)
+	{
+		result = [];
+		comps = compFolder.getFiles();
+		var len = comps.length;
+		for(var c=0;c<len;c++)
+		{
+			if(comps[c].name.indexOf("js")>-1)
+			{
+				result.push(comps[c]);
+			}
+		}
+	}
+
+	return result;
 }
