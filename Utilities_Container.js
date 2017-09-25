@@ -405,6 +405,28 @@ function sendErrors(errorList)
 }
 
 
+
+/*
+	Component Name: include_components
+	Author: William Dowling
+	Creation Date: 22 September, 2017
+	Description: 
+		display a dialog to determine whether to use
+		development components or production components
+		****This is only used if the user is will.dowling****
+		****All other users simply get the production components****
+		When a components directory is selected, loop the files
+		in the directory and push all files with a ".js" extension
+		to the result array. (This ensures that any archive folder is skipped);
+	Arguments
+		dev
+			path to the development components folder
+		prod
+			path to the production components folder
+	Return value
+		an array of file objects that contain the extension ".js"
+
+*/
 function includeComponents(dev,prod)
 {
 	var result;
@@ -451,6 +473,59 @@ function includeComponents(dev,prod)
 			}
 		}
 	}
+
+	return result;
+}
+
+
+
+
+
+
+
+
+/*
+	Component Name: unlock_doc
+	Author: William Dowling
+	Creation Date: 25 September, 2017
+	Description: 
+		Unlock and un-hide all elements of the given doc
+	Arguments
+		document object
+	Return value
+		success boolean
+
+*/
+function unlockDoc(doc)
+{
+	var result = true;
+
+	var layers = doc.layers;
+	var layLen = layers.length;
+	for(var ll=0;ll<layLen;ll++)
+	{
+		try
+		{
+			layers[ll].locked = false;
+			layers[ll].visible = true;
+		}
+		catch(e)
+		{
+			errorList.push("Failed to unlock or un-hide the layer: " + layers[ll].name + ", which was layer # " + (ll + 1) + " of " + doc.name);
+			log.e("Failed to unlock or un-hide the layer: " + layers[ll].name + ", which was layer # " + (ll + 1) + " of " + doc.name);
+		}
+	}
+	try
+	{
+		app.executeMenuCommand("unlockAll");
+		app.executeMenuCommand("showAll");
+	}
+	catch(e)
+	{
+		errorList.push("Failed while executing menu commands to unlock and unhide all sublayers and objects.");
+		log.e("Failed while executing menu commands to unlock and unhide all sublayers and objects.");
+	}
+	doc.selection = null;
 
 	return result;
 }
