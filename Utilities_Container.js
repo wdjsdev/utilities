@@ -498,6 +498,7 @@ function includeComponents(dev,prod)
 */
 function unlockDoc(doc)
 {
+	log.l("unlockDoc(" + doc.name + ")");
 	var result = true;
 
 	var layers = doc.layers;
@@ -508,11 +509,17 @@ function unlockDoc(doc)
 		{
 			layers[ll].locked = false;
 			layers[ll].visible = true;
+			log.l("layer " + layers[ll].name + " successfully revealed.");
 		}
 		catch(e)
 		{
-			errorList.push("Failed to unlock or un-hide the layer: " + layers[ll].name + ", which was layer # " + (ll + 1) + " of " + doc.name);
-			log.e("Failed to unlock or un-hide the layer: " + layers[ll].name + ", which was layer # " + (ll + 1) + " of " + doc.name + "::System error message was: " + e);
+			errorList.push("Failed to unlock or un-hide the layer: \"" + 
+				layers[ll].name + "\", which was layer # " + (ll + 1) + " of " + doc.name);
+			
+			log.e("Failed to unlock or un-hide the layer: \"" + 
+				layers[ll].name + "\", which was layer # " + (ll + 1) + " of " + doc.name + 
+				"::System error message was: " + e);
+			
 			result = false;
 		}
 	}
@@ -520,6 +527,7 @@ function unlockDoc(doc)
 	{
 		app.executeMenuCommand("unlockAll");
 		app.executeMenuCommand("showAll");
+		log.l("Successfully executed 'unlockAll' and 'showAll' menu commands.");
 	}
 	catch(e)
 	{
