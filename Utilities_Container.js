@@ -512,7 +512,8 @@ function unlockDoc(doc)
 		catch(e)
 		{
 			errorList.push("Failed to unlock or un-hide the layer: " + layers[ll].name + ", which was layer # " + (ll + 1) + " of " + doc.name);
-			log.e("Failed to unlock or un-hide the layer: " + layers[ll].name + ", which was layer # " + (ll + 1) + " of " + doc.name);
+			log.e("Failed to unlock or un-hide the layer: " + layers[ll].name + ", which was layer # " + (ll + 1) + " of " + doc.name + "::System error message was: " + e);
+			result = false;
 		}
 	}
 	try
@@ -523,7 +524,8 @@ function unlockDoc(doc)
 	catch(e)
 	{
 		errorList.push("Failed while executing menu commands to unlock and unhide all sublayers and objects.");
-		log.e("Failed while executing menu commands to unlock and unhide all sublayers and objects.");
+		log.e("Failed while executing menu commands to unlock and unhide all sublayers and objects.::System error message was: " + e);
+		result = false;
 	}
 	doc.selection = null;
 
