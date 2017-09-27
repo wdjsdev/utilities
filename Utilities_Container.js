@@ -498,7 +498,8 @@ function includeComponents(dev,prod)
 */
 function unlockDoc(doc)
 {
-	log.l("unlockDoc(" + doc.name + ")");
+	doc.activate();
+	log.h("unlockDoc(" + doc.name + ")");
 	var result = true;
 
 	var layers = doc.layers;
@@ -537,5 +538,106 @@ function unlockDoc(doc)
 	}
 	doc.selection = null;
 
+	return result;
+}
+
+
+
+
+/*
+	Component Name: proper_template_setup
+	Author: William Dowling
+	Creation Date: 26 September, 2017
+	Description: 
+		update the given document such that all of the layers
+		and sub layers are properly locked, unlocked, hidden or visible etc.
+	Arguments
+		document object
+	Return value
+		success boolean
+
+*/
+
+function properTemplateSetup(doc)
+{
+	log.h("properTemplateSetup(" + doc.name + ")");
+	var result = true;
+
+	doc.activate();
+
+	var layers = doc.layers;
+	var layLen = layers.length;
+	var garPat = /^[a-z]{2}[-_]/i;
+	var thisLay,thisSubLay,layInfo;
+	var templateLayers = 
+	{
+		"Artwork Layer":
+		{
+			"locked":false,
+			"visible":true
+		},
+		"Mockup":
+		{
+			"locked":false,
+			"visible":true
+		},
+		"Prepress":
+		{
+			"locked":false,
+			"visible":false
+		},
+		"Information":
+		{
+			"locked":true,
+			"visible":true
+		},
+		"USA Collars":
+		{
+			"locked":true,
+			"visible":false
+		}
+
+	}
+
+	for(var x=layLen-1;x>=0;x--)
+	{
+		thisLay = layers[x];
+		if(garPat.test(thisLay.name))
+		{
+			log.l("Looping sub layers for layer: " + thisLay.name);
+			for(var lay in templateLayers)
+			{
+				try
+				{
+					log.l("Attempting to process the layer: " + lay);
+					thisSubLay = thisLay.layers[lay];
+					layInfo = templateLayers[lay];
+					thisSubLay.locked = layInfo.locked;
+					thisSubLay.visible = layInfo.visible;
+					log.l("Successfully set " + lay + " to ");
+				}
+				catch(e)
+				{
+					log.l("Failed to process " + lay);
+				}
+			}
+		}
+		else
+		{
+			try
+			{
+				thisLay.zOrder(ZOrderMethod.SENDTOBACK);
+				thisLay.locked = true;
+				thisLay.visible = true;
+				log.l("Sent " + thisLay.name + " to back.");	
+			}
+			catch(e)
+			{
+				log.e("Failed to process " + thisLay.name + "::System error message: " + e);
+			}
+		}
+	}
+
+	log.l("properTemplateSetup result = " + result);
 	return result;
 }
