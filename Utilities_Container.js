@@ -25,6 +25,8 @@
 
 
 
+
+
 //Global variables
 
 var scriptLog = "";
@@ -32,7 +34,6 @@ var errorLog = "";
 var templatesNeeded = "";
 var logDest = [];
 var errorList = [];
-
 
 
 
@@ -423,15 +424,22 @@ function sendErrors(errorList)
 			path to the development components folder
 		prod
 			path to the production components folder
+		ignorePrompt
+			boolean to determine whether or not to show the dialog
+			if true, just go to the dev folder.
 	Return value
 		an array of file objects that contain the extension ".js"
 
 */
-function includeComponents(dev,prod)
+function includeComponents(dev,prod,ignorePrompt)
 {
 	var result;
 	var compFolder,comps,thisComp;
-	if(user === "will.dowling")
+	if(ignorePrompt)
+	{
+		compFolder = new Folder(dev);
+	}
+	else if(user === "will.dowling")
 	{
 		var w = new Window("dialog", "Which components?");
 			var btnGroup = w.add("group");
@@ -627,8 +635,7 @@ function properTemplateSetup(doc)
 			try
 			{
 				thisLay.zOrder(ZOrderMethod.SENDTOBACK);
-				thisLay.locked = true;
-				thisLay.visible = true;
+				
 				log.l("Sent " + thisLay.name + " to back.");	
 			}
 			catch(e)
@@ -640,4 +647,228 @@ function properTemplateSetup(doc)
 
 	log.l("properTemplateSetup result = " + result);
 	return result;
+}
+
+
+
+/*
+	Component Name: open_batch_files
+	Author: William Dowling
+	Creation Date: 13 November, 2017
+	Description: 
+		open all files in a given folder
+		of a given extension
+	Arguments
+		folder object
+		string representing valid file extension
+	Return value
+		array of files that have been opened
+
+*/
+function openBatchFiles(folder)
+{
+	var result = [];
+	var ext = ".ai";
+
+	if(!folder.exists)
+	{
+		errorList.push("Failed to find the folder: " + folder.fsName);
+		log.e("Failed to find the folder: " + folder.fsName);
+		return false;
+	}
+	
+	var files = folder.getFiles();
+	var len = files.length;
+	for(var x=0;x<len;x++)
+	{
+		if(files[x].name.indexOf(ext)>-1)
+		{
+			app.open(files[x]);
+			result.push(app.activeDocument);
+		}
+	}
+
+	if(!result.length)
+	{	
+		errorList.push("No " + ext + " files were found in the folder.");
+	}
+
+	return result;
+}
+
+
+
+/*
+	Component Name: make_static_text
+	Author: William Dowling
+	Creation Date: 08 November, 2017
+	Description: 
+		Create a static text object for the given parent
+	Arguments
+		parent object (coulg be a group, or window, or tab, etc.)
+		string of text to be used
+		[character length]-optional
+	Return value
+		the newly created text object
+
+*/
+
+function UI_staticText(parent,txt,len)
+{
+	var result = parent.add("statictext", undefined, txt);
+	if(len)
+	{
+		result.characters = len;
+	}
+	return result;
+}
+
+
+
+/*
+	Component Name: make_group
+	Author: William Dowling
+	Creation Date: 17 November, 2017
+	Description: 
+		make a group object in the given parent element
+	Arguments
+		parent object
+	Return value
+		group object
+
+*/
+
+function UI_group(parent)
+{
+	return parent.add("group");
+}
+
+
+
+/*
+	Component Name: make_checkbox
+	Author: William Dowling
+	Creation Date: 28 November, 2017
+	Description: 
+		Create a checkbox object for the given parent
+	Arguments
+		parent object (coulg be a group, or window, or tab, etc.)
+		string of text to be used
+		[character length]-optional
+	Return value
+		the newly created checkbox object
+
+*/
+
+function UI_checkbox(parent,txt,len)
+{
+	var result = parent.add("checkbox", undefined, txt);
+	if(len)
+	{
+		result.characters = len;
+	}
+	return result;
+}
+
+
+
+/*
+	Component Name: make_button
+	Author: William Dowling
+	Creation Date: 08 November, 2017
+	Description: 
+		create a new button for the given parent object
+	Arguments
+		parent object
+		string of text to display on button		
+	Return value
+		button object
+
+*/
+
+function UI_button(parent,txt,func)
+{
+	var result = parent.add("button", undefined, txt);
+	if(func)
+	{
+		result.onClick = func;
+	}
+	return result;
+}
+
+
+
+/*
+	Component Name: make_edit_text
+	Author: William Dowling
+	Creation Date: 28 November, 2017
+	Description: 
+		Create an edit text object for the given parent
+	Arguments
+		parent object (coulg be a group, or window, or tab, etc.)
+		string of text to be used
+		[character length]-optional
+	Return value
+		the newly created text object
+
+*/
+
+function UI_editText(parent,txt,len)
+{
+	var result = parent.add("edittext", undefined, txt);
+	if(len)
+	{
+		result.characters = len;
+	}
+	return result;
+}
+
+
+
+/*
+	Component Name: make_listbox
+	Author: William Dowling
+	Creation Date: 08 November, 2017
+	Description: 
+		createa a listbox element in the given parent
+	Arguments
+		parent object
+		dimensions array
+	Return value
+		listbox object
+
+*/
+
+function UI_listbox(parent,dim)
+{
+	var result = parent.add("listbox",dim,[]);
+	result.onChange = function()
+	{
+		if(result.selection)
+		{
+			displayData(parent,result.selection.text);
+		}
+	}
+	return result;
+}
+
+
+
+/*
+	Component Name: make_tab
+	Author: William Dowling
+	Creation Date: 09 November, 2017
+	Description: 
+		Create a new tab in the given parent element
+	Arguments
+		parent object
+		string representing the name of the tab
+	Return value
+		tab object
+
+*/
+
+function UI_tab(parent,dataName,txt)
+{
+	return parent.add("tab", undefined, txt);
 }
