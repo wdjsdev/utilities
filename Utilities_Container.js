@@ -698,6 +698,12 @@ function openBatchFiles(folder)
 
 
 
+/**********************/
+/******UI Components***/
+/**********************/
+
+
+
 /*
 	Component Name: make_static_text
 	Author: William Dowling
@@ -868,7 +874,9 @@ function UI_listbox(parent,dim)
 
 */
 
-function UI_tab(parent,dataName,txt)
+function UI_tab(parent,name,txt)
 {
-	return parent.add("tab", undefined, txt);
+	var myTab = parent.add("tab", undefined, txt);
+	myTab.name = name;
+	return myTab;
 }
