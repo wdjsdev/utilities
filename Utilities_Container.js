@@ -16,6 +16,8 @@
 	} else {
 		// MAC
 		var user = $.getenv("USER")
+		var desktopPath = "/Volumes/Macintosh HD/Users/" + user + "/Desktop/";
+		var desktopFolder = new Folder(desktopPath);
 		var centralLog = new File("/Volumes/Customization/Library/Scripts/Script Resources/Data/.script_logs/central_log.txt");
 		var importantLog = new File("/Volumes/Customization/Library/Scripts/Script Resources/Data/.script_logs/important_log.txt");
 		var centralErrorLog = new File("/Volumes/Customization/Library/Scripts/Script Resources/Data/.script_logs/error_log.txt");
@@ -665,10 +667,9 @@ function properTemplateSetup(doc)
 		array of files that have been opened
 
 */
-function openBatchFiles(folder)
+function openBatchFiles(folder,ext)
 {
 	var result = [];
-	var ext = ".ai";
 
 	if(!folder.exists)
 	{
@@ -681,7 +682,7 @@ function openBatchFiles(folder)
 	var len = files.length;
 	for(var x=0;x<len;x++)
 	{
-		if(files[x].name.indexOf(ext)>-1)
+		if(files[x].name.indexOf(ext) === files[x].name.length - ext.length - 1);
 		{
 			app.open(files[x]);
 			result.push(app.activeDocument);
@@ -694,6 +695,52 @@ function openBatchFiles(folder)
 	}
 
 	return result;
+}
+
+
+
+/*
+	Component Name: write_read_me_file
+	Author: William Dowling
+	Creation Date: 30 November, 2017
+	Description: 
+		write a read me file in a given folder
+	Arguments
+		dest: destination folder
+		msg: string to write to the file
+	Return value
+		success boolean
+
+*/
+
+function writeReadMe(dest,msg)
+{
+	var result = true;
+	if(!dest.exists)
+	{
+		try
+		{
+			dest.create();
+		}
+		catch(e)
+		{
+			errorList.push("Failed to create destination folder at the following location:\n" + dest.fsName);
+			return false;
+		}
+	}
+
+	var readMeFile = new File(dest.fsName + "/READ_ME.txt");
+	//get any existing contents of the file to avoid overwriting
+	readMeFile.open();
+	var contents = readMeFile.read();
+	readMeFile.close();
+
+	//write the new read me message
+	readMeFile.open("w");
+	$.writeln(contents + logTime() + ": " + msg + "\n\n");
+	readMeFile.write(contents + logTime() + ": " + msg + "\n\n");
+	readMeFile.close();
+
 }
 
 
@@ -874,7 +921,7 @@ function UI_listbox(parent,dim)
 
 */
 
-function UI_tab(parent,name,txt)
+function UI_tab(parent,txt,name)
 {
 	var myTab = parent.add("tab", undefined, txt);
 	myTab.name = name;
