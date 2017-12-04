@@ -653,50 +653,6 @@ function properTemplateSetup(doc)
 
 
 
-/*
-	Component Name: open_batch_files
-	Author: William Dowling
-	Creation Date: 13 November, 2017
-	Description: 
-		open all files in a given folder
-		of a given extension
-	Arguments
-		folder object
-		string representing valid file extension
-	Return value
-		array of files that have been opened
-
-*/
-function openBatchFiles(folder,ext)
-{
-	var result = [];
-
-	if(!folder.exists)
-	{
-		errorList.push("Failed to find the folder: " + folder.fsName);
-		log.e("Failed to find the folder: " + folder.fsName);
-		return false;
-	}
-	
-	var files = folder.getFiles();
-	var len = files.length;
-	for(var x=0;x<len;x++)
-	{
-		if(files[x].name.indexOf(ext) === files[x].name.length - ext.length - 1);
-		{
-			app.open(files[x]);
-			result.push(app.activeDocument);
-		}
-	}
-
-	if(!result.length)
-	{	
-		errorList.push("No " + ext + " files were found in the folder.");
-	}
-
-	return result;
-}
-
 
 
 /*
