@@ -637,6 +637,8 @@ function properTemplateSetup(doc)
 			try
 			{
 				thisLay.zOrder(ZOrderMethod.SENDTOBACK);
+				thisLay.locked = true;
+				thisLay.visible = true;
 				
 				log.l("Sent " + thisLay.name + " to back.");	
 			}
