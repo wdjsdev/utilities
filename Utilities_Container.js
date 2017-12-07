@@ -654,7 +654,55 @@ function properTemplateSetup(doc)
 }
 
 
+/*
+	Component Name: is_template
+	Author: William Dowling
+	Creation Date: 05 December, 2017
+	Description: 
+		check whether the given document is a proper converted template
+	Arguments
+		doc
+			active document object
+	Return value
+		result
+			boolean representing whether garment is a template
 
+*/
+
+//isTemplate Function Description
+//check 
+function isTemplate(doc)
+{
+	var result = true;
+	var layers = doc.layers;
+
+	var art;
+	var info;
+	var mock;
+	
+	//Try/Catch Description:
+	//set variables for known template layers
+	//if they don't exist, it's not a template
+	try
+	{
+		art = layers[0].layers["Artwork Layer"];
+		info = layers[0].layers["Information"];
+		mock = layers[0].layers["Mockup"];
+	}
+	catch(e)
+	{
+		//this doc is not a converted template.
+		//setting srcIsTemplate to false
+		result = false;
+
+		log.h("Source Document is NOT a template.::Results of isTemplate function are as follows:");
+		log.l("art = " + art);
+		log.l("info = " + info);
+		log.l("mock = " + mock + "\n\n");
+	}
+	
+	return result
+}
 
 
 /*
