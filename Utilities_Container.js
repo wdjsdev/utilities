@@ -16,6 +16,8 @@
 	} else {
 		// MAC
 		var user = $.getenv("USER")
+		var homeFolderPath = "/Volumes/Macintosh HD/Users/" + user;
+		var homeFolder = new Folder(homeFolderPath);
 		var desktopPath = "/Volumes/Macintosh HD/Users/" + user + "/Desktop/";
 		var desktopFolder = new Folder(desktopPath);
 		var centralLog = new File("/Volumes/Customization/Library/Scripts/Script Resources/Data/.script_logs/central_log.txt");
@@ -932,4 +934,42 @@ function UI_tab(parent,txt,name)
 	var myTab = parent.add("tab", undefined, txt);
 	myTab.name = name;
 	return myTab;
+}
+
+
+
+
+
+
+//send customized emails
+
+function sendCustomEmail(emailAddress,msg)
+{
+	var scriptText = [
+		'set recipientName to "John Doe"',
+		'set recipientAddress to "' + emailAddress + '"',
+		'set theSubject to "' + subject + '"',
+		'set theContent to "' + msg + '"',
+
+		'tell application "Mail"',
+
+		'	set theMessage to make new outgoing message with properties {subject:theSubject, content:theContent, visible:true}',
+
+		'	tell theMessage',
+		'		make new to recipient with properties {name:recipientName, address:recipientAddress}',
+
+		'		send',
+		'	end tell',
+		'end tell',
+	];
+
+	//write local temporary .scpt file
+	var tempScript = File(homeFolderPath + "/send_email.scpt");
+	tempScript.open("w");
+	tempScript.write(scriptText.join("\n"));
+	tempScript.close();
+
+	//run the executor script
+	var executor = File("/Volumes/Customization/Library/Scripts/Script Resources/send_email.app");
+	executor.execute();
 }
