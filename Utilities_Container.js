@@ -943,7 +943,7 @@ function UI_tab(parent,txt,name)
 
 //send customized emails
 
-function sendCustomEmail(emailAddress,msg)
+function sendCustomEmail(emailAddress,subject,msg)
 {
 	var scriptText = [
 		'set recipientName to "John Doe"',
