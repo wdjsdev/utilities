@@ -411,6 +411,74 @@ function sendErrors(errorList)
 
 
 
+
+/*
+	Component Name: print_bounds
+	Author: William Dowling
+	Creation Date: 22 January, 2018
+	Description: 
+		get the bounds of the selected item(s)
+		and print them to the console
+	Arguments
+		none
+	Return value
+		void
+
+*/
+
+function printBounds()
+{
+	var result = [];
+	if(!app.documents.length)
+	{
+		alert("OPEN A DOCUMENT!");
+		return;
+	}
+	var docRef = app.activeDocument;
+	var sel = docRef.selection;
+	if(sel.length === 1)
+	{
+		sel = docRef.selection[0];
+		result = [sel.left,sel.top,sel.left + sel.width,sel.top - sel.height];
+	}
+	else if(sel.length > 1)
+	{
+		var l,t,r,b;
+		for(var x=0,len=sel.length;x<len;x++)
+		{
+			if(x>0)
+			{
+				if (sel[x].left < l)
+					l = sel[x].left;
+				if(sel[x].top > t)
+					t = sel[x].top;
+				if(sel[x].left + sel[x].width > r)
+					r = sel[x].left + sel[x].width;
+				if(sel[x].top - sel[x].height < b)
+					b = sel[x].top - sel[x].height;
+			}
+			else
+			{
+				l = sel[x].left;
+				t = sel[x].top;
+				r = sel[x].left + sel[x].width;
+				b = sel[x].top - sel[x].height;
+			}
+
+		}
+		result = [l,t,r,b];
+	}
+	else
+	{
+		alert("MAKE A SELECTION!!");
+	}
+
+	$.writeln("[" + result + "];")
+}
+
+
+
+
 /*
 	Component Name: include_components
 	Author: William Dowling

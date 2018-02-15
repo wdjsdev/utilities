@@ -27,6 +27,11 @@ function batchInit(func,readMeMsg)
 		executeBatch(func);
 		writeReadMe(saveDest,readMeMsg);
 	}
+	else
+	{
+		alert("valid = " + valid);
+		alert("batchFiles.length = " + batchFiles.length);
+	}
 }
 
 
