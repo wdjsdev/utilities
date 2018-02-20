@@ -317,8 +317,25 @@ function intersects(item,dest)
 
 	//check for anything that could make overlap false
 	//if any of these conditions are true, an intersection is impossible
-	return !(IL > DR || IR < DL || IT < DB || IB > DT ) 
+	return !(IL > DR || IR < DL || IT < DB || IB > DT );
 
+}
+
+function isContainedWithin(item,dest)
+{
+	//item coordinates
+	var IL = item.left;
+	var IT = item.top;
+	var IR = item.left + item.width;
+	var IB = item.top - item.height;
+
+	//dest coordinates
+	var DL = dest.left;
+	var DT = dest.top;
+	var DR = dest.left + dest.width;
+	var DB = dest.top - dest.height;
+
+	return (IL >= DL && IR <= DR && IT <= DT && IB >= DB);
 }
 
 // function getCode(layer)
