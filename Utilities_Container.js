@@ -436,6 +436,7 @@ function printBounds()
 	}
 	var docRef = app.activeDocument;
 	var sel = docRef.selection;
+	var buffer = 3;
 	if(sel.length === 1)
 	{
 		sel = docRef.selection[0];
@@ -466,7 +467,7 @@ function printBounds()
 			}
 
 		}
-		result = [l,t,r,b];
+		result = [l - buffer,t + buffer,r + buffer,b + buffer];
 	}
 	else
 	{
