@@ -338,6 +338,79 @@ function isContainedWithin(item,dest)
 	return (IL >= DL && IR <= DR && IT <= DT && IB >= DB);
 }
 
+/*
+	Component Name: print_bounds
+	Author: William Dowling
+	Creation Date: 22 January, 2018
+	Description: 
+		get the bounds of the selected item(s)
+		and print them to the console
+	Arguments
+		none
+	Return value
+		void
+
+*/
+
+function printBounds()
+{
+	var result = [];
+	if(!app.documents.length)
+	{
+		alert("OPEN A DOCUMENT!");
+		return;
+	}
+	var docRef = app.activeDocument;
+	var sel = docRef.selection;
+	var buffer = 3;
+	if(sel.length === 1)
+	{
+		sel = docRef.selection[0];
+		result = [sel.left,sel.top,sel.left + sel.width,sel.top - sel.height];
+	}
+	else if(sel.length > 1)
+	{
+		var l,t,r,b;
+		for(var x=0,len=sel.length;x<len;x++)
+		{
+			if(x>0)
+			{
+				if (sel[x].left < l)
+					l = sel[x].left;
+				if(sel[x].top > t)
+					t = sel[x].top;
+				if(sel[x].left + sel[x].width > r)
+					r = sel[x].left + sel[x].width;
+				if(sel[x].top - sel[x].height < b)
+					b = sel[x].top - sel[x].height;
+			}
+			else
+			{
+				l = sel[x].left;
+				t = sel[x].top;
+				r = sel[x].left + sel[x].width;
+				b = sel[x].top - sel[x].height;
+			}
+
+		}
+		result = [l,t,r,b];
+	}
+	else
+	{
+		alert("MAKE A SELECTION!!");
+	}
+
+	if(result)
+	{
+		result[0] -= buffer;
+		result[1] += buffer;
+		result[2] += buffer;
+		result[3] -= buffer;
+	}
+
+	$.writeln("[" + result + "];")
+}
+
 // function getCode(layer)
 // {
 // 	var layName = layer.name;
@@ -424,74 +497,6 @@ function getStyleNum(layName)
 function sendErrors(errorList)
 {
 	alert("The Following Errors Occurred:\n" + errorList.join("\n"));
-}
-
-
-
-
-/*
-	Component Name: print_bounds
-	Author: William Dowling
-	Creation Date: 22 January, 2018
-	Description: 
-		get the bounds of the selected item(s)
-		and print them to the console
-	Arguments
-		none
-	Return value
-		void
-
-*/
-
-function printBounds()
-{
-	var result = [];
-	if(!app.documents.length)
-	{
-		alert("OPEN A DOCUMENT!");
-		return;
-	}
-	var docRef = app.activeDocument;
-	var sel = docRef.selection;
-	var buffer = 3;
-	if(sel.length === 1)
-	{
-		sel = docRef.selection[0];
-		result = [sel.left,sel.top,sel.left + sel.width,sel.top - sel.height];
-	}
-	else if(sel.length > 1)
-	{
-		var l,t,r,b;
-		for(var x=0,len=sel.length;x<len;x++)
-		{
-			if(x>0)
-			{
-				if (sel[x].left < l)
-					l = sel[x].left;
-				if(sel[x].top > t)
-					t = sel[x].top;
-				if(sel[x].left + sel[x].width > r)
-					r = sel[x].left + sel[x].width;
-				if(sel[x].top - sel[x].height < b)
-					b = sel[x].top - sel[x].height;
-			}
-			else
-			{
-				l = sel[x].left;
-				t = sel[x].top;
-				r = sel[x].left + sel[x].width;
-				b = sel[x].top - sel[x].height;
-			}
-
-		}
-		result = [l - buffer,t + buffer,r + buffer,b + buffer];
-	}
-	else
-	{
-		alert("MAKE A SELECTION!!");
-	}
-
-	$.writeln("[" + result + "];")
 }
 
 
@@ -839,192 +844,6 @@ function writeReadMe(dest,msg)
 
 
 
-/**********************/
-/******UI Components***/
-/**********************/
-
-
-
-/*
-	Component Name: make_static_text
-	Author: William Dowling
-	Creation Date: 08 November, 2017
-	Description: 
-		Create a static text object for the given parent
-	Arguments
-		parent object (coulg be a group, or window, or tab, etc.)
-		string of text to be used
-		[character length]-optional
-	Return value
-		the newly created text object
-
-*/
-
-function UI_staticText(parent,txt,len)
-{
-	var result = parent.add("statictext", undefined, txt);
-	if(len)
-	{
-		result.characters = len;
-	}
-	return result;
-}
-
-
-
-/*
-	Component Name: make_group
-	Author: William Dowling
-	Creation Date: 17 November, 2017
-	Description: 
-		make a group object in the given parent element
-	Arguments
-		parent object
-	Return value
-		group object
-
-*/
-
-function UI_group(parent)
-{
-	return parent.add("group");
-}
-
-
-
-/*
-	Component Name: make_checkbox
-	Author: William Dowling
-	Creation Date: 28 November, 2017
-	Description: 
-		Create a checkbox object for the given parent
-	Arguments
-		parent object (coulg be a group, or window, or tab, etc.)
-		string of text to be used
-		[character length]-optional
-	Return value
-		the newly created checkbox object
-
-*/
-
-function UI_checkbox(parent,txt,len)
-{
-	var result = parent.add("checkbox", undefined, txt);
-	if(len)
-	{
-		result.characters = len;
-	}
-	return result;
-}
-
-
-
-/*
-	Component Name: make_button
-	Author: William Dowling
-	Creation Date: 08 November, 2017
-	Description: 
-		create a new button for the given parent object
-	Arguments
-		parent object
-		string of text to display on button		
-	Return value
-		button object
-
-*/
-
-function UI_button(parent,txt,func)
-{
-	var result = parent.add("button", undefined, txt);
-	if(func)
-	{
-		result.onClick = func;
-	}
-	return result;
-}
-
-
-
-/*
-	Component Name: make_edit_text
-	Author: William Dowling
-	Creation Date: 28 November, 2017
-	Description: 
-		Create an edit text object for the given parent
-	Arguments
-		parent object (coulg be a group, or window, or tab, etc.)
-		string of text to be used
-		[character length]-optional
-	Return value
-		the newly created text object
-
-*/
-
-function UI_editText(parent,txt,len)
-{
-	var result = parent.add("edittext", undefined, txt);
-	if(len)
-	{
-		result.characters = len;
-	}
-	return result;
-}
-
-
-
-/*
-	Component Name: make_listbox
-	Author: William Dowling
-	Creation Date: 08 November, 2017
-	Description: 
-		createa a listbox element in the given parent
-	Arguments
-		parent object
-		dimensions array
-	Return value
-		listbox object
-
-*/
-
-function UI_listbox(parent,dim)
-{
-	var result = parent.add("listbox",dim,[]);
-	result.onChange = function()
-	{
-		if(result.selection)
-		{
-			displayData(parent,result.selection.text);
-		}
-	}
-	return result;
-}
-
-
-
-/*
-	Component Name: make_tab
-	Author: William Dowling
-	Creation Date: 09 November, 2017
-	Description: 
-		Create a new tab in the given parent element
-	Arguments
-		parent object
-		string representing the name of the tab
-	Return value
-		tab object
-
-*/
-
-function UI_tab(parent,txt,name)
-{
-	var myTab = parent.add("tab", undefined, txt);
-	myTab.name = name;
-	return myTab;
-}
-
-
-
-
 
 
 //send customized emails
@@ -1059,3 +878,259 @@ function sendCustomEmail(emailAddress,subject,msg)
 	var executor = File("/Volumes/Customization/Library/Scripts/Script Resources/send_email.app");
 	executor.execute();
 }
+
+
+/**********************/
+/******UI Components***/
+/**********************/
+
+var UI = 
+{
+	"static":function(parent,txt,len)
+	{
+		var result = parent.add("statictext", undefined, txt);
+		if(len)
+		{
+			result.characters = len;
+		}
+		return result;
+	},
+
+	"edit":function(parent,text,len,func)
+	{
+		var result = parent.add("edittext", undefined, txt);
+		if(len)
+		{
+			result.characters = len;
+		}
+		return result;
+	},
+
+	"group":function(parent)
+	{
+		return parent.add("group");
+	},
+
+	"checkbox":function(parent,txt,len)
+	{
+		var result = parent.add("checkbox", undefined, txt);
+		if(len)
+		{
+			result.characters = len;
+		}
+		return result;
+	},
+
+	"button":function(parent,txt,func)
+	{
+		var result = parent.add("button", undefined, txt);
+		if(func)
+		{
+			result.onClick = func;
+		}
+		return result;
+	},
+
+	"listbox":function(parent,dimensions,children)
+	{
+		var result = parent.add("listbox",dimensions,[]);
+		if(children)
+		{
+			for(var x=0,len=children.length;x<len;x++)
+			{
+				result.add("item",children[x]);
+			}
+		};
+		return result;
+	}
+}
+
+
+
+////////////////////////
+////////ATTENTION://////
+//
+//		the below is deprecated in favor of new UI object
+//		with function properties instead of standalone functions
+//
+////////////////////////
+
+
+	/*
+		Component Name: make_static_text
+		Author: William Dowling
+		Creation Date: 08 November, 2017
+		Description: 
+			Create a static text object for the given parent
+		Arguments
+			parent object (coulg be a group, or window, or tab, etc.)
+			string of text to be used
+			[character length]-optional
+		Return value
+			the newly created text object
+
+	*/
+
+	function UI_staticText(parent,txt,len)
+	{
+		var result = parent.add("statictext", undefined, txt);
+		if(len)
+		{
+			result.characters = len;
+		}
+		return result;
+	}
+
+
+
+	/*
+		Component Name: make_group
+		Author: William Dowling
+		Creation Date: 17 November, 2017
+		Description: 
+			make a group object in the given parent element
+		Arguments
+			parent object
+		Return value
+			group object
+
+	*/
+
+	function UI_group(parent)
+	{
+		return parent.add("group");
+	}
+
+
+
+	/*
+		Component Name: make_checkbox
+		Author: William Dowling
+		Creation Date: 28 November, 2017
+		Description: 
+			Create a checkbox object for the given parent
+		Arguments
+			parent object (coulg be a group, or window, or tab, etc.)
+			string of text to be used
+			[character length]-optional
+		Return value
+			the newly created checkbox object
+
+	*/
+
+	function UI_checkbox(parent,txt,len)
+	{
+		var result = parent.add("checkbox", undefined, txt);
+		if(len)
+		{
+			result.characters = len;
+		}
+		return result;
+	}
+
+
+
+	/*
+		Component Name: make_button
+		Author: William Dowling
+		Creation Date: 08 November, 2017
+		Description: 
+			create a new button for the given parent object
+		Arguments
+			parent object
+			string of text to display on button		
+		Return value
+			button object
+
+	*/
+
+	function UI_button(parent,txt,func)
+	{
+		var result = parent.add("button", undefined, txt);
+		if(func)
+		{
+			result.onClick = func;
+		}
+		return result;
+	}
+
+
+
+	/*
+		Component Name: make_edit_text
+		Author: William Dowling
+		Creation Date: 28 November, 2017
+		Description: 
+			Create an edit text object for the given parent
+		Arguments
+			parent object (coulg be a group, or window, or tab, etc.)
+			string of text to be used
+			[character length]-optional
+		Return value
+			the newly created text object
+
+	*/
+
+	function UI_editText(parent,txt,len)
+	{
+		var result = parent.add("edittext", undefined, txt);
+		if(len)
+		{
+			result.characters = len;
+		}
+		return result;
+	}
+
+
+
+	/*
+		Component Name: make_listbox
+		Author: William Dowling
+		Creation Date: 08 November, 2017
+		Description: 
+			createa a listbox element in the given parent
+		Arguments
+			parent object
+			dimensions array
+		Return value
+			listbox object
+
+	*/
+
+	function UI_listbox(parent,dim)
+	{
+		var result = parent.add("listbox",dim,[]);
+		result.onChange = function()
+		{
+			if(result.selection)
+			{
+				displayData(parent,result.selection.text);
+			}
+		}
+		return result;
+	}
+
+
+
+	/*
+		Component Name: make_tab
+		Author: William Dowling
+		Creation Date: 09 November, 2017
+		Description: 
+			Create a new tab in the given parent element
+		Arguments
+			parent object
+			string representing the name of the tab
+		Return value
+			tab object
+
+	*/
+
+	function UI_tab(parent,txt,name)
+	{
+		var myTab = parent.add("tab", undefined, txt);
+		myTab.name = name;
+		return myTab;
+	}
+
+
