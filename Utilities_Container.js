@@ -2,6 +2,8 @@
 
 
 
+
+
 //Network Storage. Production version
 
 	if($.os.match('Windows')){
@@ -26,7 +28,6 @@
 		var buildMockLog = new File("/Volumes/Customization/Library/Scripts/Script Resources/Data/.script_logs/mockup_builder_log.txt");
 		var missingTemplatesLog = new File("/Volumes/Customization/Library/Scripts/Script Resources/Data/.script_logs/converted_templates_needed.txt");
 	}
-
 
 
 
@@ -263,6 +264,8 @@ function printLog()
 			newStr += "\n";
 			newStr += "Script executed by: ";
 			newStr += user + " at: " + curTime + "\n\n";
+			newStr += "homeFolderPath = " + homeFolderPath + "\n";
+			newStr += "desktopPath = " + desktopPath + "\n";
 			newStr += scriptLog;
 			newStr += endScriptString;
 			var logString = contents + newStr ;
@@ -300,6 +303,8 @@ function printLog()
 
 eval("@JSXBIN@ES@2.0@MyBbyBnABMAbyBnABMDbyBn0ABZFnAEXzFjGjMjPjPjSBfjzEiNjBjUjICfRBCzBhLDCzBhKEEXzGjSjBjOjEjPjNFfjCfnfCDCzBhNGVzDjNjBjYHfBVzDjNjJjOIfAnnnndBnnVIfAnnffACH4B0AhAI40BhAC0AzJjHjFjUiSjBjOjEjPjNJAGBgJbyBn0ADJLnAEjzEjFjWjBjMKfRBFeiOhDjJjOjDjMjVjEjFhAhChPiWjPjMjVjNjFjThPiDjVjTjUjPjNjJjajBjUjJjPjOhPiMjJjCjSjBjSjZhPiTjDjSjJjQjUjThPiTjDjSjJjQjUhAiSjFjTjPjVjSjDjFjThPhOjFjYjQhPjFjYjQhOjKjThCffJMnASzDjOjPjXLAEXLfjzEiEjBjUjFMfnfnftOObQn0ACJQnASzEjSjBjOjENBEjJfRCFdAFdCffnftOSbVn0ADJVnAEjzFjBjMjFjSjUOfRBCDCDnEjJfRCFdBFd2nUBffeOiFjSjSjPjShAjJjOKiMjJjOjFhAnnnehUhaKjBjOhAiJjMjMjVjTjUjSjBjUjPjShAjFjSjSjPjShAjPjDjDjVjSjSjFjEhahAhRhThUhWhUhVhYhRhYhZhAhIhHiNiSiBiQhHhJffJWnABjzDjMjPjHPfneAfJXnABjzFjWjBjMjJjEQfncffACzDhdhdhdRVNfBnndCnACzBheSVLfAjzDjFjYjQTfnnnABnzBjFUnbyBn0ABJgdnAEjOfRBCDCDnEjJfRCFdBFd2nUBffeOiFjSjSjPjShAjJjOKiMjJjOjFhAnnnehUhaKjBjOhAiJjMjMjVjTjUjSjBjUjPjShAjFjSjSjPjShAjPjDjDjVjSjSjFjEhahAhRhThUhWhUhVhYhRhYhZhAhIhHiNiSiBiQhHhJffACN4B0AiAL40BiAACAzFjJjTiFjYjQVAgfBJhAnAEjVfnf0DzAWByB");
 
+//array.indexOf prototype
+Array.prototype.indexOf=function(a,b,c){for(c=this.length,b=(c+~~b)%c;b<c&&(!(b in this)||this[b]!==a);b++);return b^c?b:-1;}
 
 //////////////
 /*
@@ -310,6 +315,27 @@ eval("@JSXBIN@ES@2.0@MyBbyBnABMAbyBnABMDbyBn0ABZFnAEXzFjGjMjPjPjSBfjzEiNjBjUjICf
 
 if(!this.JSON){this.JSON={}}(function(){function f(n){return n<10?"0"+n:n}if(typeof Date.prototype.toJSON!=="function"){Date.prototype.toJSON=function(key){return isFinite(this.valueOf())?this.getUTCFullYear()+"-"+f(this.getUTCMonth()+1)+"-"+f(this.getUTCDate())+"T"+f(this.getUTCHours())+":"+f(this.getUTCMinutes())+":"+f(this.getUTCSeconds())+"Z":null};String.prototype.toJSON=Number.prototype.toJSON=Boolean.prototype.toJSON=function(key){return this.valueOf()}}var cx=/[\u0000\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g,escapable=/[\\\"\x00-\x1f\x7f-\x9f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g,gap,indent,meta={"\b":"\\b","	":"\\t","\n":"\\n","\f":"\\f","\r":"\\r",'"':'\\"',"\\":"\\\\"},rep;function quote(string){escapable.lastIndex=0;return escapable.test(string)?'"'+string.replace(escapable,function(a){var c=meta[a];return typeof c==="string"?c:"\\u"+("0000"+a.charCodeAt(0).toString(16)).slice(-4)})+'"':'"'+string+'"'}function str(key,holder){var i,k,v,length,mind=gap,partial,value=holder[key];if(value&&typeof value==="object"&&typeof value.toJSON==="function"){value=value.toJSON(key)}if(typeof rep==="function"){value=rep.call(holder,key,value)}switch(typeof value){case"string":return quote(value);case"number":return isFinite(value)?String(value):"null";case"boolean":case"null":return String(value);case"object":if(!value){return"null"}gap+=indent;partial=[];if(Object.prototype.toString.apply(value)==="[object Array]"){length=value.length;for(i=0;i<length;i+=1){partial[i]=str(i,value)||"null"}v=partial.length===0?"[]":gap?"[\n"+gap+partial.join(",\n"+gap)+"\n"+mind+"]":"["+partial.join(",")+"]";gap=mind;return v}if(rep&&typeof rep==="object"){length=rep.length;for(i=0;i<length;i+=1){k=rep[i];if(typeof k==="string"){v=str(k,value);if(v){partial.push(quote(k)+(gap?": ":":")+v)}}}}else{for(k in value){if(Object.hasOwnProperty.call(value,k)){v=str(k,value);if(v){partial.push(quote(k)+(gap?": ":":")+v)}}}}v=partial.length===0?"{}":gap?"{\n"+gap+partial.join(",\n"+gap)+"\n"+mind+"}":"{"+partial.join(",")+"}";gap=mind;return v}return v}if(typeof JSON.stringify!=="function"){JSON.stringify=function(value,replacer,space){var i;gap="";indent="";if(typeof space==="number"){for(i=0;i<space;i+=1){indent+=" "}}else{if(typeof space==="string"){indent=space}}rep=replacer;if(replacer&&typeof replacer!=="function"&&(typeof replacer!=="object"||typeof replacer.length!=="number")){throw new Error("JSON.stringify")}return str("",{"":value})}}if(typeof JSON.parse!=="function"){JSON.parse=function(text,reviver){var j;function walk(holder,key){var k,v,value=holder[key];if(value&&typeof value==="object"){for(k in value){if(Object.hasOwnProperty.call(value,k)){v=walk(value,k);if(v!==undefined){value[k]=v}else{delete value[k]}}}}return reviver.call(holder,key,value)}text=String(text);cx.lastIndex=0;if(cx.test(text)){text=text.replace(cx,function(a){return"\\u"+("0000"+a.charCodeAt(0).toString(16)).slice(-4)})}if(/^[\],:{}\s]*$/.test(text.replace(/\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g,"@").replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g,"]").replace(/(?:^|:|,)(?:\s*\[)+/g,""))){j=eval("("+text+")");return typeof reviver==="function"?walk({"":j},""):j}throw new SyntaxError("JSON.parse")}}})();
 
+
+var stopwatch = function()
+{
+	this.startTime = 0;
+	this.endTime = 0;
+
+	this.logStart = function()
+	{
+		var curDate = new Date();
+		this.startTime = curDate.getTime();
+	}
+	this.logEnd = function()
+	{
+		var curDate = new Date();
+		this.endTime = curDate.getTime();
+	}
+	this.calculate = function()
+	{
+		return (this.endTime - this.startTime);
+	}
+}
 
 
 function intersects(item,dest)
@@ -585,33 +611,37 @@ function includeComponents(dev,prod,ignorePrompt)
 {
 	var result;
 	var compFolder,comps,thisComp;
-	if(ignorePrompt)
+	
+	if(user === "will.dowling")
 	{
-		compFolder = new Folder(dev);
-	}
-	else if(user === "will.dowling")
-	{
-		var w = new Window("dialog", "Which components?");
-			var btnGroup = w.add("group");
-				btnGroup.orientation = "column";
-				var devBtn = btnGroup.add("button",undefined,"Development");
-					devBtn.onClick = function()
-					{
-						compFolder = new Folder(dev);
-						w.close();
-					}
-				var prodBtn = btnGroup.add("button", undefined, "Production");
-					prodBtn.onClick = function()
-					{
-						compFolder = new Folder(prod);
-						w.close();
-					}
-				var cancel = btnGroup.add("button", undefined, "Cancel");
-					cancel.onClick = function()
-					{
-						w.close();
-					}
-		w.show();
+		if(ignorePrompt)
+		{
+			compFolder = new Folder(dev);	
+		}
+		else
+		{
+			var w = new Window("dialog", "Which components?");
+				var btnGroup = w.add("group");
+					btnGroup.orientation = "column";
+					var devBtn = btnGroup.add("button",undefined,"Development");
+						devBtn.onClick = function()
+						{
+							compFolder = new Folder(dev);
+							w.close();
+						}
+					var prodBtn = btnGroup.add("button", undefined, "Production");
+						prodBtn.onClick = function()
+						{
+							compFolder = new Folder(prod);
+							w.close();
+						}
+					var cancel = btnGroup.add("button", undefined, "Cancel");
+						cancel.onClick = function()
+						{
+							w.close();
+						}
+			w.show();
+		}
 	}
 	else
 	{
@@ -1008,6 +1038,20 @@ var UI =
 		return result;
 	},
 
+	//img is a string representing absolute file path
+	//to the image file
+	//example:
+	//var img = "/Volumes/Customization/Library/Scripts/Script Resources/Images/all.jpg";
+	"iconButton":function(parent,img,func)
+	{
+		var result = parent.add("iconButton", undefined, img);
+		if(func)
+		{
+			result.onClick = func;
+		}
+		return result;
+	},
+
 	"listbox":function(parent,dimensions,children)
 	{
 		var result = parent.add("listbox",dimensions,[]);
@@ -1020,13 +1064,40 @@ var UI =
 		};
 		return result;
 	},
+
+	"radio":function(parent,txt,len)
+	{
+		var result = parent.add("radiobutton",undefined,txt);
+		if(len)
+		{
+			result.characters = len;	
+		}
+		return result;
+	},
 	
 	"dropdown":function(parent,children)
 	{
 		var result = parent.add("dropdownlist",undefined,children);
 		result.selection = 0;
 		return result;
+	},
+
+	"hseparator":function(parent,width)
+	{
+		var result = parent.add("panel");
+			result.preferredSize = [width,50];
+			result.minimumSize.height = result.maximumSize.height = 3;
+		return result
+	},
+
+	"vseparator":function(parent,width)
+	{
+		var result = parent.add("panel");
+			result.preferredSize = [width,50];
+			result.minimumSize.width = result.maximumSize.width = 3;
+		return result
 	}
+
 }
 
 
@@ -1217,4 +1288,72 @@ var UI =
 		return myTab;
 	}
 
+
+
+/*
+	Component Name: make_new_spot_color
+	Author: William Dowling
+	Creation Date: 27 April, 2018
+	Description: 
+		create a new spot color in the active
+		document if one does not already exist
+		by the given name.
+	Arguments
+		name
+			name of new spot color swatch
+		colorType
+			string representing color model type
+				"CMYK" or "RGB"
+		colorValue
+			object containing the values for each color
+				{
+					cyan:100,
+					magenta:0,
+					yellow:0,
+					black:0
+				}
+		[tint]
+			optional. int. tint percentage of the swatch
+
+	Return value
+		newly created swatch object
+
+*/
+
+function makeNewSpotColor(name,colorType,colorValue,tint)
+{
+	var doc = app.activeDocument;
+	var swatches = doc.swatches;
+	var newSpotSwatch;
+	try
+	{
+		newSpotSwatch = swatches[name];
+		if(tint)
+		{
+			newSpotSwatch.color.tint = tint;
+		}
+	}
+	catch(e)
+	{
+		var newColor = (colorType === "CMYK") ? new CMYKColor() : new RGBColor();
+		for(var color in colorValue)
+		{
+			newColor[color] = colorValue[color];
+		}
+
+		var newSpot = doc.spots.add();
+		newSpot.name = name;
+		newSpot.color = newColor;
+		newSpot.colorType = ColorModel.SPOT;
+
+		newSpotSwatch = new SpotColor();
+		newSpotSwatch.spot = newSpot;
+		newSpotSwatch = swatches[name];
+		if(tint)
+		{
+			newSpotSwatch.tint = tint;
+		}
+	}
+	return newSpotSwatch;
+}
 

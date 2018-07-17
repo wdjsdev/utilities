@@ -300,6 +300,7 @@ function executeBatch(func)
 		catch(e)
 		{
 			errorList.push("Failed to execute the batch function on the file: " + docRef.name);
+			errorList.push("System error was: " + e + ", on line: " + e.line);
 		}
 	}
 
