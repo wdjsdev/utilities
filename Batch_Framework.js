@@ -9,11 +9,19 @@
 //this is the array of files that will be processed
 var batchFiles = [];
 
+//array of files to be closed when the batch is complete
+//batch files will be handled on their own, but these may
+//be other files created during the execution of the script
+var filesToClose = [];
+
 //variable to hold the window object
 var w;
 
 //variable to hold the batched files destination folder
 var saveDest;
+
+//boolean to indicate whether to close files after processing
+var closeFilePref = true;
 
 
 //initialization function
@@ -24,13 +32,8 @@ function batchInit(func,readMeMsg)
 
 	if(valid && batchFiles.length)
 	{
-		executeBatch(func);
+		executeBatch(func,closeFilePref);
 		writeReadMe(saveDest,readMeMsg);
-	}
-	else
-	{
-		alert("valid = " + valid);
-		alert("batchFiles.length = " + batchFiles.length);
 	}
 }
 
@@ -104,7 +107,10 @@ function justThisDoc()
 {
 	if (app.documents.length)
 	{
+		log.h("Batching a single document:");
+		log.l(app.activeDocument.name);
 		batchFiles.push(app.activeDocument);
+		closeFilePref = false;
 	}
 	else
 	{
@@ -137,6 +143,8 @@ function getOpenFiles()
 		{
 			batchFiles.push(app.documents[x]);
 		}
+		log.h("Batching the open documents:")
+		log.l(batchFiles.join("::"));
 	}
 	else
 	{
@@ -147,6 +155,57 @@ function getOpenFiles()
 }
 
 
+/*
+	Component Name: get_default_location
+	Author: William Dowling
+	Creation Date: 11 January, 2019
+	Description: 
+		check to see what the last batch location folder was
+		then return the parent folder
+	Arguments
+		none
+	Return value
+		folder object
+
+*/
+
+function getDefaultLocation()
+{
+	log.h("Getting the default save location.");
+	var result;
+	var contents = desktopPath + "Batched_Files";
+	var defaultLocFile = File(documentsPath + "default_batch_folder.txt");
+	if(defaultLocFile.exists)
+	{
+		defaultLocFile.open("r");
+		contents = defaultLocFile.read();
+		defaultLocFile.close();
+		log.l("Default location file existed. Default save location was: " + contents);
+	}
+	else
+	{
+		log.l("No default location file existed. Using this as the default save location: " + contents);
+	}
+
+	result = Folder(contents);
+	return result;
+}
+
+function setDefaultLocation(path)
+{
+	log.h("Setting the default save location.");
+	log.l("path = " + path);
+	path = path.replace(userPathRegex,"/Volumes/Macintosh HD/" + user + "/");
+
+	log.l("updated path = " + path);
+
+	var defaultLocFile = File(documentsPath + "default_batch_folder.txt");
+	defaultLocFile.open("w");
+	defaultLocFile.write(path);
+	defaultLocFile.close();
+
+	log.l("wrote to default save location file.");
+}
 
 
 /*
@@ -166,9 +225,13 @@ function getOpenFiles()
 
 function getBatchFiles()
 {
-	var folderToBatch = desktopFolder.selectDlg("Choose a folder to batch.");
+	log.h("Getting the batch files.");
+	// var folderToBatch = desktopFolder.selectDlg("Choose a folder to batch.");
+	var folderToBatch = getDefaultLocation().selectDlg("Choose a folder to batch.");
 	if (folderToBatch)
 	{
+		log.l("Batch folder = " + folderToBatch);
+		setDefaultLocation(folderToBatch.fsName.substring(0,folderToBatch.fsName.lastIndexOf("/")));
 		batchFiles = openBatchFiles(folderToBatch, ".ai");
 	}
 	else
@@ -197,19 +260,29 @@ function getBatchFiles()
 
 function getBatchDest(file)
 {
+	log.h("Getting batch dest.");
 	var result;
-	
-	//first check to see whether the file has a proper file location
-	if(file.path.fsName)
+	var path = file.path.fullName;
+	log.l("path = " + path);
+	path = path.replace(userPathRegex,homeFolderPath + "/");
+	log.l("after replacement, path = " + path);
+
+	//first check to see whether the file has a proper file location 
+	if(path)
 	{
-		result = new Folder("Volumes/Macintosh\ HD/" + file.path + "/Batched_Files");
+		result = new Folder(path + "/Batched_Files");
 	}
 	else
 	{
 		result = new Folder(desktopPath + "/Batched_Files");
 	}
-	result.create();
 
+	if(!result.exists)
+	{
+		result.create();
+	}
+
+	log.l("returning dest folder: " + result.fsName);
 	return result;
 }
 
@@ -273,29 +346,40 @@ function openBatchFiles(folder,ext)
 		the given files, then save each
 		file into the given destination folder
 	Arguments
-		batchFiles
-			array of file objects
 		func
 			the function to be executed on each file
+		closeFilePref
+			boolean: whether or not to close the files after processing
 	Return value
 		void
 
 */
 
-function executeBatch(func)
+function executeBatch(func,closeFilePref)
 {
 	var saveFile;
 	var docRef;
 
+	log.h("Beginning Execute Batch");
+
 	saveDest = getBatchDest(batchFiles[0]);
+
+	log.l("Using the following saveDest: " + saveDest.fsName);
 
 	for (var x = batchFiles.length - 1; x >= 0; x--)
 	{
+		log.l("Processing file: " + batchFiles[x].name);
 		docRef = batchFiles[x];
 		docRef.activate();
 		try
 		{
 			func();
+			if(closeFilePref)
+			{
+				saveFile = new File(saveDest.fsName + "/" + docRef.name);
+				docRef.saveAs(saveFile);
+			}
+			log.l("Successfully processed file: " + batchFiles[x].name + "::");
 		}
 		catch(e)
 		{
@@ -304,11 +388,20 @@ function executeBatch(func)
 		}
 	}
 
-	for (var x = batchFiles.length - 1; x >= 0; x--)
+	if(closeFilePref)
 	{
-		docRef = app.activeDocument;
-		saveFile = new File(saveDest.fsName + "/" + docRef.name);
-		docRef.saveAs(saveFile);
-		docRef.close(SaveOptions.DONOTSAVECHANGES);
+		for (var x = batchFiles.length - 1; x >= 0; x--)
+		{
+			batchFiles[x].activate();
+			docRef = app.activeDocument;
+			docRef.close(SaveOptions.DONOTSAVECHANGES);
+		}
+
+		for(var x = filesToClose.length - 1; x>=0; x--)		
+		{
+			filesToClose[x].activate();
+			docRef = app.activeDocument;
+			docRef.close(SaveOptions.DONOTSAVECHANGES);	
+		}
 	}
 }

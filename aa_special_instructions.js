@@ -156,6 +156,38 @@ var specialInstructions = {
 		this["rotate prepress pieces"](pieces,rot);
 		pieces = ["Left Side Panel"];
 		this["rotate prepress pieces"](pieces,-rot);
+	},
+
+	//fan football
+	"FD-3096":function(input)
+	{
+		var rot = 90;
+		if(input === "rebuild")
+		{
+			rot = -rot;
+		} 
+		var pieces = ["Right Sleeve","Left Sleeve"];
+		this["rotate prepress pieces"](pieces,rot);
+	},
+	"FD-3096W":function(input)
+	{
+		var rot = 90;
+		if(input === "rebuild")
+		{
+			rot = -rot;
+		} 
+		var pieces = ["Right Sleeve","Left Sleeve"];
+		this["rotate prepress pieces"](pieces,rot);
+	},
+	"FD-3096Y":function(input)
+	{
+		var rot = 90;
+		if(input === "rebuild")
+		{
+			rot = -rot;
+		} 
+		var pieces = ["Right Sleeve","Left Sleeve"];
+		this["rotate prepress pieces"](pieces,rot);
 	}
 
 }

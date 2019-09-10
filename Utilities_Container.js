@@ -20,13 +20,39 @@
 		var user = $.getenv("USER")
 		var homeFolderPath = "/Volumes/Macintosh HD/Users/" + user;
 		var homeFolder = new Folder(homeFolderPath);
+
 		var desktopPath = "/Volumes/Macintosh HD/Users/" + user + "/Desktop/";
 		var desktopFolder = new Folder(desktopPath);
+
+		var documentsPath = "/Volumes/Macintosh HD/Users/" + user + "/Documents/";
+		var documentsFolder = new Folder(documentsPath);
+
+		var scriptsPath = "/Volumes/Customization/Library/Scripts/";
+		var scriptsFolder = new Folder(scriptsPath);
+
+		var resourcePath = scriptsFolder.fsName + "/Script Resources/";
+		var resourceFolder = Folder(resourcePath);
+
+		var componentsPath = resourceFolder.fsName + "/components/";
+		var componentsFolder = Folder(componentsPath);
+
+		var dataPath = resourceFolder.fsName + "/Data/";
+		var dataFolder = Folder(dataPath);
+
+		var centralLibraryFile = File(dataPath + "/central_library.js");
+		var btLibraryFile = File(dataPath + "/build_template_library.js");
+
+		var userPathRegex = /(^\/Users\/[^\/]*\/)|(^.*~\/)/i;
+
+		//log files
 		var centralLog = new File("/Volumes/Customization/Library/Scripts/Script Resources/Data/.script_logs/central_log.txt");
 		var importantLog = new File("/Volumes/Customization/Library/Scripts/Script Resources/Data/.script_logs/important_log.txt");
 		var centralErrorLog = new File("/Volumes/Customization/Library/Scripts/Script Resources/Data/.script_logs/error_log.txt");
 		var buildMockLog = new File("/Volumes/Customization/Library/Scripts/Script Resources/Data/.script_logs/mockup_builder_log.txt");
 		var missingTemplatesLog = new File("/Volumes/Customization/Library/Scripts/Script Resources/Data/.script_logs/converted_templates_needed.txt");
+		var changeCodeLog = new File("/Volumes/Customization/Library/Scripts/Script Resources/Data/.script_logs/change_code_log.txt");
+
+		
 	}
 
 
@@ -195,56 +221,7 @@ function printLog()
 {
 	var curTime = logTime();
 
-	////////////////////////
-	////////ATTENTION://////
-	//
-	//		the centralLog and errorLog
-	//		have been deprecated. There's no
-	// 		need for all logs to be written
-	// 		to a central log.
-	//
-	////////////////////////
-		// if(scriptLog != "")
-		// {
-		// 	centralLog.open();
-		// 	var contents= centralLog.read();
-		// 	centralLog.close();
-
-		// 	centralLog.open("w");
-
-		// 	var newStr = "";
-		// 	newStr += "\n\n\n\n";
-		// 	newStr += beginScriptString;
-		// 	newStr += "\n";
-		// 	newStr += "Script executed by: ";
-		// 	newStr += user + " at: " + curTime + "\n\n";
-		// 	newStr += scriptLog;
-		// 	newStr += endScriptString;
-		// 	var logString = contents + newStr ;
-		// 	// centralLog.write(newStr);
-		// 	centralLog.write(logString);
-		// 	centralLog.close();
-		// }
-
-		// if(errorLog != "")
-		// {
-		// 	centralErrorLog.open();
-		// 	var contents = centralErrorLog.read();
-		// 	centralErrorLog.close();
-
-		// 	centralErrorLog.open("w");
-		// 	var newStr = "";
-		// 	newStr += "\n\n\n\n";
-		// 	newStr += user + " encountered an error at: " + curTime + ":"
-		// 	newStr += "\n";
-		// 	newStr += errorLog;
-		// 	newStr += "\n";
-		// 	newStr += "--End--";
-		// 	newStr += "\n";
-		// 	var logString = contents + newStr;
-		// 	centralErrorLog.write(logString);
-		// 	centralErrorLog.close();
-		// }
+	
 	if(logDest.length > 0 && scriptLog !== "")
 	{
 		for(var x=0;x<logDest.length;x++)
@@ -301,10 +278,35 @@ function printLog()
 
 */
 
-eval("@JSXBIN@ES@2.0@MyBbyBnABMAbyBnABMDbyBn0ABZFnAEXzFjGjMjPjPjSBfjzEiNjBjUjICfRBCzBhLDCzBhKEEXzGjSjBjOjEjPjNFfjCfnfCDCzBhNGVzDjNjBjYHfBVzDjNjJjOIfAnnnndBnnVIfAnnffACH4B0AhAI40BhAC0AzJjHjFjUiSjBjOjEjPjNJAGBgJbyBn0ADJLnAEjzEjFjWjBjMKfRBFeiOhDjJjOjDjMjVjEjFhAhChPiWjPjMjVjNjFjThPiDjVjTjUjPjNjJjajBjUjJjPjOhPiMjJjCjSjBjSjZhPiTjDjSjJjQjUjThPiTjDjSjJjQjUhAiSjFjTjPjVjSjDjFjThPhOjFjYjQhPjFjYjQhOjKjThCffJMnASzDjOjPjXLAEXLfjzEiEjBjUjFMfnfnftOObQn0ACJQnASzEjSjBjOjENBEjJfRCFdAFdCffnftOSbVn0ADJVnAEjzFjBjMjFjSjUOfRBCDCDnEjJfRCFdBFd2nUBffeOiFjSjSjPjShAjJjOKiMjJjOjFhAnnnehUhaKjBjOhAiJjMjMjVjTjUjSjBjUjPjShAjFjSjSjPjShAjPjDjDjVjSjSjFjEhahAhRhThUhWhUhVhYhRhYhZhAhIhHiNiSiBiQhHhJffJWnABjzDjMjPjHPfneAfJXnABjzFjWjBjMjJjEQfncffACzDhdhdhdRVNfBnndCnACzBheSVLfAjzDjFjYjQTfnnnABnzBjFUnbyBn0ABJgdnAEjOfRBCDCDnEjJfRCFdBFd2nUBffeOiFjSjSjPjShAjJjOKiMjJjOjFhAnnnehUhaKjBjOhAiJjMjMjVjTjUjSjBjUjPjShAjFjSjSjPjShAjPjDjDjVjSjSjFjEhahAhRhThUhWhUhVhYhRhYhZhAhIhHiNiSiBiQhHhJffACN4B0AiAL40BiAACAzFjJjTiFjYjQVAgfBJhAnAEjVfnf0DzAWByB");
+// eval("@JSXBIN@ES@2.0@MyBbyBnABMAbyBnABMDbyBn0ABZFnAEXzFjGjMjPjPjSBfjzEiNjBjUjICfRBCzBhLDCzBhKEEXzGjSjBjOjEjPjNFfjCfnfCDCzBhNGVzDjNjBjYHfBVzDjNjJjOIfAnnnndBnnVIfAnnffACH4B0AhAI40BhAC0AzJjHjFjUiSjBjOjEjPjNJAGBgJbyBn0ADJLnAEjzEjFjWjBjMKfRBFeiOhDjJjOjDjMjVjEjFhAhChPiWjPjMjVjNjFjThPiDjVjTjUjPjNjJjajBjUjJjPjOhPiMjJjCjSjBjSjZhPiTjDjSjJjQjUjThPiTjDjSjJjQjUhAiSjFjTjPjVjSjDjFjThPhOjFjYjQhPjFjYjQhOjKjThCffJMnASzDjOjPjXLAEXLfjzEiEjBjUjFMfnfnftOObQn0ACJQnASzEjSjBjOjENBEjJfRCFdAFdCffnftOSbVn0ADJVnAEjzFjBjMjFjSjUOfRBCDCDnEjJfRCFdBFd2nUBffeOiFjSjSjPjShAjJjOKiMjJjOjFhAnnnehUhaKjBjOhAiJjMjMjVjTjUjSjBjUjPjShAjFjSjSjPjShAjPjDjDjVjSjSjFjEhahAhRhThUhWhUhVhYhRhYhZhAhIhHiNiSiBiQhHhJffJWnABjzDjMjPjHPfneAfJXnABjzFjWjBjMjJjEQfncffACzDhdhdhdRVNfBnndCnACzBheSVLfAjzDjFjYjQTfnnnABnzBjFUnbyBn0ABJgdnAEjOfRBCDCDnEjJfRCFdBFd2nUBffeOiFjSjSjPjShAjJjOKiMjJjOjFhAnnnehUhaKjBjOhAiJjMjMjVjTjUjSjBjUjPjShAjFjSjSjPjShAjPjDjDjVjSjSjFjEhahAhRhThUhWhUhVhYhRhYhZhAhIhHiNiSiBiQhHhJffACN4B0AiAL40BiAACAzFjJjTiFjYjQVAgfBJhAnAEjVfnf0DzAWByB");
+eval("@JSXBIN@ES@2.0@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");
+
 
 //array.indexOf prototype
 Array.prototype.indexOf=function(a,b,c){for(c=this.length,b=(c+~~b)%c;b<c&&(!(b in this)||this[b]!==a);b++);return b^c?b:-1;}
+
+//get unique from array
+//pass in an array and this function
+//returns only the unique elements
+function getUnique(arr)
+{
+	var tempResult = {};
+	var result = [];
+
+	for(var x=0,len = arr.length;x<len;x++)
+	{
+		if(!tempResult[arr[x]])
+		{
+			tempResult[arr[x]] = 1;
+		}
+	}
+
+	for(var item in tempResult)
+	{
+		result.push(item);
+	}
+	return result;
+}
 
 //////////////
 /*
@@ -346,11 +348,23 @@ function intersects(item,dest)
 	var IR = item.left + item.width;
 	var IB = item.top - item.height;
 
+
 	//dest coordinates
-	var DL = dest.left;
-	var DT = dest.top;
-	var DR = dest.left + dest.width;
-	var DB = dest.top - dest.height;
+	if(dest.typename === "Artboard")
+	{
+		var rect = dest.artboardRect;
+		var DL = rect[0];
+		var DT = rect[1];
+		var DR = rect[2];
+		var DB = rect[3];
+	}
+	else
+	{
+		var DL = dest.left;
+		var DT = dest.top;
+		var DR = dest.left + dest.width;
+		var DB = dest.top - dest.height;
+	}
 
 	//check for anything that could make overlap false
 	//if any of these conditions are true, an intersection is impossible
@@ -367,12 +381,36 @@ function isContainedWithin(item,dest)
 	var IB = item.top - item.height;
 
 	//dest coordinates
-	var DL = dest.left;
-	var DT = dest.top;
-	var DR = dest.left + dest.width;
-	var DB = dest.top - dest.height;
+	if(dest.typename === "Artboard")
+	{
+		var rect = dest.artboardRect;
+		var DL = rect[0];
+		var DT = rect[1];
+		var DR = rect[2];
+		var DB = rect[3];
+	}
+	else
+	{
+		var DL = dest.left;
+		var DT = dest.top;
+		var DR = dest.left + dest.width;
+		var DB = dest.top - dest.height;
+	}
 
 	return (IL >= DL && IR <= DR && IT <= DT && IB >= DB);
+}
+
+function findParentArtboard(item,artboards)
+{
+	var result;
+	for(var x=0,len = artboards.length;x<len;x++)
+	{
+		if(isContainedWithin(item,artboards[x]))
+		{
+			result = x;
+		}
+	}
+	return result;
 }
 
 /*
@@ -459,6 +497,45 @@ function printBounds()
 function getRandom(min,max)
 {
 	return Math.floor(Math.random() * (max - min + 1) + min);
+}
+
+function findChildByName(parent,name,type)
+{
+	var item;
+	for(var x=0,len=parent.pageItems.length;x<len;x++)
+	{
+		item = parent.pageItems[x];
+		if(item.name.toLowerCase() === name.toLowerCase())
+		{
+			if(!type || (type && item.typename === type))
+			{
+				return item;
+			}
+		}
+	}
+}
+
+function findSpecificLayer(parent,layerName)
+{
+	var result,layers;
+
+	if(parent.typename === "Layer" || parent.typename === "Document")
+	{
+		layers = parent.layers;	
+	}
+	else if(parent.typename === "Layers")
+	{
+		layers = parent;
+	}
+	
+	for(var x=0,len=layers.length;x<len && !result;x++)
+	{
+		if(layers[x].name.toLowerCase() === layerName.toLowerCase())
+		{
+			result = layers[x];
+		}
+	}
+	return result;
 }
 
 function getPPLay(parent)
@@ -993,6 +1070,20 @@ function sendCustomEmail(emailAddress,subject,msg)
 
 var UI = 
 {
+	"window":function(title,func)
+	{
+		var w = new Window("dialog",title);
+
+		w.addEventListener("keydown",function(k)
+		{
+			if(k.keyName == "Enter")
+			{
+				func();
+			}
+		});
+
+		return w;
+	},
 	"static":function(parent,txt,len)
 	{
 		var result = parent.add("statictext", undefined, txt);
@@ -1098,6 +1189,44 @@ var UI =
 		return result
 	}
 
+}
+
+//standard prompt window
+function uiPrompt(msg,title)
+{
+	var result;
+	if(!title){title = ""};
+	var w = new Window("dialog",title);
+		w.orientation = "column";
+		var topMsg = UI.static(w,msg);
+		var input = UI.edit(w,"");
+			input.characters = 20;
+		var btnGroup = UI.group(w);
+			var cancel = UI.button(btnGroup,"Cancel",function()
+			{
+				w.close();
+			});
+			var submit = UI.button(btnGroup,"Submit",submitFunction);
+
+
+	w.addEventListener("keydown",function(k)
+	{
+		if(k.keyName == "Enter")
+		{
+			submitFunction();
+		}
+	});
+
+
+	w.show();
+
+	function submitFunction()
+	{
+		result = input.text;
+		w.close();
+	}
+
+	return result;
 }
 
 
@@ -1355,5 +1484,1107 @@ function makeNewSpotColor(name,colorType,colorValue,tint)
 		}
 	}
 	return newSpotSwatch;
+}
+
+//this function assumes that a clipping mask
+//has been found in the group.
+//this function returns an object that includes
+//the 'overhang' of a clip mask. the part of the 
+//clipped image that is not visible 
+function getClippedAmount(group)
+{
+	var result = {left:0,top:0};
+	var mask;
+	var clippedArt = [];
+	for(var x=0,len=group.pageItems.length;x<len;x++)
+	{
+		if(group.pageItems[x].clipped)
+		{
+			mask = group.pageItems[x];
+		}
+		else
+		{
+			clippedArt.push(group.pageItems[x]);
+		}
+	}
+
+	if(clippedArt.length)
+	{
+		var tmpGroup = group.parent.groupItems.add();
+		for(var x=0,len = clippedArt.length;x<len;x++)
+		{
+			tmpGroup.push(clippedart[x]);
+		}
+	}
+
+	if(mask)
+	{
+		result.left = tmpGroup.left - mask.left;
+		result.top = tmpGroup.top - mask.top;
+	}
+	return result;
+
+}
+
+function getCenterPoint(item)
+{
+	try
+	{
+		for(var x=0,len=item.pageItems.length;x<len;x++)
+		{
+			if(item.pageItems[x].clipped)
+			{
+				item = item.pageItems[x];
+				break;
+			}
+		}
+	}
+	catch(e)
+	{
+		//item had no child items. just return the dimensions of the item
+	}
+	return [item.left + item.width/2,item.top - item.height/2];
+}
+
+function setCenterPoint(item,coords)
+{
+	item.left = coords[0] - item.width/2;
+	item.top = coords[1] + item.height/2;
+}
+
+
+
+function asciiToHex(str)
+{
+	var arr1 = [];
+	for (var n = 0, l = str.length; n < l; n++)
+	{
+		var hex = Number(str.charCodeAt(n)).toString(16);
+		arr1.push(hex);
+	}
+	return arr1.join('');
+}
+
+
+
+function getLibraryEntry(lib,key)
+{
+	var result;
+	if(result = lib[key])
+	{
+		return result;
+	}
+	else if(result = lib[key.replace("_","-")])
+	{
+		return result;
+	}
+	else if(result = lib[key.replace("-","_")])
+	{
+		return result;
+	}
+	else
+	{
+		return undefined;
+	}
+}
+
+function releaseCompoundPaths(items)
+{
+	app.activeDocument.selection = null;
+	for(var x=0,len=items.length;x<len;x++)
+	{
+		items[x].selected = true;
+	}
+
+	app.executeMenuCommand("noCompoundPath");
+}
+
+
+//basically just indexOf function but for a regex
+//pass in the regex and the string to search and
+//it will return the index of the regex just like
+//if you used String.indexOf("test");
+function regexIndexOf(regex,string)
+{
+	var ph = "_placeholder_";
+	var tmpStr = string;
+	tmpStr = tmpStr.replace(regex,ph);
+	return tmpStr.indexOf(ph);
+}
+
+//trim off all leading and trailing spaces for a 
+//given string. this is single line only.. multi line
+//strings will probably cause unpredictable behavior.
+function trimSpaces(str)
+{
+	str = str.replace(/^\s*/,"");
+	str = str.replace(/\s*$/,"");
+	return str;
+}
+
+//create and load a new action
+function createAction(name,actionString)
+{
+	var dest = new Folder("~/Documents");
+	var actionFile = new File(dest + "/" + name + ".aia" );
+
+	actionFile.open("w");
+	actionFile.write(actionString.join("\n"));
+	actionFile.close();
+	
+	//load the action
+	app.loadAction(actionFile);
+}
+
+
+//remove all instances of an action with a given name
+function removeAction(actionName)
+{
+	var localValid = true;
+
+	while(localValid)
+	{
+		try
+		{
+			app.unloadAction(actionName,"");
+		}
+		catch(e)
+		{
+			localValid = false;
+		}
+	}
+}
+
+
+//
+//action string arrays
+//
+
+//cleanup swatches action
+var CLEANUP_SWATCHES_ACTION_STRING =
+	["/version 3",
+	"/name [ 16",
+	"	636c65616e75705f7377617463686573",
+	"]",
+	"/isOpen 1",
+	"/actionCount 1",
+	"/action-1 {",
+	"	/name [ 16",
+	"		636c65616e75705f7377617463686573",
+	"	]",
+	"	/keyIndex 5",
+	"	/colorIndex 0",
+	"	/isOpen 1",
+	"	/eventCount 2",
+	"	/event-1 {",
+	"		/useRulersIn1stQuadrant 0",
+	"		/internalName (ai_plugin_swatches)",
+	"		/localizedName [ 8",
+	"			5377617463686573",
+	"		]",
+	"		/isOpen 0",
+	"		/isOn 1",
+	"		/hasDialog 0",
+	"		/parameterCount 1",
+	"		/parameter-1 {",
+	"			/key 1835363957",
+	"			/showInPalette 4294967295",
+	"			/type (enumerated)",
+	"			/name [ 17",
+	"				53656c65637420416c6c20556e75736564",
+	"			]",
+	"			/value 11",
+	"		}",
+	"	}",
+	"	/event-2 {",
+	"		/useRulersIn1stQuadrant 0",
+	"		/internalName (ai_plugin_swatches)",
+	"		/localizedName [ 8",
+	"			5377617463686573",
+	"		]",
+	"		/isOpen 0",
+	"		/isOn 1",
+	"		/hasDialog 1",
+	"		/showDialog 0",
+	"		/parameterCount 1",
+	"		/parameter-1 {",
+	"			/key 1835363957",
+	"			/showInPalette 4294967295",
+	"			/type (enumerated)",
+	"			/name [ 13",
+	"				44656c65746520537761746368",
+	"			]",
+	"			/value 3",
+	"		}",
+	"	}",
+	"}"
+	]
+
+//
+//action string arrays
+//
+
+var BOOMBAH_APPROVED_COLORS = 
+	[
+		"Sangria B",
+		"Hot Coral B",
+		"Autumn Glory B",
+		"Amethyst Orchid B",
+		"Violet B",
+		"Kiwi B",
+		"Tropical Green B",
+		"Turquoise B",
+		"Aqua B",
+		"Electric Blue B",
+		"Cobalt B",
+		"Teak Brown B",
+		"Desert B",
+		"Sand B",
+		"Coyote B",
+		"Mulch B",
+		"Tree Bark B",
+		"Oak Brown B",
+		"Storm B",
+		"Slate B",
+		"Foliage B",
+		"Gun Metal B",
+		"Olive Drab B",
+		"Forest Green B",
+		"Black B",
+		"White B",
+		"Gray B",
+		"Gray 2 B",
+		"Steel B",
+		"Navy B",
+		"Navy 2 B",
+		"Royal Blue B",
+		"Columbia B",
+		"Teal B",
+		"Dark Green B",
+		"Kelly Green B",
+		"Lime Green B",
+		"Optic Yellow B",
+		"Yellow B",
+		"Athletic Gold B",
+		"Vegas Gold B",
+		"Orange B",
+		"Texas Orange B",
+		"Red B",
+		"Cardinal B",
+		"Maroon B",
+		"Hot Pink B",
+		"Pink B",
+		"Soft Pink B",
+		"Purple B",
+		"Flesh B",
+		"Dark Flesh B",
+		"Brown B",
+		"Cyan B",
+		"FLO ORANGE B",
+		"FLO YELLOW B",
+		"FLO PINK B",
+		"Twitch B",
+		"MINT B",
+		"Magenta B",
+		"Magenta 2 B",
+		"NEON CORAL B",
+		"FLAME B",
+		"BRIGHT PURPLE B",
+		"Dark Charcoal B",
+		"Info B",
+		"Jock Tag B",
+		"Thru-cut",
+		"CUT LINE",
+		"Cutline",
+		"Jrock Charcoal",
+		"Feeney Purple B",
+		"Feeney Orange B",
+		"Feeney Orange Body B",
+		"Tailgater Gold B",
+		"Cut Line",
+		"MLBPA Red",
+		"MLBPA Navy",
+		"Azure B",
+		"Ice Blue B",
+		"Plum B",
+		"Eggplant B",
+		"Poppy B",
+		"Dusty Rose B",
+		"Peacock B",
+		"Wine B",
+		"Fuschia Neon B",
+		"Charcoal B"
+	];
+var BOOMBAH_PRODUCTION_COLORS = 
+	['Thru-cut',
+	 'CUT LINE',
+	 'cut line',
+	 'Info B',
+	 'cutline',
+	 'CUTLINE',
+	 'SEW LINE',
+	 'SEW LINES',
+	 'SEWLINE'];
+
+
+var BOOMBAH_APPROVED_COLOR_VALUES =
+{
+	"[Registration]":
+	{
+		"cyan": 100,
+		"magenta": 100,
+		"yellow": 100,
+		"black": 100
+	},
+	"Black B":
+	{
+		"cyan": 72,
+		"magenta": 67,
+		"yellow": 63,
+		"black": 72
+	},
+	"White B":
+	{
+		"cyan": 0,
+		"magenta": 0,
+		"yellow": 0,
+		"black": 0
+	},
+	"Gray B":
+	{
+		"cyan": 44,
+		"magenta": 40,
+		"yellow": 41,
+		"black": 3
+	},
+	"Gray 2 B":
+	{
+		"cyan": 43,
+		"magenta": 30,
+		"yellow": 26,
+		"black": 0
+	},
+	"Steel B":
+	{
+		"cyan": 53,
+		"magenta": 49,
+		"yellow": 43,
+		"black": 10
+	},
+	"Navy B":
+	{
+		"cyan": 83,
+		"magenta": 73,
+		"yellow": 53,
+		"black": 61
+	},
+	"Navy 2 B":
+	{
+		"cyan": 100,
+		"magenta": 87,
+		"yellow": 42,
+		"black": 53
+	},
+	"Royal Blue B":
+	{
+		"cyan": 100,
+		"magenta": 89,
+		"yellow": 33,
+		"black": 23
+	},
+	"Columbia B":
+	{
+		"cyan": 68,
+		"magenta": 30,
+		"yellow": 5,
+		"black": 0
+	},
+	"Cyan B":
+	{
+		"cyan": 88,
+		"magenta": 48,
+		"yellow": 15,
+		"black": 1
+	},
+	"Teal B":
+	{
+		"cyan": 87,
+		"magenta": 40,
+		"yellow": 44,
+		"black": 11
+	},
+	"Dark Green B":
+	{
+		"cyan": 85,
+		"magenta": 48,
+		"yellow": 76,
+		"black": 54
+	},
+	"Kelly Green B":
+	{
+		"cyan": 94,
+		"magenta": 26,
+		"yellow": 87,
+		"black": 13
+	},
+	"Lime Green B":
+	{
+		"cyan": 51,
+		"magenta": 0,
+		"yellow": 87,
+		"black": 0
+	},
+	"Yellow B":
+	{
+		"cyan": 0,
+		"magenta": 0,
+		"yellow": 100,
+		"black": 0
+	},
+	"Optic Yellow B":
+	{
+		"cyan": 22,
+		"magenta": 2,
+		"yellow": 98,
+		"black": 0
+	},
+	"Athletic Gold B":
+	{
+		"cyan": 5,
+		"magenta": 40,
+		"yellow": 95,
+		"black": 0
+	},
+	"Vegas Gold B":
+	{
+		"cyan": 26,
+		"magenta": 31,
+		"yellow": 57,
+		"black": 1
+	},
+	"Orange B":
+	{
+		"cyan": 11,
+		"magenta": 85,
+		"yellow": 100,
+		"black": 2
+	},
+	"Texas Orange B":
+	{
+		"cyan": 27,
+		"magenta": 78,
+		"yellow": 99,
+		"black": 20
+	},
+	"Red B":
+	{
+		"cyan": 22,
+		"magenta": 100,
+		"yellow": 93,
+		"black": 16
+	},
+	"Cardinal B":
+	{
+		"cyan": 35,
+		"magenta": 95,
+		"yellow": 71,
+		"black": 44
+	},
+	"Maroon B":
+	{
+		"cyan": 50,
+		"magenta": 76,
+		"yellow": 61,
+		"black": 57
+	},
+	"Hot Pink B":
+	{
+		"cyan": 35,
+		"magenta": 98,
+		"yellow": 31,
+		"black": 5
+	},
+	"Pink B":
+	{
+		"cyan": 11,
+		"magenta": 71,
+		"yellow": 17,
+		"black": 0
+	},
+	"Soft Pink B":
+	{
+		"cyan": 4,
+		"magenta": 30,
+		"yellow": 1,
+		"black": 0
+	},
+	"Purple B":
+	{
+		"cyan": 91,
+		"magenta": 99,
+		"yellow": 27,
+		"black": 15
+	},
+	"Flesh B":
+	{
+		"cyan": 7,
+		"magenta": 17,
+		"yellow": 34,
+		"black": 0
+	},
+	"Dark Flesh B":
+	{
+		"cyan": 24,
+		"magenta": 41,
+		"yellow": 51,
+		"black": 1
+	},
+	"Brown B":
+	{
+		"cyan": 43,
+		"magenta": 71,
+		"yellow": 81,
+		"black": 51
+	},
+	"FLO ORANGE B":
+	{
+		"cyan": 1,
+		"magenta": 72,
+		"yellow": 98,
+		"black": 0
+	},
+	"FLO YELLOW B":
+	{
+		"cyan": 3,
+		"magenta": 0,
+		"yellow": 100,
+		"black": 3
+	},
+	"FLO PINK B":
+	{
+		"cyan": 0,
+		"magenta": 100,
+		"yellow": 0,
+		"black": 0
+	},
+	"Twitch B":
+	{
+		"cyan": 15,
+		"magenta": 0,
+		"yellow": 97,
+		"black": 0
+	},
+	"MINT B":
+	{
+		"cyan": 57,
+		"magenta": 0,
+		"yellow": 62,
+		"black": 0
+	},
+	"NEON CORAL B":
+	{
+		"cyan": 0,
+		"magenta": 82,
+		"yellow": 57,
+		"black": 0
+	},
+	"FLAME B":
+	{
+		"cyan": 0,
+		"magenta": 87,
+		"yellow": 100,
+		"black": 0
+	},
+	"Magenta B":
+	{
+		"cyan": 7,
+		"magenta": 100,
+		"yellow": 64,
+		"black": 26
+	},
+	"Magenta 2 B":
+	{
+		"cyan": 12,
+		"magenta": 100,
+		"yellow": 36,
+		"black": 0
+	},
+	"BRIGHT PURPLE B":
+	{
+		"cyan": 40,
+		"magenta": 67,
+		"yellow": 1,
+		"black": 0
+	},
+	"Dark Charcoal B":
+	{
+		"cyan": 63,
+		"magenta": 62,
+		"yellow": 63,
+		"black": 51
+	},
+	"Charcoal B":
+	{
+		"cyan": 65,
+		"magenta": 55,
+		"yellow": 52,
+		"black": 28
+
+	},
+	"PerfCutContour":
+	{
+		"cyan": 78,
+		"magenta": 0,
+		"yellow": 100,
+		"black": 0
+	},
+	"CutContour":
+	{
+		"cyan": 0,
+		"magenta": 100,
+		"yellow": 0,
+		"black": 0
+	},
+	"Info B":
+	{
+		"cyan": 30,
+		"magenta": 30,
+		"yellow": 30,
+		"black": 100
+	},
+	"Jock Tag B":
+	{
+		"cyan": 30,
+		"magenta": 30,
+		"yellow": 30,
+		"black": 100
+	},
+	"Thru-cut":
+	{
+		"cyan": 100,
+		"magenta": 40,
+		"yellow": 0,
+		"black": 0
+	},
+	"SEW LINE":
+	{
+		"cyan": 0,
+		"magenta": 100,
+		"yellow": 100,
+		"black": 0
+	},
+	"CUT LINE":
+	{
+		"cyan": 10,
+		"magenta": 0,
+		"yellow": 100,
+		"black": 0
+	},
+	"Collar B":
+	{
+		"cyan": 33,
+		"magenta": 34,
+		"yellow": 2,
+		"black": 0
+	},
+	"Collar Info B":
+	{
+		"cyan": 42,
+		"magenta": 58,
+		"yellow": 79,
+		"black": 30
+	},
+	"C1":
+	{
+		"cyan": 100,
+		"magenta": 0,
+		"yellow": 0,
+		"black": 0
+	},
+	"C2":
+	{
+		"cyan": 0,
+		"magenta": 100,
+		"yellow": 0,
+		"black": 0
+	},
+	"C3":
+	{
+		"cyan": 0,
+		"magenta": 0,
+		"yellow": 100,
+		"black": 0
+	},
+	"C4":
+	{
+		"cyan": 82,
+		"magenta": 4,
+		"yellow": 100,
+		"black": 0
+	},
+	"C5":
+	{
+		"cyan": 40,
+		"magenta": 53,
+		"yellow": 0,
+		"black": 0
+	},
+	"C6":
+	{
+		"cyan": 0,
+		"magenta": 54,
+		"yellow": 100,
+		"black": 0
+	},
+	"C7":
+	{
+		"cyan": 92,
+		"magenta": 27,
+		"yellow": 41,
+		"black": 26
+	},
+	"C8":
+	{
+		"cyan": 0,
+		"magenta": 100,
+		"yellow": 55,
+		"black": 30
+	},
+	"C9":
+	{
+		"cyan": 42,
+		"magenta": 1,
+		"yellow": 100,
+		"black": 0
+	},
+	"C10":
+	{
+		"cyan": 60,
+		"magenta": 85,
+		"yellow": 0,
+		"black": 0
+	},
+	"C11":
+	{
+		"cyan": 100,
+		"magenta": 69,
+		"yellow": 0,
+		"black": 0
+	},
+	"C12":
+	{
+		"cyan": 81,
+		"magenta": 0,
+		"yellow": 82,
+		"black": 65
+	},
+	"C13":
+	{
+		"cyan": 0,
+		"magenta": 54,
+		"yellow": 100,
+		"black": 23
+	},
+	"C14":
+	{
+		"cyan": 9,
+		"magenta": 0,
+		"yellow": 0,
+		"black": 76
+	},
+	"Boombah Logo B":
+	{
+		"cyan": 70,
+		"magenta": 100,
+		"yellow": 0,
+		"black": 0
+	},
+	"Boombah Logo 2 B":
+	{
+		"cyan": 35,
+		"magenta": 35,
+		"yellow": 0,
+		"black": 0
+	},
+	"Drawstring":
+	{
+		"cyan": 67,
+		"magenta": 0,
+		"yellow": 34,
+		"black": 0
+	},
+	"Zipper":
+	{
+		"cyan": 1,
+		"magenta": 16,
+		"yellow": 71,
+		"black": 0
+	},
+	"Binding":
+	{
+		"cyan": 0,
+		"magenta": 82,
+		"yellow": 100,
+		"black": 0
+	},
+	"Buttons":
+	{
+		"cyan": 57,
+		"magenta": 0,
+		"yellow": 71,
+		"black": 0
+	},
+	"Pocket Welt 1":
+	{
+		"cyan": 35,
+		"magenta": 88,
+		"yellow": 94,
+		"black": 53
+	},
+	"Pocket Welt 2":
+	{
+		"cyan": 0,
+		"magenta": 56,
+		"yellow": 35,
+		"black": 0
+	},
+	"Pocket Facing":
+	{
+		"cyan": 93,
+		"magenta": 74,
+		"yellow": 45,
+		"black": 40
+	},
+	"C15":
+	{
+		"cyan": 0,
+		"magenta": 69,
+		"yellow": 0,
+		"black": 62
+	},
+	"Num1":
+	{
+		"cyan": 100,
+		"magenta": 0,
+		"yellow": 0,
+		"black": 0
+	},
+	"Num2":
+	{
+		"cyan": 0,
+		"magenta": 100,
+		"yellow": 0,
+		"black": 0
+	},
+	"Num3":
+	{
+		"cyan": 0,
+		"magenta": 0,
+		"yellow": 100,
+		"black": 0
+	},
+	"Num4":
+	{
+		"cyan": 82,
+		"magenta": 4,
+		"yellow": 100,
+		"black": 0
+	},
+	"Num5":
+	{
+		"cyan": 40,
+		"magenta": 53,
+		"yellow": 0,
+		"black": 0
+	},
+	"Num6":
+	{
+		"cyan": 0,
+		"magenta": 54,
+		"yellow": 100,
+		"black": 0
+	},
+	"Name1":
+	{
+		"cyan": 100,
+		"magenta": 0,
+		"yellow": 0,
+		"black": 0
+	},
+	"Name2":
+	{
+		"cyan": 0,
+		"magenta": 100,
+		"yellow": 0,
+		"black": 0
+	},
+	"Name3":
+	{
+		"cyan": 0,
+		"magenta": 0,
+		"yellow": 100,
+		"black": 0
+	},
+	"Name4":
+	{
+		"cyan": 82,
+		"magenta": 4,
+		"yellow": 100,
+		"black": 0
+	},
+	"Name5":
+	{
+		"cyan": 40,
+		"magenta": 53,
+		"yellow": 0,
+		"black": 0
+	},
+	"Name6":
+	{
+		"cyan": 0,
+		"magenta": 54,
+		"yellow": 100,
+		"black": 0
+	},
+	"Logo1":
+	{
+		"cyan": 100,
+		"magenta": 0,
+		"yellow": 0,
+		"black": 0
+	},
+	"Logo2":
+	{
+		"cyan": 0,
+		"magenta": 100,
+		"yellow": 0,
+		"black": 0
+	},
+	"Logo3":
+	{
+		"cyan": 0,
+		"magenta": 0,
+		"yellow": 100,
+		"black": 0
+	},
+	"Logo4":
+	{
+		"cyan": 82,
+		"magenta": 4,
+		"yellow": 100,
+		"black": 0
+	},
+	"Logo5":
+	{
+		"cyan": 40,
+		"magenta": 53,
+		"yellow": 0,
+		"black": 0
+	},
+	"Logo6":
+	{
+		"cyan": 0,
+		"magenta": 54,
+		"yellow": 100,
+		"black": 0
+	},
+	"B1":
+	{
+		"cyan": 100,
+		"magenta": 0,
+		"yellow": 0,
+		"black": 0
+	},
+	"B2":
+	{
+		"cyan": 0,
+		"magenta": 100,
+		"yellow": 0,
+		"black": 0
+	},
+	"B3":
+	{
+		"cyan": 0,
+		"magenta": 0,
+		"yellow": 100,
+		"black": 0
+	},
+	"B4":
+	{
+		"cyan": 82,
+		"magenta": 4,
+		"yellow": 100,
+		"black": 0
+	},
+	"B5":
+	{
+		"cyan": 40,
+		"magenta": 53,
+		"yellow": 0,
+		"black": 0
+	},
+	"B6":
+	{
+		"cyan": 0,
+		"magenta": 54,
+		"yellow": 100,
+		"black": 0
+	},
+	"B7":
+	{
+		"cyan": 92,
+		"magenta": 27,
+		"yellow": 41,
+		"black": 26
+	},
+	"B8":
+	{
+		"cyan": 0,
+		"magenta": 100,
+		"yellow": 55,
+		"black": 30
+	},
+	"B9":
+	{
+		"cyan": 42,
+		"magenta": 1,
+		"yellow": 100,
+		"black": 0
+	},
+	"B10":
+	{
+		"cyan": 60,
+		"magenta": 85,
+		"yellow": 0,
+		"black": 0
+	},
+	"B11":
+	{
+		"cyan": 100,
+		"magenta": 69,
+		"yellow": 0,
+		"black": 0
+	},
+	"B14":
+	{
+		"cyan": 9,
+		"magenta": 0,
+		"yellow": 0,
+		"black": 76
+	},
+	"B13":
+	{
+		"cyan": 0,
+		"magenta": 54,
+		"yellow": 100,
+		"black": 23
+	},
+	"B12":
+	{
+		"cyan": 81,
+		"magenta": 0,
+		"yellow": 82,
+		"black": 65
+	}
 }
 
