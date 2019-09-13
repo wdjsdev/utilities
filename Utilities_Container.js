@@ -1143,9 +1143,19 @@ var UI =
 		return result;
 	},
 
-	"listbox":function(parent,dimensions,children)
+	"image":function(parent,img,func)
 	{
-		var result = parent.add("listbox",dimensions,[]);
+		var result = parent.add("image", undefined, File(img));
+		if(func)
+		{
+			result.onClick = func;
+		}
+		return result;
+	},
+
+	"listbox":function(parent,dimensions,children,resourceString)
+	{
+		var result = parent.add("listbox",dimensions,[],resourceString);
 		if(children)
 		{
 			for(var x=0,len=children.length;x<len;x++)
