@@ -41,6 +41,7 @@
 
 		var centralLibraryFile = File(dataPath + "/central_library.js");
 		var btLibraryFile = File(dataPath + "/build_template_library.js");
+		var aaSpecialInstructionsFile = File(dataPath + "/aa_special_instructions.js");
 
 		var userPathRegex = /(^\/Users\/[^\/]*\/)|(^.*~\/)/i;
 
@@ -634,7 +635,8 @@ function coord(ppLay)
 function getCode(layName)
 {
 	var pat = /(.*)([-_][\d]{3,}([-_][a-z])?)/i;
-	return layName.match(pat)[1];
+	var result = layName.match(pat)[1];
+	return result.replace("_","-");
 }
 
 function getStyleNum(layName)
