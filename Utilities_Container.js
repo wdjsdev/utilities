@@ -636,7 +636,7 @@ function getCode(layName)
 {
 	var pat = /(.*)([-_][\d]{3,}([-_][a-z])?)/i;
 	var result = layName.match(pat)[1];
-	return result.replace("_","-");
+	return result.replace("FD_","FD-");
 }
 
 function getStyleNum(layName)
