@@ -635,8 +635,13 @@ function coord(ppLay)
 function getCode(layName)
 {
 	var pat = /(.*)([-_][\d]{3,}([-_][a-z])?)/i;
+	var underscorePat = /([fpb][dsm])[_]/i;
 	var result = layName.match(pat)[1];
-	return result.replace("FD_","FD-");
+	while(result.match(underscorePat))
+	{
+		result = result.replace(underscorePat,result.match(underscorePat)[1] + "-");
+	}
+	return result;
 }
 
 function getStyleNum(layName)
