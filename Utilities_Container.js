@@ -1644,6 +1644,18 @@ function trimSpaces(str)
 	return str;
 }
 
+//receive an array of strings and then trim the leading/trailing
+//spaces of each element and then return a cleaned up array.
+function trimSpacesArray(arr)
+{
+	var result = [];
+	for(var x=0,len=arr.length;x<len;x++)
+	{
+		result.push(trimSpaces(arr[x]));
+	}
+	return result;
+}
+
 //create and load a new action
 function createAction(name,actionString)
 {
