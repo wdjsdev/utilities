@@ -1120,6 +1120,10 @@ var UI =
 	{
 		return parent.add("group");
 	},
+	"panel":function(parent)
+	{
+		return parent.add("panel");
+	},
 
 	"checkbox":function(parent,txt,len)
 	{
