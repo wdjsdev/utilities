@@ -64,6 +64,8 @@
 var scriptLog = "";
 var errorLog = "";
 var templatesNeeded = "";
+
+//logDest is an array of file objects
 var logDest = [];
 var errorList = [];
 var messageList = [];
@@ -1690,6 +1692,94 @@ function removeAction(actionName)
 		{
 			localValid = false;
 		}
+	}
+}
+
+//curl data from a specified url and return the data as an anonymous object
+function curlData(url,arg)
+{
+	log.h("Beginning execution of curlData(" + url + "," + arg + ")");
+	var result;
+	var localDataFile = File(documentsPath + "curlData/curlData.txt");
+	var executor = File("/Volumes/Customization/Library/Scripts/Script Resources/curl_from_illustrator.app");
+
+	var scptText =
+		[
+			"do shell script ",
+			"\"curl \\\"" + url,
+			arg + "\\\" > \\\"",
+			localDataFile.fsName + "\\\"\""
+		];
+
+	var dataString = "";
+	for (var x = 0; x < scptText.length; x++)
+	{
+		dataString += scptText[x];
+	}
+
+	var scriptPath = documentsPath + "curlData/"
+	var scriptFolder = new Folder(scriptPath);
+	if(!scriptFolder.exists)
+	{
+		scriptFolder.create();
+	}
+	var scptFile = new File(scriptPath + "curl_from_illustrator.scpt");
+
+	scptFile.open("w");
+	scptFile.write(dataString);
+	scptFile.close();
+
+	localDataFile.open("w");
+	localDataFile.write("");
+	localDataFile.close();
+
+	try
+	{
+		executor.execute();
+	}
+	catch(e)
+	{
+		log.e("curlData executor failed..::e = " + e + "::url = " + url + "::arg = " + arg);
+		errorList.push("Failed to fetch the data from netsuite..");
+		return;
+	}
+
+	//try to read the data
+	var curTries = 0;
+	var maxTries = 60;
+	var dataProperlyWritten = false;
+	var delay = 50;
+
+	while(!dataProperlyWritten && curTries < maxTries)
+	{
+		localDataFile.open("r");
+		result = localDataFile.read();
+		localDataFile.close();
+
+		if(result !== "")
+		{
+			log.l("data found after " + curTries + " tries.");
+			log.l("execution took " + (curTries * delay) + " milliseconds");
+			dataProperlyWritten = true;
+		}
+		else
+		{
+			curTries++;
+			$.sleep(delay);
+		}
+	}
+
+	if(result.toLowerCase().indexOf("<html>") === -1)
+	{
+		log.l("Data looks correct.::result = " + result);
+		return JSON.parse(result);
+	}
+	else
+	{
+		log.e("Data returned was html code instead of a JSON object..::returning undefined.::data: " + result);
+		errorList.push("Incorrect data was returned. Please try again.");
+		result = undefined;
+		return result;
 	}
 }
 
