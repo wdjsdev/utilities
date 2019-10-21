@@ -27,6 +27,12 @@
 		var documentsPath = "/Volumes/Macintosh HD/Users/" + user + "/Documents/";
 		var documentsFolder = new Folder(documentsPath);
 
+		var libraryPath = "/Volumes/Customization/Library/";
+		var libraryFolder = new Folder(libraryPath);
+
+		var prepressPath = "/Volumes/Customization/Library/cads/prepress/";
+		var prepressFolder = new Folder(prepressPath);
+
 		var scriptsPath = "/Volumes/Customization/Library/Scripts/";
 		var scriptsFolder = new Folder(scriptsPath);
 
@@ -995,6 +1001,13 @@ function isTemplate(parent)
 	return result
 }
 
+function writeDatabase(dbPath,contents)
+{
+	var dbFile = File(dbPath)
+	dbFile.open("w");
+	dbFile.write(contents);
+	dbFile.close();
+}
 
 /*
 	Component Name: write_read_me_file
@@ -1229,6 +1242,7 @@ function uiPrompt(msg,title)
 		var topMsg = UI.static(w,msg);
 		var input = UI.edit(w,"");
 			input.characters = 20;
+			input.active = true;
 		var btnGroup = UI.group(w);
 			var cancel = UI.button(btnGroup,"Cancel",function()
 			{
@@ -1758,6 +1772,14 @@ function curlData(url,arg)
 
 		if(result !== "")
 		{
+			try
+			{
+				JSON.parse(result);
+			}
+			catch(e)
+			{
+				continue;
+			}
 			log.l("data found after " + curTries + " tries.");
 			log.l("execution took " + (curTries * delay) + " milliseconds");
 			dataProperlyWritten = true;
