@@ -64,7 +64,7 @@
 
 
 //stopwatch object for tracking task durations
-var stopwatch = function()
+var Stopwatch = function()
 {
 	this.startTime = 0;
 	this.endTime = 0;
@@ -99,6 +99,7 @@ var stopwatch = function()
 		return (this.endTime - this.startTime);
 	}
 }
+var timer = new Stopwatch();
 
 
 
