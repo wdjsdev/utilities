@@ -300,7 +300,6 @@ function printLog()
 {
 	var curTime = logTime();
 
-	
 	if(logDest.length > 0 && scriptLog !== "")
 	{
 		for(var x=0;x<logDest.length;x++)
@@ -330,23 +329,17 @@ function printLog()
 			thisDest.close();
 		}
 	}
+}
 
-	if(templatesNeeded != "")
-	{
-		missingTemplatesLog.open();
-		var contents = missingTemplatesLog.read();
-		missingTemplatesLog.close();
+function printSpecialtyLog(file,msg)
+{
+	file.open("r");
+	var contents = file.read();
+	file.close();
 
-		missingTemplatesLog.open("w");
-		var newStr = "";
-		newStr += curTime;
-		newStr += "The following converted template was not found when running " + scriptName + " script.\n";
-		newStr += templatesNeeded;
-		newStr += "\n";
-		var logString = contents + newStr;
-		missingTemplatesLog.write(logString);
-		missingTemplatesLog.close();
-	}
+	file.open("w");
+	file.write(contents + "\n" + msg);
+	file.close();
 }
 
 //string.toTitleCase() 
