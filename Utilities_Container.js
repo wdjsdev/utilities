@@ -100,6 +100,8 @@ var Stopwatch = function()
 	}
 }
 var timer = new Stopwatch();
+//initiate the start time
+timer.logStart();
 
 
 
