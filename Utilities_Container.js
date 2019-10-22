@@ -102,7 +102,11 @@ var Stopwatch = function()
 		this.endStepTime = new Date().getTime();
 		var stepDuration =  this.endStepTime - this.beginStepTime;
 		var msg = this.stepLabel + " step took " + stepDuration + " ms.";
-		return msg;
+		log.h(msg);
+	}
+	this.getElapsed = function()
+	{
+		return "Elapsed Time: " + (new Date().getTime() - this.startTime);
 	}
 	this.calculate = function()
 	{
@@ -119,7 +123,13 @@ timer.logStart();
 
 var scriptLog = "";
 var errorLog = "";
-var templatesNeeded = "";
+
+//urls for up to date netsuite data
+//used for 
+	//getting builder data for mockup building
+	//getting order data for prod file building
+var NOD = netsuiteOrderDataURL = "https://forms.na2.netsuite.com/app/site/hosting/scriptlet.nl?script=1477&deploy=1&compid=460511&h=2834dd5419b7c48fdba0&soid="
+var NBD = netsuiteBuilderDataURL = "https://forms.na2.netsuite.com/app/site/hosting/scriptlet.nl?script=908&deploy=1&compid=460511&h=940572c6865fbbe12e98&designId=";
 
 //logDest is an array of file objects
 var logDest = [];
@@ -179,8 +189,8 @@ function getLogDest(user,scriptName)
 	{
 		userLogFolder.create();
 	}
-	var scriptLogFile = File(userLogPath + scriptName);
-	
+	var scriptLogFile = File(userLogPath + scriptName + ".txt");
+	return scriptLogFile;
 }
 
 
