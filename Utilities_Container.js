@@ -18,32 +18,42 @@
 	} else {
 		// MAC
 		var user = $.getenv("USER")
+
 		var homeFolderPath = "/Volumes/Macintosh HD/Users/" + user;
 		var homeFolder = new Folder(homeFolderPath);
 
-		var desktopPath = "/Volumes/Macintosh HD/Users/" + user + "/Desktop/";
+		var customizationPath = "/Volumes/Customization/";
+		var customizationFolder = new Folder(customizationPath);
+
+
+
+
+		var desktopPath = homeFolderPath + "/Desktop/";
 		var desktopFolder = new Folder(desktopPath);
 
-		var documentsPath = "/Volumes/Macintosh HD/Users/" + user + "/Documents/";
+		var documentsPath = homeFolderPath + "/Documents/";
 		var documentsFolder = new Folder(documentsPath);
 
-		var libraryPath = "/Volumes/Customization/Library/";
+		var libraryPath = customizationPath + "Library/";
 		var libraryFolder = new Folder(libraryPath);
 
-		var prepressPath = "/Volumes/Customization/Library/cads/prepress/";
+		var prepressPath = libraryPath + "cads/prepress/";
 		var prepressFolder = new Folder(prepressPath);
 
-		var scriptsPath = "/Volumes/Customization/Library/Scripts/";
+		var scriptsPath = libraryPath + "Scripts/";
 		var scriptsFolder = new Folder(scriptsPath);
 
-		var resourcePath = scriptsFolder.fsName + "/Script Resources/";
-		var resourceFolder = Folder(resourcePath);
+		var resourcePath = scriptsPath + "/Script Resources/";
+		var resourceFolder = new Folder(resourcePath);
 
-		var componentsPath = resourceFolder.fsName + "/components/";
-		var componentsFolder = Folder(componentsPath);
+		var componentsPath = resourcePath + "/components/";
+		var componentsFolder = new Folder(componentsPath);
 
-		var dataPath = resourceFolder.fsName + "/Data/";
-		var dataFolder = Folder(dataPath);
+		var dataPath = resourcePath + "/Data/";
+		var dataFolder = new Folder(dataPath);
+
+		var logsPath = dataPath + ".script_logs/";
+		var logsFolder = new Folder(logsPath);
 
 		var centralLibraryFile = File(dataPath + "/central_library.js");
 		var btLibraryFile = File(dataPath + "/build_template_library.js");
@@ -161,7 +171,17 @@ var beginProcMsgString = beginProcMsg.join("\n");
 
 
 
-
+function getLogDest(user,scriptName)
+{
+	var userLogPath = logsPath + user + "/";
+	var userLogFolder = Folder(userLogPath);
+	if(!userLogFolder.exists)
+	{
+		userLogFolder.create();
+	}
+	var scriptLogFile = File(userLogPath + scriptName);
+	
+}
 
 
 
