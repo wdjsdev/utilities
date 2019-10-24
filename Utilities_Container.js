@@ -1,5 +1,15 @@
+//array.indexOf prototype
+Array.prototype.indexOf=function(a,b,c){for(c=this.length,b=(c+~~b)%c;b<c&&(!(b in this)||this[b]!==a);b++);return b^c?b:-1;}
 
-
+//list of dr users
+var DR_USERS = 
+[
+	"acacio.sabino",
+	"juan.garabito",
+	"medelyn.tavarez",
+	"rafael.nolasco",
+	"nicolas.nicasio"
+]
 
 
 
@@ -22,7 +32,14 @@
 		var homeFolderPath = "/Volumes/Macintosh HD/Users/" + user;
 		var homeFolder = new Folder(homeFolderPath);
 
-		var customizationPath = "/Volumes/Customization/";
+		if(DR_USERS.indexOf(user)>-1)
+		{
+			var customizationPath = "/Volumes/CustomizationDR/";
+		}
+		else
+		{
+			var customizationPath = "/Volumes/Customization/";
+		}
 		var customizationFolder = new Folder(customizationPath);
 
 
@@ -71,6 +88,8 @@
 
 		
 	}
+
+
 
 
 //stopwatch object for tracking task durations
@@ -128,7 +147,11 @@ var errorLog = "";
 //used for 
 	//getting builder data for mockup building
 	//getting order data for prod file building
-var NOD = netsuiteOrderDataURL = "https://forms.na2.netsuite.com/app/site/hosting/scriptlet.nl?script=1477&deploy=1&compid=460511&h=2834dd5419b7c48fdba0&soid="
+
+//old version of netsuite order data url. adam g says use the new one below..
+//this one has been working fine domestically, but the new one supposedly works better in the DR???
+// var NOD = netsuiteOrderDataURL = "https://forms.na2.netsuite.com/app/site/hosting/scriptlet.nl?script=1477&deploy=1&compid=460511&h=2834dd5419b7c48fdba0&soid="
+var NOD = netsuiteOrderDataURL = "https://460511.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1477&deploy=1&compid=460511&h=2834dd5419b7c48fdba0&soid=";
 var NBD = netsuiteBuilderDataURL = "https://forms.na2.netsuite.com/app/site/hosting/scriptlet.nl?script=908&deploy=1&compid=460511&h=940572c6865fbbe12e98&designId=";
 
 //logDest is an array of file objects
@@ -359,8 +382,7 @@ String.prototype.toTitleCase = function () {
 eval("@JSXBIN@ES@2.0@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");
 
 
-//array.indexOf prototype
-Array.prototype.indexOf=function(a,b,c){for(c=this.length,b=(c+~~b)%c;b<c&&(!(b in this)||this[b]!==a);b++);return b^c?b:-1;}
+
 
 //get unique from array
 //pass in an array and this function
