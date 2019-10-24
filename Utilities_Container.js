@@ -1778,7 +1778,7 @@ function curlData(url,arg)
 	log.h("Beginning execution of curlData(" + url + "," + arg + ")");
 	var result;
 	var localDataFile = File(documentsPath + "curlData/curlData.txt");
-	var executor = File("/Volumes/Customization/Library/Scripts/Script Resources/curl_from_illustrator.app");
+	var executor = File(resourcePath + "/curl_from_illustrator.app");
 
 	var scptText =
 		[
@@ -1787,12 +1787,7 @@ function curlData(url,arg)
 			arg + "\\\" > \\\"",
 			localDataFile.fsName + "\\\"\""
 		];
-
-	var dataString = "";
-	for (var x = 0; x < scptText.length; x++)
-	{
-		dataString += scptText[x];
-	}
+	var dataString = scptText.join("");
 
 	var scriptPath = documentsPath + "curlData/"
 	var scriptFolder = new Folder(scriptPath);
@@ -1823,9 +1818,11 @@ function curlData(url,arg)
 
 	//try to read the data
 	var curTries = 0;
-	var maxTries = 60;
+	var maxTries = 600;
 	var dataProperlyWritten = false;
-	var delay = 50;
+	var delay = 100;
+	var parsedJSON;
+	var htmlRegex = /<html>/gmi;
 
 	while(!dataProperlyWritten && curTries < maxTries)
 	{
@@ -1833,11 +1830,11 @@ function curlData(url,arg)
 		result = localDataFile.read();
 		localDataFile.close();
 
-		if(result !== "")
+		if(result !== "" && !htmlRegex.test(result))
 		{
 			try
 			{
-				JSON.parse(result);
+				parsedJSON = JSON.parse(result);
 			}
 			catch(e)
 			{
@@ -1854,18 +1851,8 @@ function curlData(url,arg)
 		}
 	}
 
-	if(result.toLowerCase().indexOf("<html>") === -1)
-	{
-		log.l("Data looks correct.::result = " + result);
-		return JSON.parse(result);
-	}
-	else
-	{
-		log.e("Data returned was html code instead of a JSON object..::returning undefined.::data: " + result);
-		errorList.push("Incorrect data was returned. Please try again.");
-		result = undefined;
-		return result;
-	}
+	return parsedJSON;
+
 }
 
 
