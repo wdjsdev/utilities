@@ -11,7 +11,8 @@ var DR_USERS =
 	"nicolas.nicasio"
 ]
 
-
+//boolean to determine whether to use the CustomizationDR drive for testing.
+var spoofDRUser = false;
 
 
 //Network Storage. Production version
@@ -32,7 +33,7 @@ var DR_USERS =
 		var homeFolderPath = "/Volumes/Macintosh HD/Users/" + user;
 		var homeFolder = new Folder(homeFolderPath);
 
-		if(DR_USERS.indexOf(user)>-1)
+		if(DR_USERS.indexOf(user)>-1 || (spoofDRUser && user === "will.dowling"))
 		{
 			var customizationPath = "/Volumes/CustomizationDR/";
 		}
