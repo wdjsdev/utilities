@@ -11,6 +11,13 @@ var DR_USERS =
 	"nicolas.nicasio"
 ];
 
+if(typeof scriptName === "undefined")
+{
+	//no scriptName variable existed. create one.
+	var scriptName = $.fileName;
+	scriptName = scriptName.substring(scriptName.lastIndexOf("/")+1,scriptName.lastIndexOf("."));
+	scriptName = scriptName.toLowerCase();
+}
 
 
 
@@ -1927,6 +1934,41 @@ var CLEANUP_SWATCHES_ACTION_STRING =
 	"	}",
 	"}"
 	]
+
+var UNLOCK_GUIDES_ACTION_STRING = [
+	"/version 3",
+	"/name [ 13",
+	"	756e6c6f636b5f677569646573",
+	"]",
+	"/isOpen 1",
+	"/actionCount 1",
+	"/action-1 {",
+	"	/name [ 13",
+	"		756e6c6f636b5f677569646573",
+	"	]",
+	"	/keyIndex 0",
+	"	/colorIndex 0",
+	"	/isOpen 1",
+	"	/eventCount 1",
+	"	/event-1 {",
+	"		/useRulersIn1stQuadrant 0",
+	"		/internalName (adobe_lockGuide)",
+	"		/localizedName [ 11",
+	"			4c6f636b20477569646573",
+	"		]",
+	"		/isOpen 1",
+	"		/isOn 1",
+	"		/hasDialog 0",
+	"		/parameterCount 1",
+	"		/parameter-1 {",
+	"			/key 1819239275",
+	"			/showInPalette 4294967295",
+	"			/type (boolean)",
+	"			/value 0",
+	"		}",
+	"	}",
+	"}"
+]
 
 //
 //action string arrays
