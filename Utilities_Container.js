@@ -9,86 +9,103 @@ var DR_USERS =
 	"medelyn.tavarez",
 	"rafael.nolasco",
 	"nicolas.nicasio"
-]
+];
 
-//boolean to determine whether to use the CustomizationDR drive for testing.
-var spoofDRUser = false;
+
 
 
 //Network Storage. Production version
+var networkPath;
+if($.os.match('Windows'))
+{
+	alert("Sorry. The scripts aren't designed to work with a PC");
+	valid = false;
+}
 
-	if($.os.match('Windows')){
-		//PC
-		var user = $.getenv("USERNAME")
-		var centralLog = new File("N:\\Library\\Scripts\\Script Resources\\Data\\.script_logs\\central_log.txt");
-		var importantLog = new File("N:\\Library\\Scripts\\Script Resources\\Data\\.script_logs\\important_log.txt");
-		var centralErrorLog = new File("N:\\Library\\Scripts\\Script Resources\\Data\\.script_logs\\error_log.txt");
-		var missingTemplatesLog = new File("N:\\Library\\Scripts\\Script Resources\\Data\\.script_longs\\converted_templates_needed.txt");
+// MAC
+var user = $.getenv("USER")
 
-		
-	} else {
-		// MAC
-		var user = $.getenv("USER")
+var homeFolderPath = "/Volumes/Macintosh HD/Users/" + user;
+var homeFolder = new Folder(homeFolderPath);
 
-		var homeFolderPath = "/Volumes/Macintosh HD/Users/" + user;
-		var homeFolder = new Folder(homeFolderPath);
-
-		if(DR_USERS.indexOf(user)>-1 || (spoofDRUser && user === "will.dowling"))
-		{
-			var customizationPath = "/Volumes/CustomizationDR/";
-		}
-		else
-		{
-			var customizationPath = "/Volumes/Customization/";
-		}
-		var customizationFolder = new Folder(customizationPath);
+//boolean to determine whether to use the CustomizationDR drive for testing.
+var spoofDRUser = false;
+if(DR_USERS.indexOf(user)>-1 || (spoofDRUser && user === "will.dowling"))
+{
+	var customizationPath = "/Volumes/CustomizationDR/";
+}
+else
+{
+	var customizationPath = "/Volumes/Customization/";
+}
+var customizationFolder = new Folder(customizationPath);
 
 
 
 
-		var desktopPath = homeFolderPath + "/Desktop/";
-		var desktopFolder = new Folder(desktopPath);
+var desktopPath = homeFolderPath + "/Desktop/";
+var desktopFolder = new Folder(desktopPath);
 
-		var documentsPath = homeFolderPath + "/Documents/";
-		var documentsFolder = new Folder(documentsPath);
+var documentsPath = homeFolderPath + "/Documents/";
+var documentsFolder = new Folder(documentsPath);
 
-		var libraryPath = customizationPath + "Library/";
-		var libraryFolder = new Folder(libraryPath);
+var libraryPath = customizationPath + "Library/";
+var libraryFolder = new Folder(libraryPath);
 
-		var prepressPath = libraryPath + "cads/prepress/";
-		var prepressFolder = new Folder(prepressPath);
+var prepressPath = libraryPath + "cads/prepress/";
+var prepressFolder = new Folder(prepressPath);
 
-		var scriptsPath = libraryPath + "Scripts/";
-		var scriptsFolder = new Folder(scriptsPath);
+var scriptsPath = libraryPath + "Scripts/";
+var scriptsFolder = new Folder(scriptsPath);
 
-		var resourcePath = scriptsPath + "/Script Resources/";
-		var resourceFolder = new Folder(resourcePath);
+var resourcePath = scriptsPath + "/Script Resources/";
+var resourceFolder = new Folder(resourcePath);
 
-		var componentsPath = resourcePath + "/components/";
-		var componentsFolder = new Folder(componentsPath);
+var componentsPath = resourcePath + "/components/";
+var componentsFolder = new Folder(componentsPath);
 
-		var dataPath = resourcePath + "/Data/";
-		var dataFolder = new Folder(dataPath);
+var dataPath = resourcePath + "/Data/";
+var dataFolder = new Folder(dataPath);
 
-		var logsPath = dataPath + ".script_logs/";
-		var logsFolder = new Folder(logsPath);
+var logsPath = dataPath + ".script_logs/";
+var logsFolder = new Folder(logsPath);
 
-		var centralLibraryFile = File(dataPath + "/central_library.js");
-		var btLibraryFile = File(dataPath + "/build_template_library.js");
-		var aaSpecialInstructionsFile = File(dataPath + "/aa_special_instructions.js");
+var centralLibraryFile = File(dataPath + "/central_library.js");
+var btLibraryFile = File(dataPath + "/build_template_library.js");
+var aaSpecialInstructionsFile = File(dataPath + "/aa_special_instructions.js");
 
-		var userPathRegex = /(^\/Users\/[^\/]*\/)|(^.*~\/)/i;
+var userPathRegex = /(^\/Users\/[^\/]*\/)|(^.*~\/)/i;
 
-		//log files
-		var centralLog = new File("/Volumes/Customization/Library/Scripts/Script Resources/Data/.script_logs/central_log.txt");
-		var importantLog = new File("/Volumes/Customization/Library/Scripts/Script Resources/Data/.script_logs/important_log.txt");
-		var centralErrorLog = new File("/Volumes/Customization/Library/Scripts/Script Resources/Data/.script_logs/error_log.txt");
-		var buildMockLog = new File("/Volumes/Customization/Library/Scripts/Script Resources/Data/.script_logs/mockup_builder_log.txt");
-		var missingTemplatesLog = new File("/Volumes/Customization/Library/Scripts/Script Resources/Data/.script_logs/converted_templates_needed.txt");
-		var changeCodeLog = new File("/Volumes/Customization/Library/Scripts/Script Resources/Data/.script_logs/change_code_log.txt");
 
-		
-	}
+//
+//deprecated
+//
+//logs will now be placed into individual user folders
+//instead of having one central log file for each script.
+//
+//log files
+var centralLog = new File("/Volumes/Customization/Library/Scripts/Script Resources/Data/.script_logs/central_log.txt");
+var importantLog = new File("/Volumes/Customization/Library/Scripts/Script Resources/Data/.script_logs/important_log.txt");
+var centralErrorLog = new File("/Volumes/Customization/Library/Scripts/Script Resources/Data/.script_logs/error_log.txt");
+var buildMockLog = new File("/Volumes/Customization/Library/Scripts/Script Resources/Data/.script_logs/mockup_builder_log.txt");
+var missingTemplatesLog = new File("/Volumes/Customization/Library/Scripts/Script Resources/Data/.script_logs/converted_templates_needed.txt");
+var changeCodeLog = new File("/Volumes/Customization/Library/Scripts/Script Resources/Data/.script_logs/change_code_log.txt");
+//
+//deprecated
+//
+
+
+//
+//Netsuite URLs
+//
+//sales order data for prod file building
+var NOD = netsuiteOrderDataURL = "https://460511.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1477&deploy=1&compid=460511&h=2834dd5419b7c48fdba0&soid=";
+//old version of netsuite order data url. adam g says use the new one below..
+//this one has been working fine domestically, but the new one supposedly works better in the DR???
+// var NOD = netsuiteOrderDataURL = "https://forms.na2.netsuite.com/app/site/hosting/scriptlet.nl?script=1477&deploy=1&compid=460511&h=2834dd5419b7c48fdba0&soid="
+
+//builder data for mockup building
+var NBD = netsuiteBuilderDataURL = "https://forms.na2.netsuite.com/app/site/hosting/scriptlet.nl?script=908&deploy=1&compid=460511&h=940572c6865fbbe12e98&designId=";
 
 
 
@@ -98,8 +115,8 @@ var Stopwatch = function()
 {
 	this.startTime = 0;
 	this.endTime = 0;
-	this.beginStepTime = 0;
-	this.endStepTime = 0;
+	this.taskStart = 0;
+	this.taskEnd = 0;
 	this.stepLabel = "";
 
 	this.logStart = function()
@@ -112,17 +129,17 @@ var Stopwatch = function()
 		var curDate = new Date();
 		this.endTime = curDate.getTime();
 	}
-	this.beginStep = function(label)
+	this.beginTask = function(label)
 	{
 		this.stepLabel = label;
-		this.beginStepTime = new Date().getTime();
+		this.taskStart = new Date().getTime();
 	}
-	this.endStep = function()
+	this.endTask = function()
 	{
-		this.endStepTime = new Date().getTime();
-		var stepDuration =  this.endStepTime - this.beginStepTime;
+		this.taskEnd = new Date().getTime();
+		var stepDuration =  this.taskEnd - this.taskStart;
 		var msg = this.stepLabel + " step took " + stepDuration + " ms.";
-		log.h(msg);
+		log.l(msg);
 	}
 	this.getElapsed = function()
 	{
@@ -133,10 +150,15 @@ var Stopwatch = function()
 		return (this.endTime - this.startTime);
 	}
 }
-var timer = new Stopwatch();
+var scriptTimer = new Stopwatch();
 //initiate the start time
-timer.logStart();
+scriptTimer.logStart();
 
+
+
+//
+//LOGGING
+//
 
 
 //Global variables
@@ -144,68 +166,44 @@ timer.logStart();
 var scriptLog = "";
 var errorLog = "";
 
-//urls for up to date netsuite data
-//used for 
-	//getting builder data for mockup building
-	//getting order data for prod file building
-
-//old version of netsuite order data url. adam g says use the new one below..
-//this one has been working fine domestically, but the new one supposedly works better in the DR???
-// var NOD = netsuiteOrderDataURL = "https://forms.na2.netsuite.com/app/site/hosting/scriptlet.nl?script=1477&deploy=1&compid=460511&h=2834dd5419b7c48fdba0&soid="
-var NOD = netsuiteOrderDataURL = "https://460511.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1477&deploy=1&compid=460511&h=2834dd5419b7c48fdba0&soid=";
-var NBD = netsuiteBuilderDataURL = "https://forms.na2.netsuite.com/app/site/hosting/scriptlet.nl?script=908&deploy=1&compid=460511&h=940572c6865fbbe12e98&designId=";
-
-//logDest is an array of file objects
-var logDest = [];
 var errorList = [];
 var messageList = [];
 
+var logDest = [];
 
 
+var beginScriptMsg = [
 
-var beginScriptMsg = ["!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",
-"******************************************************************************",
-"`7MM\"\"\"Yp, `7MM\"\"\"YMM    .g8\"\"\"bgd `7MMF'`7MN.   `7MF'    `7MMF'        .g8\"\"8q.     .g8\"\"\"bgd  ",
-"  MM    Yb   MM    `7  .dP'     `M   MM    MMN.    M        MM        .dP'    `YM. .dP'     `M  ",
-"  MM    dP   MM   d    dM'       `   MM    M YMb   M        MM        dM'      `MM dM'       `  ",
-"  MM\"\"\"bg.   MMmmMM    MM            MM    M  `MN. M        MM        MM        MM MM           ",
-"  MM    `Y   MM   Y  , MM.    `7MMF' MM    M   `MM.M        MM      , MM.      ,MP MM.    `7MMF'",
-"  MM    ,9   MM     ,M `Mb.     MM   MM    M     YMM        MM     ,M `Mb.    ,dP' `Mb.     MM  ",
-".JMMmmmd9  .JMMmmmmMMM   `\"bmmmdPY .JMML..JML.    YM      .JMMmmmmMMM   `\"bmmd\"'     `\"bmmmdPY  ",
-"******************************************************************************",
-"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"];
+	"////////////////////////////////////////////////////",
+	"**********************BEGIN*************************",
+	"****************" + scriptName + "*******************",
+	"////////////////////////////////////////////////////",
+	"",
+	"***User: " + user + "***",
+	""
+];
 
 
-var endScriptMsg = ["!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",
-"******************************************************************************",
-"`7MM\"\"\"YMM  `7MN.   `7MF'`7MM\"\"\"Yb.       `7MMF'        .g8\"\"8q.     .g8\"\"\"bgd ",
-"  MM    `7    MMN.    M    MM    `Yb.       MM        .dP'    `YM. .dP'     `M  ",
-"  MM   d      M YMb   M    MM     `Mb       MM        dM'      `MM dM'       `  ",
-"  MMmmMM      M  `MN. M    MM      MM       MM        MM        MM MM           ",
-"  MM   Y  ,   M   `MM.M    MM     ,MP       MM      , MM.      ,MP MM.    `7MMF'",
-"  MM     ,M   M     YMM    MM    ,dP'       MM     ,M `Mb.    ,dP' `Mb.     MM  ",
-".JMMmmmmMMM .JML.    YM  .JMMmmmdP'       .JMMmmmmMMM   `\"bmmd\"'     `\"bmmmdPY  ",
-"******************************************************************************",
-"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"];
-
-var beginProcMsg = [
-"****   *****   ***    *****  *    *",
-"*   *  *      *         *    **   *",
-"****   ****   *  ***    *    * *  *",
-"*   *  *      *   *     *    *  * *",
-"****   *****   ***    *****  *   **",
-]
-
+var endScriptMsg = [
+	"////////////////////////////////////////////////////",
+	"***********************END**************************",
+	"****************" + scriptName + "*******************",
+	"////////////////////////////////////////////////////",
+	"",
+	"",
+	"",
+	""
+];
 
 var beginScriptString = beginScriptMsg.join("\n")
 var endScriptString = endScriptMsg.join("\n");
-var beginProcMsgString = beginProcMsg.join("\n");
 
+function initLog()
+{
+	
+}
 
-
-
-
-function getLogDest(user,scriptName)
+function getLogDest()
 {
 	var userLogPath = logsPath + user + "/";
 	var userLogFolder = Folder(userLogPath);
@@ -216,12 +214,6 @@ function getLogDest(user,scriptName)
 	var scriptLogFile = File(userLogPath + scriptName + ".txt");
 	return scriptLogFile;
 }
-
-
-
-
-
-
 
 function logTime()
 {
@@ -365,6 +357,21 @@ function printSpecialtyLog(file,msg)
 	file.write(contents + "\n" + msg);
 	file.close();
 }
+
+
+//
+//END LOGGING
+//
+
+
+
+
+
+
+
+
+
+
 
 //string.toTitleCase() 
 //prototype function to convert entire string to titlecase
