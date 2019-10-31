@@ -65,20 +65,24 @@ var prepressFolder = new Folder(prepressPath);
 var scriptsPath = libraryPath + "Scripts/";
 var scriptsFolder = new Folder(scriptsPath);
 
-var resourcePath = scriptsPath + "/Script Resources/";
+var resourcePath = scriptsPath + "Script Resources/";
 var resourceFolder = new Folder(resourcePath);
 
-var componentsPath = resourcePath + "/components/";
+var componentsPath = resourcePath + "components/";
 var componentsFolder = new Folder(componentsPath);
 
-var dataPath = resourcePath + "/Data/";
+var dataPath = resourcePath + "Data/";
 var dataFolder = new Folder(dataPath);
 
 var logsPath = dataPath + ".script_logs/";
 var logsFolder = new Folder(logsPath);
 
-var centralLibraryFile = File(dataPath + "/central_library.js");
-var btLibraryFile = File(dataPath + "/build_template_library.js");
+var centralLibraryPath = dataPath + "central_library.js";
+var centralLibraryFile = File(centralLibraryPath);
+
+var btLibraryPath = dataPath + "build_template_library.js";
+var btLibraryFile = File(btLibraryPath);
+
 var aaSpecialInstructionsFile = File(dataPath + "/aa_special_instructions.js");
 
 var userPathRegex = /(^\/Users\/[^\/]*\/)|(^.*~\/)/i;
@@ -720,7 +724,7 @@ function coord(ppLay)
 
 function getCode(layName)
 {
-	var pat = /(.*)([-_][\d]{3,}([-_][a-z])?)/i;
+	var pat = /(.*)([-_][a-z\d]{3,}([-_][a-z])?)/i;
 	var underscorePat = /([fpb][dsm])[_]/i;
 	var result = layName.match(pat)[1];
 	while(result.match(underscorePat))
@@ -732,7 +736,7 @@ function getCode(layName)
 
 function getStyleNum(layName)
 {
-	var pat = /(.*)[-_]([\d]{3,}([-_][a-z])?)/i;
+	var pat = /(.*)[-_]([a-z\d]{3,}([-_][a-z])?)/i;
 	return layName.match(pat)[2];
 }
 
