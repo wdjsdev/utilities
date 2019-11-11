@@ -59,6 +59,9 @@ var documentsFolder = new Folder(documentsPath);
 var libraryPath = customizationPath + "Library/";
 var libraryFolder = new Folder(libraryPath);
 
+var graphicsPath = libraryPath + "Graphics/";
+var graphicsFolder = new Folder(graphicsPath);
+
 var prepressPath = libraryPath + "cads/prepress/";
 var prepressFolder = new Folder(prepressPath);
 
@@ -2093,9 +2096,9 @@ var BUILDER_COLOR_CODES = {
 	"DG" : "Dark Green B",
 	"FLM" : "FLAME B",
 	"FL" : "Flesh B",
-	"FO" : "FLUORESCENT ORANGE B",
-	"FY" : "FLUORESCENT YELLOW B",
-	"FP" : "FLUORESCENT PINK B",
+	"FO" : "FLO ORANGE B",
+	"FY" : "FLO YELLOW B",
+	"FP" : "FLO PINK B",
 	"GD" : "Gold B",
 	"GY" : "Gray B",
 	"HP" : "Hot Pink B",
