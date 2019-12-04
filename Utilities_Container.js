@@ -71,6 +71,9 @@ var scriptsFolder = new Folder(scriptsPath);
 var resourcePath = scriptsPath + "Script Resources/";
 var resourceFolder = new Folder(resourcePath);
 
+var imagesPath = resourcePath + "Images/";
+var imagesFolder = new Folder(imagesPath);
+
 var componentsPath = resourcePath + "components/";
 var componentsFolder = new Folder(componentsPath);
 
@@ -1580,6 +1583,29 @@ function makeNewSpotColor(name,colorType,colorValue,tint)
 {
 	var doc = app.activeDocument;
 	var swatches = doc.swatches;
+	
+	if(!colorType)
+	{
+		colorType = "CMYK"
+	}
+	if(!colorValue)
+	{
+		try
+		{
+			colorValue = BOOMBAH_APPROVED_COLOR_VALUES[name];
+		}
+		catch(e)
+		{
+			colorValue =
+			{
+				"cyan": 12,
+				"magenta": 30,
+				"yellow": 84,
+				"black": 5
+			}
+		}
+	}
+
 	var newSpotSwatch;
 	try
 	{
@@ -1611,6 +1637,80 @@ function makeNewSpotColor(name,colorType,colorValue,tint)
 		}
 	}
 	return newSpotSwatch;
+}
+
+function mergeSwatches(oldSwatchName,newSwatchName)
+{
+	var doc = app.activeDocument;
+	var renameSuccess = false;	
+	var swatchGroup;
+	var overlappingSwatches = false;
+	var swatch = makeNewSpotColor(oldSwatchName);
+	try
+	{
+		swatch.name = newSwatchName;
+		renameSuccess = true;
+	}
+	catch(e)
+	{
+		var counter = 2;
+		while(!renameSuccess && counter < 22)
+		{
+			try
+			{
+				swatch.name = newSwatchName + counter;
+				renameSuccess = true;
+				overlappingSwatches = true;
+				counter++;
+			}
+			catch(e)
+			{
+				counter++;
+			}
+		}
+	}
+
+	if(overlappingSwatches)
+	{
+		for(var x=0,len=doc.swatchGroups.length;x<len;x++)
+		{
+			if(doc.swatchGroups[x].name === newSwatchName)
+			{
+				swatchGroup = doc.swatchGroups[x];
+				break;
+			}
+		}
+
+		if(!swatchGroup)
+		{
+			swatchGroup = doc.swatchGroups.add();
+			swatchGroup.name = newSwatchName;
+		}
+
+		swatchGroup.addSwatch(doc.swatches[newSwatchName]);
+		swatchGroup.addSwatch(swatch);
+	}
+
+
+	var newColorValues;
+	newColorValues = BOOMBAH_APPROVED_COLOR_VALUES[newSwatchName];
+
+	if(!newColorValues)
+	{
+		errorList.push("Failed to find color values in the database for " + newSwatchName);
+		errorList.push("Please recolor the " + newSwatchName + " swatch manually.");
+		newColorValues = {
+			"cyan": 100,
+			"magenta": 100,
+			"yellow": 100,
+			"black": 100
+		}
+	}
+
+	for(var color in swatch.color.spot.color)
+	{
+		swatch.color.spot.color[color] = newColorValues[color];
+	}
 }
 
 //this function assumes that a clipping mask
@@ -1877,6 +1977,15 @@ function curlData(url,arg)
 
 }
 
+function updateSwatchColor(swatch,name,colors)
+{
+	swatch.name = name;
+	for(var color in swatch.color.spot.color)
+	{
+		swatch.color.spot.color[color] = colors[color];
+	}
+}
+
 
 //
 //action string arrays
@@ -1976,6 +2085,166 @@ var UNLOCK_GUIDES_ACTION_STRING = [
 	"	}",
 	"}"
 ]
+
+var GRAPHIC_STYLE_FROM_SELECTION_ACTION_STRING = 
+	[
+		"/version 3",
+		"/name [ 28",
+		"	677261706869635f7374796c655f66726f6d5f73656c656374696f6e",
+		"]",
+		"/isOpen 1",
+		"/actionCount 1",
+		"/action-1 {",
+		"	/name [ 28",
+		"		677261706869635f7374796c655f66726f6d5f73656c656374696f6e",
+		"	]",
+		"	/keyIndex 0",
+		"	/colorIndex 0",
+		"	/isOpen 1",
+		"	/eventCount 3",
+		"	/event-1 {",
+		"		/useRulersIn1stQuadrant 0",
+		"		/internalName (ai_plugin_styles)",
+		"		/localizedName [ 14",
+		"			47726170686963205374796c6573",
+		"		]",
+		"		/isOpen 0",
+		"		/isOn 1",
+		"		/hasDialog 0",
+		"		/parameterCount 1",
+		"		/parameter-1 {",
+		"			/key 1835363957",
+		"			/showInPalette 4294967295",
+		"			/type (enumerated)",
+		"			/name [ 17",
+		"				53656c65637420416c6c20556e75736564",
+		"			]",
+		"			/value 14",
+		"		}",
+		"	}",
+		"	/event-2 {",
+		"		/useRulersIn1stQuadrant 0",
+		"		/internalName (ai_plugin_styles)",
+		"		/localizedName [ 14",
+		"			47726170686963205374796c6573",
+		"		]",
+		"		/isOpen 0",
+		"		/isOn 1",
+		"		/hasDialog 1",
+		"		/showDialog 0",
+		"		/parameterCount 1",
+		"		/parameter-1 {",
+		"			/key 1835363957",
+		"			/showInPalette 4294967295",
+		"			/type (enumerated)",
+		"			/name [ 20",
+		"				44656c6574652047726170686963205374796c65",
+		"			]",
+		"			/value 3",
+		"		}",
+		"	}",
+		"	/event-3 {",
+		"		/useRulersIn1stQuadrant 0",
+		"		/internalName (ai_plugin_styles)",
+		"		/localizedName [ 14",
+		"			47726170686963205374796c6573",
+		"		]",
+		"		/isOpen 0",
+		"		/isOn 1",
+		"		/hasDialog 1",
+		"		/showDialog 0",
+		"		/parameterCount 1",
+		"		/parameter-1 {",
+		"			/key 1835363957",
+		"			/showInPalette 4294967295",
+		"			/type (enumerated)",
+		"			/name [ 17",
+		"				4e65772047726170686963205374796c65",
+		"			]",
+		"			/value 1",
+		"		}",
+		"	}",
+		"}",
+	];
+
+var CLEAR_APPEARANCE_ACTION_STRING = 
+	[
+		"/version 3",
+		"/name [ 16",
+		"	636c6561725f617070656172616e6365",
+		"]",
+		"/isOpen 1",
+		"/actionCount 1",
+		"/action-1 {",
+		"	/name [ 16",
+		"		636c6561725f617070656172616e6365",
+		"	]",
+		"	/keyIndex 0",
+		"	/colorIndex 0",
+		"	/isOpen 1",
+		"	/eventCount 1",
+		"	/event-1 {",
+		"		/useRulersIn1stQuadrant 0",
+		"		/internalName (ai_plugin_appearance)",
+		"		/localizedName [ 10",
+		"			417070656172616e6365",
+		"		]",
+		"		/isOpen 0",
+		"		/isOn 1",
+		"		/hasDialog 0",
+		"		/parameterCount 1",
+		"		/parameter-1 {",
+		"			/key 1835363957",
+		"			/showInPalette 4294967295",
+		"			/type (enumerated)",
+		"			/name [ 16",
+		"				436c65617220417070656172616e6365",
+		"			]",
+		"			/value 6",
+		"		}",
+		"	}",
+		"}",
+	];
+
+var ADD_NEW_FILL_ACTION_STRING = 
+	[
+		"/version 3",
+		"/name [ 12",
+		"	6164645f6e65775f66696c6c",
+		"]",
+		"/isOpen 1",
+		"/actionCount 1",
+		"/action-1 {",
+		"	/name [ 12",
+		"		6164645f6e65775f66696c6c",
+		"	]",
+		"	/keyIndex 0",
+		"	/colorIndex 0",
+		"	/isOpen 1",
+		"	/eventCount 1",
+		"	/event-1 {",
+		"		/useRulersIn1stQuadrant 0",
+		"		/internalName (ai_plugin_appearance)",
+		"		/localizedName [ 10",
+		"			417070656172616e6365",
+		"		]",
+		"		/isOpen 1",
+		"		/isOn 1",
+		"		/hasDialog 0",
+		"		/parameterCount 1",
+		"		/parameter-1 {",
+		"			/key 1835363957",
+		"			/showInPalette 4294967295",
+		"			/type (enumerated)",
+		"			/name [ 12",
+		"				416464204e65772046696c6c",
+		"			]",
+		"			/value 1",
+		"		}",
+		"	}",
+		"}"
+	]
+
 
 //
 //action string arrays
@@ -2100,21 +2369,21 @@ var BUILDER_COLOR_CODES = {
 	"FY" : "FLO YELLOW B",
 	"FP" : "FLO PINK B",
 	"GD" : "Gold B",
-	"GY" : "Gray B",
+	"GY" : "Gray 2 B",
 	"HP" : "Hot Pink B",
 	"KG" : "Kelly Green B",
 	"LG" : "Lime Green B",
 	"MG" : "Magenta B",
 	"MRN" : "Maroon B",
 	"MN" : "MINT B",
-	"N" : "Navy B",
+	"N" : "Navy 2 B",
 	"NC" : "NEON CORAL B",
 	"OY" : "Optic Yellow B",
 	"O" : "Orange B",
 	"PK" : "Pink B",
 	"PU" : "Purple B",
 	"RD" : "Red B",
-	"RB" : "Royal B",
+	"RB" : "Royal Blue B",
 	"SP" : "Soft Pink B",
 	"STL" : "Steel B",
 	"TL" : "Teal B",
