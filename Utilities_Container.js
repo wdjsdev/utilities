@@ -188,6 +188,8 @@ var messageList = [];
 
 var logDest = [];
 
+var LIVE_LOGGING = true;
+
 
 var beginScriptMsg = [
 
@@ -217,7 +219,22 @@ var endScriptString = endScriptMsg.join("\n");
 
 function initLog()
 {
-	
+	livePrintLog(beginScriptString);
+}
+function endLog()
+{
+	livePrintLog(endScriptString);
+}
+
+function livePrintLog(msg)
+{
+	var contents;
+	for(var l=0,len=logDest.length;l<len;l++)
+	{
+		logDest[l].open("a");
+		logDest[l].write(msg);
+		logDest[l].close();
+	}
 }
 
 function getLogDest()
@@ -264,6 +281,10 @@ var log =
 		result += "\n";
 		result += "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n\n";
 		scriptLog += result;
+		if(LIVE_LOGGING)
+		{
+			livePrintLog(result);
+		}
 	},
 	bp : function(msg)
 	{
@@ -292,6 +313,10 @@ var log =
 		scriptLog += result;
 		errorLog += result;
 
+		if(LIVE_LOGGING)
+		{
+			livePrintLog(result);
+		}
 	},
 	l : function(msg)
 	{
@@ -304,6 +329,10 @@ var log =
 		result += "\n";
 
 		scriptLog += result;
+		if(LIVE_LOGGING)
+		{
+			livePrintLog(result)
+		}
 	},
 	L : function(msg)
 	{
@@ -331,6 +360,10 @@ var log =
 
 function printLog()
 {
+	if(LIVE_LOGGING)
+	{
+		return;
+	}
 	var curTime = logTime();
 
 	if(logDest.length > 0 && scriptLog !== "")
@@ -2368,7 +2401,7 @@ var BUILDER_COLOR_CODES = {
 	"FO" : "FLO ORANGE B",
 	"FY" : "FLO YELLOW B",
 	"FP" : "FLO PINK B",
-	"GD" : "Gold B",
+	"GD" : "Athletic Gold B",
 	"GY" : "Gray 2 B",
 	"HP" : "Hot Pink B",
 	"KG" : "Kelly Green B",
