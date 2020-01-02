@@ -188,7 +188,7 @@ var messageList = [];
 
 var logDest = [];
 
-var LIVE_LOGGING = true;
+var LIVE_LOGGING = false;
 
 
 var beginScriptMsg = [
@@ -2406,7 +2406,7 @@ var BUILDER_COLOR_CODES = {
 	"HP" : "Hot Pink B",
 	"KG" : "Kelly Green B",
 	"LG" : "Lime Green B",
-	"MG" : "Magenta B",
+	"MG" : "Magenta 2 B",
 	"MRN" : "Maroon B",
 	"MN" : "MINT B",
 	"N" : "Navy 2 B",
@@ -2424,7 +2424,8 @@ var BUILDER_COLOR_CODES = {
 	"TW" : "Twitch B",
 	"VG" : "Vegas Gold B",
 	"W" : "White B",
-	"Y" : "Yellow B"
+	"Y" : "Yellow B",
+	"YL" : "Yellow B"
 }
 
 var BOOMBAH_APPROVED_COLOR_VALUES =
