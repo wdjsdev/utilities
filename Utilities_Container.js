@@ -1935,6 +1935,14 @@ function curlData(url,arg)
 {
 	log.h("Beginning execution of curlData(" + url + "," + arg + ")");
 	var result;
+	
+	if(!arg)
+	{
+		log.e("arg was undefined.");
+		errorList.push("Failed to get the data from netsuite. The required information was missing.");
+		return result;
+	}
+
 	var localDataFile = File(documentsPath + "curlData/curlData.txt");
 	var executor = File(resourcePath + "/curl_from_illustrator.app");
 
