@@ -9,86 +9,120 @@ var DR_USERS =
 	"medelyn.tavarez",
 	"rafael.nolasco",
 	"nicolas.nicasio"
-]
+];
 
-//boolean to determine whether to use the CustomizationDR drive for testing.
-var spoofDRUser = false;
+if(typeof scriptName === "undefined")
+{
+	//no scriptName variable existed. create one.
+	var scriptName = $.fileName;
+	scriptName = scriptName.substring(scriptName.lastIndexOf("/")+1,scriptName.lastIndexOf("."));
+	scriptName = scriptName.toLowerCase();
+}
+
 
 
 //Network Storage. Production version
+var networkPath;
+if($.os.match('Windows'))
+{
+	alert("Sorry. The scripts aren't designed to work with a PC");
+	valid = false;
+}
 
-	if($.os.match('Windows')){
-		//PC
-		var user = $.getenv("USERNAME")
-		var centralLog = new File("N:\\Library\\Scripts\\Script Resources\\Data\\.script_logs\\central_log.txt");
-		var importantLog = new File("N:\\Library\\Scripts\\Script Resources\\Data\\.script_logs\\important_log.txt");
-		var centralErrorLog = new File("N:\\Library\\Scripts\\Script Resources\\Data\\.script_logs\\error_log.txt");
-		var missingTemplatesLog = new File("N:\\Library\\Scripts\\Script Resources\\Data\\.script_longs\\converted_templates_needed.txt");
+// MAC
+var user = $.getenv("USER")
 
-		
-	} else {
-		// MAC
-		var user = $.getenv("USER")
+var homeFolderPath = "/Volumes/Macintosh HD/Users/" + user;
+var homeFolder = new Folder(homeFolderPath);
 
-		var homeFolderPath = "/Volumes/Macintosh HD/Users/" + user;
-		var homeFolder = new Folder(homeFolderPath);
-
-		if(DR_USERS.indexOf(user)>-1 || (spoofDRUser && user === "will.dowling"))
-		{
-			var customizationPath = "/Volumes/CustomizationDR/";
-		}
-		else
-		{
-			var customizationPath = "/Volumes/Customization/";
-		}
-		var customizationFolder = new Folder(customizationPath);
+//boolean to determine whether to use the CustomizationDR drive for testing.
+var spoofDRUser = false;
+if(DR_USERS.indexOf(user)>-1 || (spoofDRUser && user === "will.dowling"))
+{
+	var customizationPath = "/Volumes/CustomizationDR/";
+}
+else
+{
+	var customizationPath = "/Volumes/Customization/";
+}
+var customizationFolder = new Folder(customizationPath);
 
 
 
 
-		var desktopPath = homeFolderPath + "/Desktop/";
-		var desktopFolder = new Folder(desktopPath);
+var desktopPath = homeFolderPath + "/Desktop/";
+var desktopFolder = new Folder(desktopPath);
 
-		var documentsPath = homeFolderPath + "/Documents/";
-		var documentsFolder = new Folder(documentsPath);
+var documentsPath = homeFolderPath + "/Documents/";
+var documentsFolder = new Folder(documentsPath);
 
-		var libraryPath = customizationPath + "Library/";
-		var libraryFolder = new Folder(libraryPath);
+var libraryPath = customizationPath + "Library/";
+var libraryFolder = new Folder(libraryPath);
 
-		var prepressPath = libraryPath + "cads/prepress/";
-		var prepressFolder = new Folder(prepressPath);
+var graphicsPath = libraryPath + "Graphics/";
+var graphicsFolder = new Folder(graphicsPath);
 
-		var scriptsPath = libraryPath + "Scripts/";
-		var scriptsFolder = new Folder(scriptsPath);
+var prepressPath = libraryPath + "cads/prepress/";
+var prepressFolder = new Folder(prepressPath);
 
-		var resourcePath = scriptsPath + "/Script Resources/";
-		var resourceFolder = new Folder(resourcePath);
+var scriptsPath = libraryPath + "Scripts/";
+var scriptsFolder = new Folder(scriptsPath);
 
-		var componentsPath = resourcePath + "/components/";
-		var componentsFolder = new Folder(componentsPath);
+var resourcePath = scriptsPath + "Script Resources/";
+var resourceFolder = new Folder(resourcePath);
 
-		var dataPath = resourcePath + "/Data/";
-		var dataFolder = new Folder(dataPath);
+var imagesPath = resourcePath + "Images/";
+var imagesFolder = new Folder(imagesPath);
 
-		var logsPath = dataPath + ".script_logs/";
-		var logsFolder = new Folder(logsPath);
+var componentsPath = resourcePath + "components/";
+var componentsFolder = new Folder(componentsPath);
 
-		var centralLibraryFile = File(dataPath + "/central_library.js");
-		var btLibraryFile = File(dataPath + "/build_template_library.js");
-		var aaSpecialInstructionsFile = File(dataPath + "/aa_special_instructions.js");
+var dataPath = resourcePath + "Data/";
+var dataFolder = new Folder(dataPath);
 
-		var userPathRegex = /(^\/Users\/[^\/]*\/)|(^.*~\/)/i;
+var logsPath = dataPath + ".script_logs/";
+var logsFolder = new Folder(logsPath);
 
-		//log files
-		var centralLog = new File("/Volumes/Customization/Library/Scripts/Script Resources/Data/.script_logs/central_log.txt");
-		var importantLog = new File("/Volumes/Customization/Library/Scripts/Script Resources/Data/.script_logs/important_log.txt");
-		var centralErrorLog = new File("/Volumes/Customization/Library/Scripts/Script Resources/Data/.script_logs/error_log.txt");
-		var buildMockLog = new File("/Volumes/Customization/Library/Scripts/Script Resources/Data/.script_logs/mockup_builder_log.txt");
-		var missingTemplatesLog = new File("/Volumes/Customization/Library/Scripts/Script Resources/Data/.script_logs/converted_templates_needed.txt");
-		var changeCodeLog = new File("/Volumes/Customization/Library/Scripts/Script Resources/Data/.script_logs/change_code_log.txt");
+var centralLibraryPath = dataPath + "central_library.js";
+var centralLibraryFile = File(centralLibraryPath);
 
-		
-	}
+var btLibraryPath = dataPath + "build_template_library.js";
+var btLibraryFile = File(btLibraryPath);
+
+var aaSpecialInstructionsFile = File(dataPath + "/aa_special_instructions.js");
+
+var userPathRegex = /(^\/Users\/[^\/]*\/)|(^.*~\/)/i;
+
+
+//
+//deprecated
+//
+//logs will now be placed into individual user folders
+//instead of having one central log file for each script.
+//
+//log files
+var centralLog = new File("/Volumes/Customization/Library/Scripts/Script Resources/Data/.script_logs/central_log.txt");
+var importantLog = new File("/Volumes/Customization/Library/Scripts/Script Resources/Data/.script_logs/important_log.txt");
+var centralErrorLog = new File("/Volumes/Customization/Library/Scripts/Script Resources/Data/.script_logs/error_log.txt");
+var buildMockLog = new File("/Volumes/Customization/Library/Scripts/Script Resources/Data/.script_logs/mockup_builder_log.txt");
+var missingTemplatesLog = new File("/Volumes/Customization/Library/Scripts/Script Resources/Data/.script_logs/converted_templates_needed.txt");
+var changeCodeLog = new File("/Volumes/Customization/Library/Scripts/Script Resources/Data/.script_logs/change_code_log.txt");
+//
+//deprecated
+//
+
+
+//
+//Netsuite URLs
+//
+//sales order data for prod file building
+var NOD = netsuiteOrderDataURL = "https://460511.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1477&deploy=1&compid=460511&h=2834dd5419b7c48fdba0&soid=";
+//old version of netsuite order data url. adam g says use the new one below..
+//this one has been working fine domestically, but the new one supposedly works better in the DR???
+// var NOD = netsuiteOrderDataURL = "https://forms.na2.netsuite.com/app/site/hosting/scriptlet.nl?script=1477&deploy=1&compid=460511&h=2834dd5419b7c48fdba0&soid="
+
+//builder data for mockup building
+var NBD = netsuiteBuilderDataURL = "https://forms.na2.netsuite.com/app/site/hosting/scriptlet.nl?script=908&deploy=1&compid=460511&h=940572c6865fbbe12e98&designId=";
 
 
 
@@ -98,8 +132,8 @@ var Stopwatch = function()
 {
 	this.startTime = 0;
 	this.endTime = 0;
-	this.beginStepTime = 0;
-	this.endStepTime = 0;
+	this.taskStart = 0;
+	this.taskEnd = 0;
 	this.stepLabel = "";
 
 	this.logStart = function()
@@ -112,17 +146,17 @@ var Stopwatch = function()
 		var curDate = new Date();
 		this.endTime = curDate.getTime();
 	}
-	this.beginStep = function(label)
+	this.beginTask = function(label)
 	{
 		this.stepLabel = label;
-		this.beginStepTime = new Date().getTime();
+		this.taskStart = new Date().getTime();
 	}
-	this.endStep = function()
+	this.endTask = function()
 	{
-		this.endStepTime = new Date().getTime();
-		var stepDuration =  this.endStepTime - this.beginStepTime;
+		this.taskEnd = new Date().getTime();
+		var stepDuration =  this.taskEnd - this.taskStart;
 		var msg = this.stepLabel + " step took " + stepDuration + " ms.";
-		log.h(msg);
+		log.l(msg);
 	}
 	this.getElapsed = function()
 	{
@@ -133,10 +167,15 @@ var Stopwatch = function()
 		return (this.endTime - this.startTime);
 	}
 }
-var timer = new Stopwatch();
+var scriptTimer = new Stopwatch();
 //initiate the start time
-timer.logStart();
+scriptTimer.logStart();
 
+
+
+//
+//LOGGING
+//
 
 
 //Global variables
@@ -144,68 +183,64 @@ timer.logStart();
 var scriptLog = "";
 var errorLog = "";
 
-//urls for up to date netsuite data
-//used for 
-	//getting builder data for mockup building
-	//getting order data for prod file building
-
-//old version of netsuite order data url. adam g says use the new one below..
-//this one has been working fine domestically, but the new one supposedly works better in the DR???
-// var NOD = netsuiteOrderDataURL = "https://forms.na2.netsuite.com/app/site/hosting/scriptlet.nl?script=1477&deploy=1&compid=460511&h=2834dd5419b7c48fdba0&soid="
-var NOD = netsuiteOrderDataURL = "https://460511.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1477&deploy=1&compid=460511&h=2834dd5419b7c48fdba0&soid=";
-var NBD = netsuiteBuilderDataURL = "https://forms.na2.netsuite.com/app/site/hosting/scriptlet.nl?script=908&deploy=1&compid=460511&h=940572c6865fbbe12e98&designId=";
-
-//logDest is an array of file objects
-var logDest = [];
 var errorList = [];
 var messageList = [];
 
+var logDest = [];
+
+var LIVE_LOGGING = false;
 
 
+var beginScriptMsg = [
+	"////////////////////////////////////////////////////",
+	"////////////////////////////////////////////////////",
+	"////////////////////////////////////////////////////",
+	"**********************BEGIN*************************",
+	"****************" + scriptName + "*******************",
+	"////////////////////////////////////////////////////",
+	"",
+	"***User: " + user + "***",
+	""
+];
 
-var beginScriptMsg = ["!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",
-"******************************************************************************",
-"`7MM\"\"\"Yp, `7MM\"\"\"YMM    .g8\"\"\"bgd `7MMF'`7MN.   `7MF'    `7MMF'        .g8\"\"8q.     .g8\"\"\"bgd  ",
-"  MM    Yb   MM    `7  .dP'     `M   MM    MMN.    M        MM        .dP'    `YM. .dP'     `M  ",
-"  MM    dP   MM   d    dM'       `   MM    M YMb   M        MM        dM'      `MM dM'       `  ",
-"  MM\"\"\"bg.   MMmmMM    MM            MM    M  `MN. M        MM        MM        MM MM           ",
-"  MM    `Y   MM   Y  , MM.    `7MMF' MM    M   `MM.M        MM      , MM.      ,MP MM.    `7MMF'",
-"  MM    ,9   MM     ,M `Mb.     MM   MM    M     YMM        MM     ,M `Mb.    ,dP' `Mb.     MM  ",
-".JMMmmmd9  .JMMmmmmMMM   `\"bmmmdPY .JMML..JML.    YM      .JMMmmmmMMM   `\"bmmd\"'     `\"bmmmdPY  ",
-"******************************************************************************",
-"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"];
 
-
-var endScriptMsg = ["!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",
-"******************************************************************************",
-"`7MM\"\"\"YMM  `7MN.   `7MF'`7MM\"\"\"Yb.       `7MMF'        .g8\"\"8q.     .g8\"\"\"bgd ",
-"  MM    `7    MMN.    M    MM    `Yb.       MM        .dP'    `YM. .dP'     `M  ",
-"  MM   d      M YMb   M    MM     `Mb       MM        dM'      `MM dM'       `  ",
-"  MMmmMM      M  `MN. M    MM      MM       MM        MM        MM MM           ",
-"  MM   Y  ,   M   `MM.M    MM     ,MP       MM      , MM.      ,MP MM.    `7MMF'",
-"  MM     ,M   M     YMM    MM    ,dP'       MM     ,M `Mb.    ,dP' `Mb.     MM  ",
-".JMMmmmmMMM .JML.    YM  .JMMmmmdP'       .JMMmmmmMMM   `\"bmmd\"'     `\"bmmmdPY  ",
-"******************************************************************************",
-"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"];
-
-var beginProcMsg = [
-"****   *****   ***    *****  *    *",
-"*   *  *      *         *    **   *",
-"****   ****   *  ***    *    * *  *",
-"*   *  *      *   *     *    *  * *",
-"****   *****   ***    *****  *   **",
-]
-
+var endScriptMsg = [
+	"////////////////////////////////////////////////////",
+	"***********************END**************************",
+	"****************" + scriptName + "*******************",
+	"////////////////////////////////////////////////////",
+	"////////////////////////////////////////////////////",
+	"////////////////////////////////////////////////////",
+	"",
+	"",
+	"",
+	""
+];
 
 var beginScriptString = beginScriptMsg.join("\n")
 var endScriptString = endScriptMsg.join("\n");
-var beginProcMsgString = beginProcMsg.join("\n");
 
+function initLog()
+{
+	livePrintLog(beginScriptString);
+}
+function endLog()
+{
+	livePrintLog(endScriptString);
+}
 
+function livePrintLog(msg)
+{
+	var contents;
+	for(var l=0,len=logDest.length;l<len;l++)
+	{
+		logDest[l].open("a");
+		logDest[l].write(msg);
+		logDest[l].close();
+	}
+}
 
-
-
-function getLogDest(user,scriptName)
+function getLogDest()
 {
 	var userLogPath = logsPath + user + "/";
 	var userLogFolder = Folder(userLogPath);
@@ -216,12 +251,6 @@ function getLogDest(user,scriptName)
 	var scriptLogFile = File(userLogPath + scriptName + ".txt");
 	return scriptLogFile;
 }
-
-
-
-
-
-
 
 function logTime()
 {
@@ -255,6 +284,10 @@ var log =
 		result += "\n";
 		result += "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n\n";
 		scriptLog += result;
+		if(LIVE_LOGGING)
+		{
+			livePrintLog(result);
+		}
 	},
 	bp : function(msg)
 	{
@@ -283,6 +316,10 @@ var log =
 		scriptLog += result;
 		errorLog += result;
 
+		if(LIVE_LOGGING)
+		{
+			livePrintLog(result);
+		}
 	},
 	l : function(msg)
 	{
@@ -295,6 +332,10 @@ var log =
 		result += "\n";
 
 		scriptLog += result;
+		if(LIVE_LOGGING)
+		{
+			livePrintLog(result)
+		}
 	},
 	L : function(msg)
 	{
@@ -322,6 +363,10 @@ var log =
 
 function printLog()
 {
+	if(LIVE_LOGGING)
+	{
+		return;
+	}
 	var curTime = logTime();
 
 	if(logDest.length > 0 && scriptLog !== "")
@@ -366,6 +411,21 @@ function printSpecialtyLog(file,msg)
 	file.close();
 }
 
+
+//
+//END LOGGING
+//
+
+
+
+
+
+
+
+
+
+
+
 //string.toTitleCase() 
 //prototype function to convert entire string to titlecase
 String.prototype.toTitleCase = function () {
@@ -380,8 +440,8 @@ String.prototype.toTitleCase = function () {
 */
 
 // eval("@JSXBIN@ES@2.0@MyBbyBnABMAbyBnABMDbyBn0ABZFnAEXzFjGjMjPjPjSBfjzEiNjBjUjICfRBCzBhLDCzBhKEEXzGjSjBjOjEjPjNFfjCfnfCDCzBhNGVzDjNjBjYHfBVzDjNjJjOIfAnnnndBnnVIfAnnffACH4B0AhAI40BhAC0AzJjHjFjUiSjBjOjEjPjNJAGBgJbyBn0ADJLnAEjzEjFjWjBjMKfRBFeiOhDjJjOjDjMjVjEjFhAhChPiWjPjMjVjNjFjThPiDjVjTjUjPjNjJjajBjUjJjPjOhPiMjJjCjSjBjSjZhPiTjDjSjJjQjUjThPiTjDjSjJjQjUhAiSjFjTjPjVjSjDjFjThPhOjFjYjQhPjFjYjQhOjKjThCffJMnASzDjOjPjXLAEXLfjzEiEjBjUjFMfnfnftOObQn0ACJQnASzEjSjBjOjENBEjJfRCFdAFdCffnftOSbVn0ADJVnAEjzFjBjMjFjSjUOfRBCDCDnEjJfRCFdBFd2nUBffeOiFjSjSjPjShAjJjOKiMjJjOjFhAnnnehUhaKjBjOhAiJjMjMjVjTjUjSjBjUjPjShAjFjSjSjPjShAjPjDjDjVjSjSjFjEhahAhRhThUhWhUhVhYhRhYhZhAhIhHiNiSiBiQhHhJffJWnABjzDjMjPjHPfneAfJXnABjzFjWjBjMjJjEQfncffACzDhdhdhdRVNfBnndCnACzBheSVLfAjzDjFjYjQTfnnnABnzBjFUnbyBn0ABJgdnAEjOfRBCDCDnEjJfRCFdBFd2nUBffeOiFjSjSjPjShAjJjOKiMjJjOjFhAnnnehUhaKjBjOhAiJjMjMjVjTjUjSjBjUjPjShAjFjSjSjPjShAjPjDjDjVjSjSjFjEhahAhRhThUhWhUhVhYhRhYhZhAhIhHiNiSiBiQhHhJffACN4B0AiAL40BiAACAzFjJjTiFjYjQVAgfBJhAnAEjVfnf0DzAWByB");
-eval("@JSXBIN@ES@2.0@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");
-
+// eval("@JSXBIN@ES@2.0@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");
+eval("@JSXBIN@ES@2.0@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")
 
 
 
@@ -706,7 +766,7 @@ function coord(ppLay)
 
 function getCode(layName)
 {
-	var pat = /(.*)([-_][\d]{3,}([-_][a-z])?)/i;
+	var pat = /(.*)([-_][a-z\d]{3,}([-_][a-z])?)/i;
 	var underscorePat = /([fpb][dsm])[_]/i;
 	var result = layName.match(pat)[1];
 	while(result.match(underscorePat))
@@ -718,7 +778,7 @@ function getCode(layName)
 
 function getStyleNum(layName)
 {
-	var pat = /(.*)[-_]([\d]{3,}([-_][a-z])?)/i;
+	var pat = /(.*)[-_]([a-z\d]{3,}([-_][a-z])?)/i;
 	return layName.match(pat)[2];
 }
 
@@ -1559,6 +1619,29 @@ function makeNewSpotColor(name,colorType,colorValue,tint)
 {
 	var doc = app.activeDocument;
 	var swatches = doc.swatches;
+	
+	if(!colorType)
+	{
+		colorType = "CMYK"
+	}
+	if(!colorValue)
+	{
+		try
+		{
+			colorValue = BOOMBAH_APPROVED_COLOR_VALUES[name];
+		}
+		catch(e)
+		{
+			colorValue =
+			{
+				"cyan": 12,
+				"magenta": 30,
+				"yellow": 84,
+				"black": 5
+			}
+		}
+	}
+
 	var newSpotSwatch;
 	try
 	{
@@ -1590,6 +1673,80 @@ function makeNewSpotColor(name,colorType,colorValue,tint)
 		}
 	}
 	return newSpotSwatch;
+}
+
+function mergeSwatches(oldSwatchName,newSwatchName)
+{
+	var doc = app.activeDocument;
+	var renameSuccess = false;	
+	var swatchGroup;
+	var overlappingSwatches = false;
+	var swatch = makeNewSpotColor(oldSwatchName);
+	try
+	{
+		swatch.name = newSwatchName;
+		renameSuccess = true;
+	}
+	catch(e)
+	{
+		var counter = 2;
+		while(!renameSuccess && counter < 22)
+		{
+			try
+			{
+				swatch.name = newSwatchName + counter;
+				renameSuccess = true;
+				overlappingSwatches = true;
+				counter++;
+			}
+			catch(e)
+			{
+				counter++;
+			}
+		}
+	}
+
+	if(overlappingSwatches)
+	{
+		for(var x=0,len=doc.swatchGroups.length;x<len;x++)
+		{
+			if(doc.swatchGroups[x].name === newSwatchName)
+			{
+				swatchGroup = doc.swatchGroups[x];
+				break;
+			}
+		}
+
+		if(!swatchGroup)
+		{
+			swatchGroup = doc.swatchGroups.add();
+			swatchGroup.name = newSwatchName;
+		}
+
+		swatchGroup.addSwatch(doc.swatches[newSwatchName]);
+		swatchGroup.addSwatch(swatch);
+	}
+
+
+	var newColorValues;
+	newColorValues = BOOMBAH_APPROVED_COLOR_VALUES[newSwatchName];
+
+	if(!newColorValues)
+	{
+		errorList.push("Failed to find color values in the database for " + newSwatchName);
+		errorList.push("Please recolor the " + newSwatchName + " swatch manually.");
+		newColorValues = {
+			"cyan": 100,
+			"magenta": 100,
+			"yellow": 100,
+			"black": 100
+		}
+	}
+
+	for(var color in swatch.color.spot.color)
+	{
+		swatch.color.spot.color[color] = newColorValues[color];
+	}
 }
 
 //this function assumes that a clipping mask
@@ -1819,7 +1976,18 @@ function curlData(url,arg)
 
 	//try to read the data
 	var curTries = 0;
-	var maxTries = 600;
+	var maxTries;
+
+	//if the user is in the DR, set a long timeout
+	//otherwise keep it short
+	if(DR_USERS.indexOf(user)>-1)
+	{
+		maxTries = 600;
+	}
+	else
+	{
+		maxTries = 120;
+	}
 	var dataProperlyWritten = false;
 	var delay = 100;
 	var parsedJSON;
@@ -1831,8 +1999,17 @@ function curlData(url,arg)
 		result = localDataFile.read();
 		localDataFile.close();
 
-		if(result !== "" && !htmlRegex.test(result))
+
+		if(htmlRegex.test(result))
 		{
+			log.e("curl command returned html code instead of JSON.::" + result);
+			errorList.push("Netsuite returned improper data for " + arg + ".")
+			break;
+		}
+
+		if(result !== "")
+		{
+
 			try
 			{
 				parsedJSON = JSON.parse(result);
@@ -1852,8 +2029,19 @@ function curlData(url,arg)
 		}
 	}
 
+	log.l("end of curlData function");
+	log.l("returning: " + parsedJSON);
 	return parsedJSON;
 
+}
+
+function updateSwatchColor(swatch,name,colors)
+{
+	swatch.name = name;
+	for(var color in swatch.color.spot.color)
+	{
+		swatch.color.spot.color[color] = colors[color];
+	}
 }
 
 
@@ -1920,6 +2108,201 @@ var CLEANUP_SWATCHES_ACTION_STRING =
 	"	}",
 	"}"
 	]
+
+var UNLOCK_GUIDES_ACTION_STRING = [
+	"/version 3",
+	"/name [ 13",
+	"	756e6c6f636b5f677569646573",
+	"]",
+	"/isOpen 1",
+	"/actionCount 1",
+	"/action-1 {",
+	"	/name [ 13",
+	"		756e6c6f636b5f677569646573",
+	"	]",
+	"	/keyIndex 0",
+	"	/colorIndex 0",
+	"	/isOpen 1",
+	"	/eventCount 1",
+	"	/event-1 {",
+	"		/useRulersIn1stQuadrant 0",
+	"		/internalName (adobe_lockGuide)",
+	"		/localizedName [ 11",
+	"			4c6f636b20477569646573",
+	"		]",
+	"		/isOpen 1",
+	"		/isOn 1",
+	"		/hasDialog 0",
+	"		/parameterCount 1",
+	"		/parameter-1 {",
+	"			/key 1819239275",
+	"			/showInPalette 4294967295",
+	"			/type (boolean)",
+	"			/value 0",
+	"		}",
+	"	}",
+	"}"
+]
+
+var GRAPHIC_STYLE_FROM_SELECTION_ACTION_STRING = 
+	[
+		"/version 3",
+		"/name [ 28",
+		"	677261706869635f7374796c655f66726f6d5f73656c656374696f6e",
+		"]",
+		"/isOpen 1",
+		"/actionCount 1",
+		"/action-1 {",
+		"	/name [ 28",
+		"		677261706869635f7374796c655f66726f6d5f73656c656374696f6e",
+		"	]",
+		"	/keyIndex 0",
+		"	/colorIndex 0",
+		"	/isOpen 1",
+		"	/eventCount 3",
+		"	/event-1 {",
+		"		/useRulersIn1stQuadrant 0",
+		"		/internalName (ai_plugin_styles)",
+		"		/localizedName [ 14",
+		"			47726170686963205374796c6573",
+		"		]",
+		"		/isOpen 0",
+		"		/isOn 1",
+		"		/hasDialog 0",
+		"		/parameterCount 1",
+		"		/parameter-1 {",
+		"			/key 1835363957",
+		"			/showInPalette 4294967295",
+		"			/type (enumerated)",
+		"			/name [ 17",
+		"				53656c65637420416c6c20556e75736564",
+		"			]",
+		"			/value 14",
+		"		}",
+		"	}",
+		"	/event-2 {",
+		"		/useRulersIn1stQuadrant 0",
+		"		/internalName (ai_plugin_styles)",
+		"		/localizedName [ 14",
+		"			47726170686963205374796c6573",
+		"		]",
+		"		/isOpen 0",
+		"		/isOn 1",
+		"		/hasDialog 1",
+		"		/showDialog 0",
+		"		/parameterCount 1",
+		"		/parameter-1 {",
+		"			/key 1835363957",
+		"			/showInPalette 4294967295",
+		"			/type (enumerated)",
+		"			/name [ 20",
+		"				44656c6574652047726170686963205374796c65",
+		"			]",
+		"			/value 3",
+		"		}",
+		"	}",
+		"	/event-3 {",
+		"		/useRulersIn1stQuadrant 0",
+		"		/internalName (ai_plugin_styles)",
+		"		/localizedName [ 14",
+		"			47726170686963205374796c6573",
+		"		]",
+		"		/isOpen 0",
+		"		/isOn 1",
+		"		/hasDialog 1",
+		"		/showDialog 0",
+		"		/parameterCount 1",
+		"		/parameter-1 {",
+		"			/key 1835363957",
+		"			/showInPalette 4294967295",
+		"			/type (enumerated)",
+		"			/name [ 17",
+		"				4e65772047726170686963205374796c65",
+		"			]",
+		"			/value 1",
+		"		}",
+		"	}",
+		"}",
+	];
+
+var CLEAR_APPEARANCE_ACTION_STRING = 
+	[
+		"/version 3",
+		"/name [ 16",
+		"	636c6561725f617070656172616e6365",
+		"]",
+		"/isOpen 1",
+		"/actionCount 1",
+		"/action-1 {",
+		"	/name [ 16",
+		"		636c6561725f617070656172616e6365",
+		"	]",
+		"	/keyIndex 0",
+		"	/colorIndex 0",
+		"	/isOpen 1",
+		"	/eventCount 1",
+		"	/event-1 {",
+		"		/useRulersIn1stQuadrant 0",
+		"		/internalName (ai_plugin_appearance)",
+		"		/localizedName [ 10",
+		"			417070656172616e6365",
+		"		]",
+		"		/isOpen 0",
+		"		/isOn 1",
+		"		/hasDialog 0",
+		"		/parameterCount 1",
+		"		/parameter-1 {",
+		"			/key 1835363957",
+		"			/showInPalette 4294967295",
+		"			/type (enumerated)",
+		"			/name [ 16",
+		"				436c65617220417070656172616e6365",
+		"			]",
+		"			/value 6",
+		"		}",
+		"	}",
+		"}",
+	];
+
+var ADD_NEW_FILL_ACTION_STRING = 
+	[
+		"/version 3",
+		"/name [ 12",
+		"	6164645f6e65775f66696c6c",
+		"]",
+		"/isOpen 1",
+		"/actionCount 1",
+		"/action-1 {",
+		"	/name [ 12",
+		"		6164645f6e65775f66696c6c",
+		"	]",
+		"	/keyIndex 0",
+		"	/colorIndex 0",
+		"	/isOpen 1",
+		"	/eventCount 1",
+		"	/event-1 {",
+		"		/useRulersIn1stQuadrant 0",
+		"		/internalName (ai_plugin_appearance)",
+		"		/localizedName [ 10",
+		"			417070656172616e6365",
+		"		]",
+		"		/isOpen 1",
+		"		/isOn 1",
+		"		/hasDialog 0",
+		"		/parameterCount 1",
+		"		/parameter-1 {",
+		"			/key 1835363957",
+		"			/showInPalette 4294967295",
+		"			/type (enumerated)",
+		"			/name [ 12",
+		"				416464204e65772046696c6c",
+		"			]",
+		"			/value 1",
+		"		}",
+		"	}",
+		"}"
+	]
+
 
 //
 //action string arrays
@@ -2027,6 +2410,48 @@ var BOOMBAH_PRODUCTION_COLORS =
 	 'SEW LINES',
 	 'SEWLINE'];
 
+var BUILDER_COLOR_CODES = {
+	"B" : "Black B",
+	"BPU" : "BRIGHT PURPLE B",
+	"BN" : "Brown B",
+	"CRD" : "Cardinal B",
+	"C" : "Charcoal B",
+	"CB" : "Columbia B",
+	"CY" : "Cyan B",
+	"DC" : "Dark Charcoal B",
+	"DF" : "Dark Flesh B",
+	"DG" : "Dark Green B",
+	"FLM" : "FLAME B",
+	"FL" : "Flesh B",
+	"FO" : "FLO ORANGE B",
+	"FY" : "FLO YELLOW B",
+	"FP" : "FLO PINK B",
+	"GD" : "Athletic Gold B",
+	"GY" : "Gray 2 B",
+	"HP" : "Hot Pink B",
+	"KG" : "Kelly Green B",
+	"LG" : "Lime Green B",
+	"MG" : "Magenta 2 B",
+	"MRN" : "Maroon B",
+	"MN" : "MINT B",
+	"N" : "Navy 2 B",
+	"NC" : "NEON CORAL B",
+	"OY" : "Optic Yellow B",
+	"O" : "Orange B",
+	"PK" : "Pink B",
+	"PU" : "Purple B",
+	"RD" : "Red B",
+	"RB" : "Royal Blue B",
+	"SP" : "Soft Pink B",
+	"STL" : "Steel B",
+	"TL" : "Teal B",
+	"TO" : "Texas Orange B",
+	"TW" : "Twitch B",
+	"VG" : "Vegas Gold B",
+	"W" : "White B",
+	"Y" : "Yellow B",
+	"YL" : "Yellow B"
+}
 
 var BOOMBAH_APPROVED_COLOR_VALUES =
 {

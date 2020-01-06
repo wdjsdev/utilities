@@ -369,23 +369,19 @@ function executeBatch(func,closeFilePref)
 	for (var x = batchFiles.length - 1; x >= 0; x--)
 	{
 		log.l("Processing file: " + batchFiles[x].name);
+		if(user === "will.dowling")
+		{
+			$.writeln("processing file: " + x + " of " + batchFiles.length);
+		}
 		docRef = batchFiles[x];
 		docRef.activate();
-		try
+		func();
+		if(closeFilePref)
 		{
-			func();
-			if(closeFilePref)
-			{
-				saveFile = new File(saveDest.fsName + "/" + docRef.name);
-				docRef.saveAs(saveFile);
-			}
-			log.l("Successfully processed file: " + batchFiles[x].name + "::");
+			saveFile = new File(saveDest.fsName + "/" + docRef.name);
+			docRef.saveAs(saveFile);
 		}
-		catch(e)
-		{
-			errorList.push("Failed to execute the batch function on the file: " + docRef.name);
-			errorList.push("System error was: " + e + ", on line: " + e.line);
-		}
+		log.l("Successfully processed file: " + batchFiles[x].name + "::");
 	}
 
 	if(closeFilePref)
@@ -403,5 +399,10 @@ function executeBatch(func,closeFilePref)
 			docRef = app.activeDocument;
 			docRef.close(SaveOptions.DONOTSAVECHANGES);	
 		}
+	}
+
+	if(errorList.length)
+	{
+		sendErrors(errorList);
 	}
 }
