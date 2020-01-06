@@ -1973,7 +1973,18 @@ function curlData(url,arg)
 
 	//try to read the data
 	var curTries = 0;
-	var maxTries = 600;
+	var maxTries;
+
+	//if the user is in the DR, set a long timeout
+	//otherwise keep it short
+	if(DR_USERS.indexOf(user)>-1)
+	{
+		maxTries = 600;
+	}
+	else
+	{
+		maxTries = 120;
+	}
 	var dataProperlyWritten = false;
 	var delay = 100;
 	var parsedJSON;
@@ -1985,8 +1996,17 @@ function curlData(url,arg)
 		result = localDataFile.read();
 		localDataFile.close();
 
-		if(result !== "" && !htmlRegex.test(result))
+
+		if(htmlRegex.test(result))
 		{
+			log.e("curl command returned html code instead of JSON.::" + result);
+			errorList.push("Netsuite returned improper data for " + arg + ".")
+			break;
+		}
+
+		if(result !== "")
+		{
+
 			try
 			{
 				parsedJSON = JSON.parse(result);
@@ -2006,6 +2026,8 @@ function curlData(url,arg)
 		}
 	}
 
+	log.l("end of curlData function");
+	log.l("returning: " + parsedJSON);
 	return parsedJSON;
 
 }
