@@ -1994,7 +1994,7 @@ function curlData(url,arg)
 	}
 	else
 	{
-		maxTries = 120;
+		maxTries = 200;
 	}
 	var dataProperlyWritten = false;
 	var delay = 100;
@@ -2033,6 +2033,10 @@ function curlData(url,arg)
 		else
 		{
 			curTries++;
+			if(curTries % 10 === 0)
+			{
+				log.l("curTries = " + curTries);
+			}
 			$.sleep(delay);
 		}
 	}
