@@ -889,8 +889,14 @@ function includeComponents(dev,prod,ignorePrompt)
 
 
 
-
-
+//generic function to check for proper .ai[t] extension
+//to be used with Folder.getFiles(isAiFile) method and
+//Folder.openDlg("Title",isAiFile) method.
+function isAiFile(file)
+{
+	var aiPat = /.ai[t]?$/i;
+	return aiPat.test(file.name);
+}
 
 
 /*
