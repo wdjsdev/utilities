@@ -676,6 +676,23 @@ function findSpecificLayer(parent,layerName)
 	return result;
 }
 
+function findSpecificPageItem(parent,itemName)
+{
+	var result;
+	if(parent.pageItems.length)
+	{
+		for(var x=0,len=parent.pageItems.length;x<len;x++)
+		{
+			if(parent.pageItems[x].name.indexOf(itemName)>-1)
+			{
+				result = parent.pageItems[x];
+			}
+		}
+	}
+
+	return result;
+}
+
 function getPPLay(parent)
 {
 	var result, len, lay, subLay, subLayLen;
@@ -889,8 +906,23 @@ function includeComponents(dev,prod,ignorePrompt)
 
 
 
+//generic function to check for proper .ai[t] extension
+//to be used with Folder.getFiles(isAiFile) method and
+//Folder.openDlg("Title",isAiFile) method.
+function isAiFile(file)
+{
+	var aiPat = /.ai[t]?$/i;
+	return aiPat.test(file.name);
+}
 
-
+//generic function to check for proper .ai[t] extension
+//to be used with Folder.getFiles(isAiFile) method and
+//Folder.openDlg("Title",isAiFile) method.
+function isAiFileOrFolder(file)
+{
+	var aiPat = /.ai[t]?$/i;
+	return (file instanceof Folder || aiPat.test(file.name));
+}
 
 
 /*
@@ -1935,6 +1967,14 @@ function curlData(url,arg)
 {
 	log.h("Beginning execution of curlData(" + url + "," + arg + ")");
 	var result;
+	
+	if(!arg)
+	{
+		log.e("arg was undefined.");
+		errorList.push("Failed to get the data from netsuite. The required information was missing.");
+		return result;
+	}
+
 	var localDataFile = File(documentsPath + "curlData/curlData.txt");
 	var executor = File(resourcePath + "/curl_from_illustrator.app");
 
@@ -1986,7 +2026,7 @@ function curlData(url,arg)
 	}
 	else
 	{
-		maxTries = 120;
+		maxTries = 200;
 	}
 	var dataProperlyWritten = false;
 	var delay = 100;
@@ -2025,6 +2065,10 @@ function curlData(url,arg)
 		else
 		{
 			curTries++;
+			if(curTries % 10 === 0)
+			{
+				log.l("curTries = " + curTries);
+			}
 			$.sleep(delay);
 		}
 	}
