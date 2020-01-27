@@ -676,6 +676,23 @@ function findSpecificLayer(parent,layerName)
 	return result;
 }
 
+function findSpecificPageItem(parent,itemName)
+{
+	var result;
+	if(parent.pageItems.length)
+	{
+		for(var x=0,len=parent.pageItems.length;x<len;x++)
+		{
+			if(parent.pageItems[x].name.indexOf(itemName)>-1)
+			{
+				result = parent.pageItems[x];
+			}
+		}
+	}
+
+	return result;
+}
+
 function getPPLay(parent)
 {
 	var result, len, lay, subLay, subLayLen;
@@ -896,6 +913,15 @@ function isAiFile(file)
 {
 	var aiPat = /.ai[t]?$/i;
 	return aiPat.test(file.name);
+}
+
+//generic function to check for proper .ai[t] extension
+//to be used with Folder.getFiles(isAiFile) method and
+//Folder.openDlg("Title",isAiFile) method.
+function isAiFileOrFolder(file)
+{
+	var aiPat = /.ai[t]?$/i;
+	return (file instanceof Folder || aiPat.test(file.name));
 }
 
 
