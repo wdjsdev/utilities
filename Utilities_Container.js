@@ -1370,6 +1370,15 @@ var UI =
 		return result;
 	},
 
+	"closeButtonGroup":function(parent,submitFunction,cancelFunction)
+	{
+		var result = parent.add("group");
+			result.orientation = "row";
+			var cancel = result.cancelButton = this.button(result,"Cancel",cancelFunction);
+			var submit = result.submitButton = this.button(result,"Submit",submitFunction);
+		return result;
+	},
+
 	"hseparator":function(parent,width)
 	{
 		var result = parent.add("panel");
@@ -2351,6 +2360,45 @@ var ADD_NEW_FILL_ACTION_STRING =
 //
 //action string arrays
 //
+
+
+
+const BUILDER_GRAPHIC_LOCATION_CODES =  
+	{
+		"Front Upper Right": "TFUR",
+		"Front Upper Left": "TFUL",
+		"Front Center": "TFCC",
+		"Front Lower Right": "TFLR",
+		"Front Lower Center": "TFLC",
+		"Front Lower Left": "TFRL",
+		"Back Locker Tag": "TBLT",
+		"Back Player Name": "TBPL",
+		"Back Player Number": "TBNM",
+		"Back Large": "TBLB",
+		"Right Shoulder": "TRSH",
+		"Right Sleeve": "TRSL",
+		"Left Shoulder": "TLSH",
+		"Left Sleeve": "TLSL",
+		"Right Hood": "TRHD",
+		"Left Hood": "TLHD",
+		"Back Center": "TBCB",
+		"Back Ghosted Mascot": "TBGG",
+		"Back Lower Back": "TBLC",
+		"Front Right Leg": "BFRL",
+		"Front Left Leg": "BFLL",
+		"Back Right Leg": "BBRL",
+		"Back Left Leg": "BBLL",
+		"Right Side Leg": "BRSD",
+		"Right Lower Leg": "BRLW",
+		"Left Side Leg": "BLSD",
+		"Left Lower Leg": "BLLW",
+		"Back Waistband": "BBWB",
+		"Left Waistband": "BFUL",
+		"Right Waistband": "BFUR",
+		"Right Hip": "BFRH",
+		"Left Hip": "BFLH"
+	} 
+
 
 var BOOMBAH_APPROVED_COLORS = 
 	[
