@@ -1986,7 +1986,10 @@ function curlData(url,arg)
 
 	var localDataFile = File(documentsPath + "curlData/curlData.txt");
 	var executor = File(resourcePath + "/curl_from_illustrator.app");
+	var killExecutor = File(resourcePath + "/kill_curl_from_illustrator.app");
 
+
+	//write the dynamic .scpt file
 	var scptText =
 		[
 			"do shell script ",
@@ -2008,47 +2011,67 @@ function curlData(url,arg)
 	scptFile.write(dataString);
 	scptFile.close();
 
+
+	//clear out the local data file..
+	//make sure we always start with an empty string
 	localDataFile.open("w");
 	localDataFile.write("");
 	localDataFile.close();
 
-	try
-	{
-		executor.execute();
-	}
-	catch(e)
-	{
-		log.e("curlData executor failed..::e = " + e + "::url = " + url + "::arg = " + arg);
-		errorList.push("Failed to fetch the data from netsuite..");
-		return;
-	}
+	
 
 	//try to read the data
 	var curTries = 0;
 	var maxTries;
+	var delay;
 
 	//if the user is in the DR, set a long timeout
 	//otherwise keep it short
 	if(DR_USERS.indexOf(user)>-1)
 	{
 		maxTries = 600;
+		delay = 200
 	}
 	else
 	{
-		maxTries = 200;
+		maxTries = 101;
+		delay = 100;
 	}
-	var dataProperlyWritten = false;
-	var delay = 100;
 	var parsedJSON;
 	var htmlRegex = /<html>/gmi;
 
-	while(!dataProperlyWritten && curTries < maxTries)
+	//as long as the json data is invalid
+	//and the max number of attempts has not been exhausted
+	//try and gather the data
+	while(!parsedJSON && curTries < maxTries)
 	{
+		if(result === "")
+		{
+			try
+			{
+				if(curTries === 50)
+				{
+					killExecutor.execute();
+					// $.sleep(delay);
+				}
+
+				executor.execute();
+				// $.sleep(delay);
+			}
+			catch(e)
+			{
+				log.e("curlData executor failed..::e = " + e + "::url = " + url + "::arg = " + arg);
+				return;
+			}
+		}
+
+		//check that the local data file was written
 		localDataFile.open("r");
 		result = localDataFile.read();
 		localDataFile.close();
 
 
+		//make sure that the data is not in HTML format
 		if(htmlRegex.test(result))
 		{
 			log.e("curl command returned html code instead of JSON.::" + result);
@@ -2058,28 +2081,21 @@ function curlData(url,arg)
 
 		if(result !== "")
 		{
-
+			//there's SOMETHING in the local data file
 			try
 			{
 				parsedJSON = JSON.parse(result);
+				log.l("data found after " + curTries + " tries.");
+				log.l("execution took " + (curTries * delay) + " milliseconds");
 			}
 			catch(e)
-			{
-				continue;
+			{ 
+				//data was invalid
 			}
-			log.l("data found after " + curTries + " tries.");
-			log.l("execution took " + (curTries * delay) + " milliseconds");
-			dataProperlyWritten = true;
 		}
-		else
-		{
-			curTries++;
-			if(curTries % 10 === 0)
-			{
-				log.l("curTries = " + curTries);
-			}
-			$.sleep(delay);
-		}
+
+		curTries++;
+		$.sleep(delay);
 	}
 
 	log.l("end of curlData function");
