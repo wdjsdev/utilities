@@ -1973,6 +1973,7 @@ function removeAction(actionName)
 function curlData(url,arg)
 {
 	log.h("Beginning execution of curlData(" + url + "," + arg + ")");
+	$.writeln("Beginning execution of curlData(" + url + "," + arg + ")");
 	var result;
 	
 	if(!arg)
