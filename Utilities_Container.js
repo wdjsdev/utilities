@@ -189,6 +189,7 @@ var messageList = [];
 var logDest = [];
 
 var LIVE_LOGGING = false;
+var DEV_LOGGING = false;
 
 
 var beginScriptMsg = [
@@ -288,6 +289,10 @@ var log =
 		{
 			livePrintLog(result);
 		}
+		if(DEV_LOGGING)
+		{
+			$.writeln(result);
+		}
 	},
 	bp : function(msg)
 	{
@@ -320,6 +325,10 @@ var log =
 		{
 			livePrintLog(result);
 		}
+		if(DEV_LOGGING)
+		{
+			$.writeln(result);
+		}
 	},
 	l : function(msg)
 	{
@@ -335,6 +344,10 @@ var log =
 		if(LIVE_LOGGING)
 		{
 			livePrintLog(result)
+		}
+		if(DEV_LOGGING)
+		{
+			$.writeln(result);
 		}
 	},
 	L : function(msg)
@@ -1973,7 +1986,6 @@ function removeAction(actionName)
 function curlData(url,arg)
 {
 	log.h("Beginning execution of curlData(" + url + "," + arg + ")");
-	$.writeln("Beginning execution of curlData(" + url + "," + arg + ")");
 	var result;
 	
 	if(!arg)
