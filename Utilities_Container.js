@@ -704,6 +704,49 @@ function findSpecificPageItem(parent,itemName)
 	return result;
 }
 
+
+
+//dig through the parent object recursively to find
+//something of a specified type and name
+function findSpecificItem(parent,itemType,name)
+{
+	
+	var resultItem;
+	for(var i=0,len=parent.pageItems.length;i<len && !resultItem;i++)
+	{
+		dig(parent.pageItems[i])
+	}
+
+	return resultItem;
+
+	function dig(item)
+	{
+		if(item.name === name)
+		{
+			resultItem = item;
+			return;
+		}
+		if(item.typename === "GroupItem")
+		{
+			for(var t=0,len=item.pageItems.length;t<len && !resultItem;t++)
+			{
+				if (item.pageItems[t].name === name)
+				{
+
+					resultItem = item.pageItems[t];
+				}
+				else
+				{
+					dig(item.pageItems[t]);
+				}
+			}
+		}
+	}
+
+}
+
+
+
 function getPPLay(parent)
 {
 	var result, len, lay, subLay, subLayLen;
