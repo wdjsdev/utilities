@@ -746,6 +746,27 @@ function findSpecificItem(parent,itemType,name)
 }
 
 
+//loop all the parent layers in the document
+//and hide any prepress layers
+function hidePPLay()
+{
+	var doc = app.activeDocument;
+	var layers = doc.layers;
+	var ppLay;
+	for(var p=0,len=layers.length;p<len;p++)
+	{
+		ppLay = getPPLay(layers[p]);
+		if(ppLay)
+		{
+			for(var s=0,sLen=ppLay.layers.length;s<sLen;s++)
+			{
+				ppLay.layers[s].visible = true;
+				ppLay.layers[s].locked = false;
+			}
+			ppLay.visible = false;
+		}
+	}
+}
 
 function getPPLay(parent)
 {
