@@ -22,29 +22,31 @@ if(typeof scriptName === "undefined")
 
 
 //Network Storage. Production version
-var networkPath;
+var customizationPath;
 if($.os.match('Windows'))
 {
-	alert("Sorry. The scripts aren't designed to work with a PC");
-	valid = false;
-}
-
-// MAC
-var user = $.getenv("USER")
-
-var homeFolderPath = "/Volumes/Macintosh HD/Users/" + user;
-var homeFolder = new Folder(homeFolderPath);
-
-//boolean to determine whether to use the CustomizationDR drive for testing.
-var spoofDRUser = false;
-if(DR_USERS.indexOf(user)>-1 || (spoofDRUser && user === "will.dowling"))
-{
-	var customizationPath = "/Volumes/CustomizationDR/";
+	var user = $.getenv("USERNAME");
+	customizationPath = "//AD4/Customization/";
+	var homeFolderPath = "~";
 }
 else
 {
-	var customizationPath = "/Volumes/Customization/";
+	// MAC
+	var user = $.getenv("USER")
+	customizationPath = "/Volumes/Customization/";
+	var homeFolderPath = "/Volumes/Macintosh HD/Users/" + user;
+	var homeFolder = new Folder(homeFolderPath);
 }
+
+
+
+//boolean to determine whether to use the CustomizationDR drive for testing.
+var spoofDRUser = false;
+if(DR_USERS.indexOf(user)>-1 || (spoofDRUser && user. === "will.dowling"))
+{
+	customizationPath.replace("Customization","CustomizationDR");
+}	
+
 var customizationFolder = new Folder(customizationPath);
 
 
@@ -55,6 +57,15 @@ var desktopFolder = new Folder(desktopPath);
 
 var documentsPath = homeFolderPath + "/Documents/";
 var documentsFolder = new Folder(documentsPath);
+
+////////////////////////
+////////ATTENTION://////
+//
+//		remote database
+//
+////////////////////////
+// customizationPath = desktopPath + "automation/local_data/";
+// customizationFolder = new Folder(customizationPath);
 
 var libraryPath = customizationPath + "Library/";
 var libraryFolder = new Folder(libraryPath);
@@ -94,6 +105,7 @@ var aaSpecialInstructionsFile = File(dataPath + "/aa_special_instructions.js");
 var userPathRegex = /(^\/Users\/[^\/]*\/)|(^.*~\/)/i;
 
 
+
 //
 //deprecated
 //
@@ -101,12 +113,12 @@ var userPathRegex = /(^\/Users\/[^\/]*\/)|(^.*~\/)/i;
 //instead of having one central log file for each script.
 //
 //log files
-var centralLog = new File("/Volumes/Customization/Library/Scripts/Script Resources/Data/.script_logs/central_log.txt");
-var importantLog = new File("/Volumes/Customization/Library/Scripts/Script Resources/Data/.script_logs/important_log.txt");
-var centralErrorLog = new File("/Volumes/Customization/Library/Scripts/Script Resources/Data/.script_logs/error_log.txt");
-var buildMockLog = new File("/Volumes/Customization/Library/Scripts/Script Resources/Data/.script_logs/mockup_builder_log.txt");
-var missingTemplatesLog = new File("/Volumes/Customization/Library/Scripts/Script Resources/Data/.script_logs/converted_templates_needed.txt");
-var changeCodeLog = new File("/Volumes/Customization/Library/Scripts/Script Resources/Data/.script_logs/change_code_log.txt");
+var centralLog = new File(dataPath + ".script_logs/central_log.txt");
+var importantLog = new File(dataPath + ".script_logs/important_log.txt");
+var centralErrorLog = new File(dataPath + ".script_logs/error_log.txt");
+var buildMockLog = new File(dataPath + ".script_logs/mockup_builder_log.txt");
+var missingTemplatesLog = new File(dataPath + ".script_logs/converted_templates_needed.txt");
+var changeCodeLog = new File(dataPath + ".script_logs/change_code_log.txt");
 //
 //deprecated
 //
@@ -664,6 +676,42 @@ function findChildByName(parent,name,type)
 	}
 }
 
+//display a dialog with a listbox populated
+//with an array of items. Return the selected
+//items as an array
+function chooseFromListbox(items,msg)
+{
+	var result = [];
+	var cfl = new Window("dialog","Choose the desired item(s)");
+		var topTxt = UI.static(cfl,msg);
+		var topTxt2 = UI.static(cfl,"Use Control/Command to select multiple items.");
+		var lbGroup = UI.group(cfl);
+			var lb = UI.listbox(lbGroup,[50,50,200,200],items,{multiselect:true});
+
+		var btnGroup = UI.group(cfl);
+			var cancel = UI.button(btnGroup,"Cancel",function()
+			{
+				result = undefined;
+				cfl.close();
+			})
+			var submit = UI.button(btnGroup,"Submit",function()
+			{
+				if(lb.selection && lb.selection.length)
+				{
+					result = lb.selection;
+				}
+				else
+				{
+					alert("Please make a selection.");
+					return;
+				}
+				cfl.close();
+			})
+
+	cfl.show();
+	return result;
+}
+
 function findSpecificLayer(parent,layerName)
 {
 	var result,layers;
@@ -687,20 +735,54 @@ function findSpecificLayer(parent,layerName)
 	return result;
 }
 
-function findSpecificPageItem(parent,itemName)
+//parent = container object
+//itemName = string
+//[crit] = string representing criteria for a match
+	//"match" means the entire name must match exactly
+	//"imatch" means name must match, but case doesn't matter
+	//"any" means itemName must exist somewhere
+//return a single object or undefined
+function findSpecificPageItem(parent,itemName,crit)
 {
-	var result;
+	var result = [],curItem;
 	if(parent.pageItems.length)
 	{
 		for(var x=0,len=parent.pageItems.length;x<len;x++)
 		{
-			if(parent.pageItems[x].name.indexOf(itemName)>-1)
+			curItem = parent.pageItems[x];
+			if(crit)
 			{
-				result = parent.pageItems[x];
+				if(crit === "match" && curItem.name === itemName)
+				{
+					result.push(curItem);
+				}
+				else if(crit === "imatch" && curItem.name.toLowerCase() === itemName.toLowerCase())
+				{
+					result.push(curItem);
+				}
+				else if(crit === "any" && curItem.name.indexOf(itemName)>-1)
+				{
+					result.push(curItem);
+				}
+			}
+			else if(curItem.name.indexOf(itemName)>-1)
+			{
+				result.push(curItem);
+
 			}
 		}
 	}
 
+	if(result.length)
+	{
+		if(result.length > 1)
+		{
+			var msg = parent + " has multiple items matching the name " + itemName;
+			result = chooseFromListbox(result,msg);
+		}
+		result = result[0];
+	}
+	
 	return result;
 }
 
@@ -2454,7 +2536,7 @@ var ADD_NEW_FILL_ACTION_STRING =
 
 
 
-const BUILDER_GRAPHIC_LOCATION_CODES =  
+var BUILDER_GRAPHIC_LOCATION_CODES =  
 	{
 		"Front Upper Right": "TFUR",
 		"Front Upper Left": "TFUL",
