@@ -27,22 +27,27 @@ if($.os.match('Windows'))
 {
 	var user = $.getenv("USERNAME");
 	customizationPath = "//AD4/Customization/";
-	var homeFolderPath = "~";
+	var homeFolderPath = "~";//
+	var homeFolder = Folder(homeFolderPath);
 }
 else
 {
 	// MAC
 	var user = $.getenv("USER")
 	customizationPath = "/Volumes/Customization/";
-	var homeFolderPath = "/Volumes/Macintosh HD/Users/" + user;
+	var homeFolderPath = "/Volumes/Macintosh HD/Users/" + user + "/";
 	var homeFolder = new Folder(homeFolderPath);
+	if(!homeFolder.exists)
+	{
+		homeFolder = new Folder("~/");
+	}
 }
 
 
 
 //boolean to determine whether to use the CustomizationDR drive for testing.
 var spoofDRUser = false;
-if(DR_USERS.indexOf(user)>-1 || (spoofDRUser && user. === "will.dowling"))
+if(DR_USERS.indexOf(user)>-1 || (spoofDRUser && user === "will.dowling"))
 {
 	customizationPath.replace("Customization","CustomizationDR");
 }	
@@ -134,7 +139,9 @@ var NOD = netsuiteOrderDataURL = "https://460511.extforms.netsuite.com/app/site/
 // var NOD = netsuiteOrderDataURL = "https://forms.na2.netsuite.com/app/site/hosting/scriptlet.nl?script=1477&deploy=1&compid=460511&h=2834dd5419b7c48fdba0&soid="
 
 //builder data for mockup building
-var NBD = netsuiteBuilderDataURL = "https://forms.na2.netsuite.com/app/site/hosting/scriptlet.nl?script=908&deploy=1&compid=460511&h=940572c6865fbbe12e98&designId=";
+// var NBD = netsuiteBuilderDataURL = "https://forms.na2.netsuite.com/app/site/hosting/scriptlet.nl?script=908&deploy=1&compid=460511&h=940572c6865fbbe12e98&designId=";
+var NBD = netsuiteBuilderDataURL = "https://460511.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=908&deploy=1&compid=460511&h=940572c6865fbbe12e98&designId=";
+
 
 
 
@@ -1007,7 +1014,7 @@ function includeComponents(dev,prod,ignorePrompt)
 	var result;
 	var compFolder,comps,thisComp;
 	
-	if(user === "will.dowling")
+	if(user.toLowerCase() === "will.dowling")
 	{
 		if(ignorePrompt)
 		{
@@ -1360,7 +1367,6 @@ function writeReadMe(dest,msg)
 
 	//write the new read me message
 	readMeFile.open("w");
-	$.writeln(contents + logTime() + ": " + msg + "\n\n");
 	readMeFile.write(contents + logTime() + ": " + msg + "\n\n");
 	readMeFile.close();
 
