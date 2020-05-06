@@ -27,7 +27,7 @@ if($.os.match('Windows'))
 {
 	var user = $.getenv("USERNAME");
 	customizationPath = "//AD4/Customization/";
-	var homeFolderPath = "~";//
+	var homeFolderPath = "~/";//
 	var homeFolder = Folder(homeFolderPath);
 }
 else
@@ -37,10 +37,11 @@ else
 	customizationPath = "/Volumes/Customization/";
 	var homeFolderPath = "/Volumes/Macintosh HD/Users/" + user + "/";
 	var homeFolder = new Folder(homeFolderPath);
-	if(!homeFolder.exists)
-	{
-		homeFolder = new Folder("~/");
-	}
+	// if(!homeFolder.exists)
+	// {
+	// 	homeFolder = new Folder("~/");
+	// 	homeFolderPath = "~/";
+	// }
 }
 
 
@@ -57,10 +58,10 @@ var customizationFolder = new Folder(customizationPath);
 
 
 
-var desktopPath = homeFolderPath + "/Desktop/";
+var desktopPath = homeFolderPath + "Desktop/";
 var desktopFolder = new Folder(desktopPath);
 
-var documentsPath = homeFolderPath + "/Documents/";
+var documentsPath = homeFolderPath + "Documents/";
 var documentsFolder = new Folder(documentsPath);
 
 ////////////////////////
@@ -105,7 +106,7 @@ var centralLibraryFile = File(centralLibraryPath);
 var btLibraryPath = dataPath + "build_template_library.js";
 var btLibraryFile = File(btLibraryPath);
 
-var aaSpecialInstructionsFile = File(dataPath + "/aa_special_instructions.js");
+var aaSpecialInstructionsFile = File(dataPath + "aa_special_instructions.js");
 
 var userPathRegex = /(^\/Users\/[^\/]*\/)|(^.*~\/)/i;
 
@@ -860,7 +861,7 @@ function hidePPLay()
 function getPPLay(parent)
 {
 	var result, len, lay, subLay, subLayLen;
-	var pat = /^[a-z]{2}[-_].*/i;
+	var pat = /^[a-z]*[-_].*/i;
 
 	if(parent.typename === "String")
 	{
@@ -948,7 +949,8 @@ function coord(ppLay)
 function getCode(layName)
 {
 	var pat = /(.*)([-_][a-z\d]{3,}([-_][a-z])?)/i;
-	var underscorePat = /([fpb][dsm])[_]/i;
+	// var underscorePat = /([fpb][dsm])[_]/i;
+	var underscorePat = /([a-z]*)[_]/i;
 	var result = layName.match(pat)[1];
 	while(result.match(underscorePat))
 	{
@@ -1172,7 +1174,8 @@ function properTemplateSetup(doc)
 
 	var layers = doc.layers;
 	var layLen = layers.length;
-	var garPat = /^[a-z]{2}[-_]/i;
+	// var garPat = /^[a-z]{2}[-_]/i;
+	var garPat = /^[a-z]*[-_]/i;
 	var thisLay,thisSubLay,layInfo;
 	var templateLayers = 
 	{
@@ -1354,12 +1357,12 @@ function writeReadMe(dest,msg)
 		}
 		catch(e)
 		{
-			errorList.push("Failed to create destination folder at the following location:\n" + dest.fsName);
+			errorList.push("Failed to create destination folder at the following location:\n" + dest.fullName);
 			return false;
 		}
 	}
 
-	var readMeFile = new File(dest.fsName + "/READ_ME.txt");
+	var readMeFile = new File(dest.fullName + "/READ_ME.txt");
 	//get any existing contents of the file to avoid overwriting
 	readMeFile.open();
 	var contents = readMeFile.read();
@@ -2139,17 +2142,16 @@ function curlData(url,arg)
 {
 	log.h("Beginning execution of curlData(" + url + "," + arg + ")");
 	var result;
-	
-	if(!arg)
-	{
-		log.e("arg was undefined.");
-		errorList.push("Failed to get the data from netsuite. The required information was missing.");
-		return result;
-	}
 
-	var localDataFile = File(documentsPath + "curlData/curlData.txt");
-	var executor = File(resourcePath + "/curl_from_illustrator.app");
-	var killExecutor = File(resourcePath + "/kill_curl_from_illustrator.app");
+	var scriptPath = documentsPath + "curlData/"
+	var scriptFolder = new Folder(scriptPath);
+
+	var localDataFilePath = scriptPath + "curlData.txt";
+	var localDataFile = File(localDataFilePath);
+	var executor = File(resourcePath + "curl_from_illustrator.app");
+	var killExecutor = File(resourcePath + "kill_curl_from_illustrator.app");
+
+
 
 
 	//write the dynamic .scpt file
@@ -2162,8 +2164,7 @@ function curlData(url,arg)
 		];
 	var dataString = scptText.join("");
 
-	var scriptPath = documentsPath + "curlData/"
-	var scriptFolder = new Folder(scriptPath);
+	
 	if(!scriptFolder.exists)
 	{
 		scriptFolder.create();
