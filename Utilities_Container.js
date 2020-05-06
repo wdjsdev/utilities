@@ -22,39 +22,56 @@ if(typeof scriptName === "undefined")
 
 
 //Network Storage. Production version
-var networkPath;
+var customizationPath;
 if($.os.match('Windows'))
 {
-	alert("Sorry. The scripts aren't designed to work with a PC");
-	valid = false;
+	var user = $.getenv("USERNAME");
+	customizationPath = "//AD4/Customization/";
+	var homeFolderPath = "~/";//
+	var homeFolder = Folder(homeFolderPath);
+}
+else
+{
+	// MAC
+	var user = $.getenv("USER")
+	customizationPath = "/Volumes/Customization/";
+	var homeFolderPath = "/Volumes/Macintosh HD/Users/" + user + "/";
+	var homeFolder = new Folder(homeFolderPath);
+	// if(!homeFolder.exists)
+	// {
+	// 	homeFolder = new Folder("~/");
+	// 	homeFolderPath = "~/";
+	// }
 }
 
-// MAC
-var user = $.getenv("USER")
 
-var homeFolderPath = "/Volumes/Macintosh HD/Users/" + user;
-var homeFolder = new Folder(homeFolderPath);
 
 //boolean to determine whether to use the CustomizationDR drive for testing.
 var spoofDRUser = false;
 if(DR_USERS.indexOf(user)>-1 || (spoofDRUser && user === "will.dowling"))
 {
-	var customizationPath = "/Volumes/CustomizationDR/";
-}
-else
-{
-	var customizationPath = "/Volumes/Customization/";
-}
+	customizationPath.replace("Customization","CustomizationDR");
+}	
+
 var customizationFolder = new Folder(customizationPath);
 
 
 
 
-var desktopPath = homeFolderPath + "/Desktop/";
+var desktopPath = homeFolderPath + "Desktop/";
 var desktopFolder = new Folder(desktopPath);
 
-var documentsPath = homeFolderPath + "/Documents/";
+var documentsPath = homeFolderPath + "Documents/";
 var documentsFolder = new Folder(documentsPath);
+
+////////////////////////
+////////ATTENTION://////
+//
+//		remote database
+//
+////////////////////////
+// customizationPath = desktopPath + "automation/local_data/";
+// customizationFolder = new Folder(customizationPath);
 
 var libraryPath = customizationPath + "Library/";
 var libraryFolder = new Folder(libraryPath);
@@ -89,9 +106,10 @@ var centralLibraryFile = File(centralLibraryPath);
 var btLibraryPath = dataPath + "build_template_library.js";
 var btLibraryFile = File(btLibraryPath);
 
-var aaSpecialInstructionsFile = File(dataPath + "/aa_special_instructions.js");
+var aaSpecialInstructionsFile = File(dataPath + "aa_special_instructions.js");
 
 var userPathRegex = /(^\/Users\/[^\/]*\/)|(^.*~\/)/i;
+
 
 
 //
@@ -101,12 +119,12 @@ var userPathRegex = /(^\/Users\/[^\/]*\/)|(^.*~\/)/i;
 //instead of having one central log file for each script.
 //
 //log files
-var centralLog = new File("/Volumes/Customization/Library/Scripts/Script Resources/Data/.script_logs/central_log.txt");
-var importantLog = new File("/Volumes/Customization/Library/Scripts/Script Resources/Data/.script_logs/important_log.txt");
-var centralErrorLog = new File("/Volumes/Customization/Library/Scripts/Script Resources/Data/.script_logs/error_log.txt");
-var buildMockLog = new File("/Volumes/Customization/Library/Scripts/Script Resources/Data/.script_logs/mockup_builder_log.txt");
-var missingTemplatesLog = new File("/Volumes/Customization/Library/Scripts/Script Resources/Data/.script_logs/converted_templates_needed.txt");
-var changeCodeLog = new File("/Volumes/Customization/Library/Scripts/Script Resources/Data/.script_logs/change_code_log.txt");
+var centralLog = new File(dataPath + ".script_logs/central_log.txt");
+var importantLog = new File(dataPath + ".script_logs/important_log.txt");
+var centralErrorLog = new File(dataPath + ".script_logs/error_log.txt");
+var buildMockLog = new File(dataPath + ".script_logs/mockup_builder_log.txt");
+var missingTemplatesLog = new File(dataPath + ".script_logs/converted_templates_needed.txt");
+var changeCodeLog = new File(dataPath + ".script_logs/change_code_log.txt");
 //
 //deprecated
 //
@@ -122,7 +140,9 @@ var NOD = netsuiteOrderDataURL = "https://460511.extforms.netsuite.com/app/site/
 // var NOD = netsuiteOrderDataURL = "https://forms.na2.netsuite.com/app/site/hosting/scriptlet.nl?script=1477&deploy=1&compid=460511&h=2834dd5419b7c48fdba0&soid="
 
 //builder data for mockup building
-var NBD = netsuiteBuilderDataURL = "https://forms.na2.netsuite.com/app/site/hosting/scriptlet.nl?script=908&deploy=1&compid=460511&h=940572c6865fbbe12e98&designId=";
+// var NBD = netsuiteBuilderDataURL = "https://forms.na2.netsuite.com/app/site/hosting/scriptlet.nl?script=908&deploy=1&compid=460511&h=940572c6865fbbe12e98&designId=";
+var NBD = netsuiteBuilderDataURL = "https://460511.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=908&deploy=1&compid=460511&h=940572c6865fbbe12e98&designId=";
+
 
 
 
@@ -664,6 +684,42 @@ function findChildByName(parent,name,type)
 	}
 }
 
+//display a dialog with a listbox populated
+//with an array of items. Return the selected
+//items as an array
+function chooseFromListbox(items,msg)
+{
+	var result = [];
+	var cfl = new Window("dialog","Choose the desired item(s)");
+		var topTxt = UI.static(cfl,msg);
+		var topTxt2 = UI.static(cfl,"Use Control/Command to select multiple items.");
+		var lbGroup = UI.group(cfl);
+			var lb = UI.listbox(lbGroup,[50,50,200,200],items,{multiselect:true});
+
+		var btnGroup = UI.group(cfl);
+			var cancel = UI.button(btnGroup,"Cancel",function()
+			{
+				result = undefined;
+				cfl.close();
+			})
+			var submit = UI.button(btnGroup,"Submit",function()
+			{
+				if(lb.selection && lb.selection.length)
+				{
+					result = lb.selection;
+				}
+				else
+				{
+					alert("Please make a selection.");
+					return;
+				}
+				cfl.close();
+			})
+
+	cfl.show();
+	return result;
+}
+
 function findSpecificLayer(parent,layerName)
 {
 	var result,layers;
@@ -687,20 +743,54 @@ function findSpecificLayer(parent,layerName)
 	return result;
 }
 
-function findSpecificPageItem(parent,itemName)
+//parent = container object
+//itemName = string
+//[crit] = string representing criteria for a match
+	//"match" means the entire name must match exactly
+	//"imatch" means name must match, but case doesn't matter
+	//"any" means itemName must exist somewhere
+//return a single object or undefined
+function findSpecificPageItem(parent,itemName,crit)
 {
-	var result;
+	var result = [],curItem;
 	if(parent.pageItems.length)
 	{
 		for(var x=0,len=parent.pageItems.length;x<len;x++)
 		{
-			if(parent.pageItems[x].name.indexOf(itemName)>-1)
+			curItem = parent.pageItems[x];
+			if(crit)
 			{
-				result = parent.pageItems[x];
+				if(crit === "match" && curItem.name === itemName)
+				{
+					result.push(curItem);
+				}
+				else if(crit === "imatch" && curItem.name.toLowerCase() === itemName.toLowerCase())
+				{
+					result.push(curItem);
+				}
+				else if(crit === "any" && curItem.name.indexOf(itemName)>-1)
+				{
+					result.push(curItem);
+				}
+			}
+			else if(curItem.name.indexOf(itemName)>-1)
+			{
+				result.push(curItem);
+
 			}
 		}
 	}
 
+	if(result.length)
+	{
+		if(result.length > 1)
+		{
+			var msg = parent + " has multiple items matching the name " + itemName;
+			result = chooseFromListbox(result,msg);
+		}
+		result = result[0];
+	}
+	
 	return result;
 }
 
@@ -771,7 +861,7 @@ function hidePPLay()
 function getPPLay(parent)
 {
 	var result, len, lay, subLay, subLayLen;
-	var pat = /^[a-z]{2}[-_].*/i;
+	var pat = /^[a-z]*[-_].*/i;
 
 	if(parent.typename === "String")
 	{
@@ -859,7 +949,8 @@ function coord(ppLay)
 function getCode(layName)
 {
 	var pat = /(.*)([-_][a-z\d]{3,}([-_][a-z])?)/i;
-	var underscorePat = /([fpb][dsm])[_]/i;
+	// var underscorePat = /([fpb][dsm])[_]/i;
+	var underscorePat = /([a-z]*)[_]/i;
 	var result = layName.match(pat)[1];
 	while(result.match(underscorePat))
 	{
@@ -925,7 +1016,7 @@ function includeComponents(dev,prod,ignorePrompt)
 	var result;
 	var compFolder,comps,thisComp;
 	
-	if(user === "will.dowling")
+	if(user.toLowerCase() === "will.dowling")
 	{
 		if(ignorePrompt)
 		{
@@ -1083,7 +1174,8 @@ function properTemplateSetup(doc)
 
 	var layers = doc.layers;
 	var layLen = layers.length;
-	var garPat = /^[a-z]{2}[-_]/i;
+	// var garPat = /^[a-z]{2}[-_]/i;
+	var garPat = /^[a-z]*[-_]/i;
 	var thisLay,thisSubLay,layInfo;
 	var templateLayers = 
 	{
@@ -1265,12 +1357,12 @@ function writeReadMe(dest,msg)
 		}
 		catch(e)
 		{
-			errorList.push("Failed to create destination folder at the following location:\n" + dest.fsName);
+			errorList.push("Failed to create destination folder at the following location:\n" + dest.fullName);
 			return false;
 		}
 	}
 
-	var readMeFile = new File(dest.fsName + "/READ_ME.txt");
+	var readMeFile = new File(dest.fullName + "/READ_ME.txt");
 	//get any existing contents of the file to avoid overwriting
 	readMeFile.open();
 	var contents = readMeFile.read();
@@ -1278,7 +1370,6 @@ function writeReadMe(dest,msg)
 
 	//write the new read me message
 	readMeFile.open("w");
-	$.writeln(contents + logTime() + ": " + msg + "\n\n");
 	readMeFile.write(contents + logTime() + ": " + msg + "\n\n");
 	readMeFile.close();
 
@@ -2051,17 +2142,16 @@ function curlData(url,arg)
 {
 	log.h("Beginning execution of curlData(" + url + "," + arg + ")");
 	var result;
-	
-	if(!arg)
-	{
-		log.e("arg was undefined.");
-		errorList.push("Failed to get the data from netsuite. The required information was missing.");
-		return result;
-	}
 
-	var localDataFile = File(documentsPath + "curlData/curlData.txt");
-	var executor = File(resourcePath + "/curl_from_illustrator.app");
-	var killExecutor = File(resourcePath + "/kill_curl_from_illustrator.app");
+	var scriptPath = documentsPath + "curlData/"
+	var scriptFolder = new Folder(scriptPath);
+
+	var localDataFilePath = scriptPath + "curlData.txt";
+	var localDataFile = File(localDataFilePath);
+	var executor = File(resourcePath + "curl_from_illustrator.app");
+	var killExecutor = File(resourcePath + "kill_curl_from_illustrator.app");
+
+
 
 
 	//write the dynamic .scpt file
@@ -2074,8 +2164,7 @@ function curlData(url,arg)
 		];
 	var dataString = scptText.join("");
 
-	var scriptPath = documentsPath + "curlData/"
-	var scriptFolder = new Folder(scriptPath);
+	
 	if(!scriptFolder.exists)
 	{
 		scriptFolder.create();
@@ -2454,7 +2543,7 @@ var ADD_NEW_FILL_ACTION_STRING =
 
 
 
-const BUILDER_GRAPHIC_LOCATION_CODES =  
+var BUILDER_GRAPHIC_LOCATION_CODES =  
 	{
 		"Front Upper Right": "TFUR",
 		"Front Upper Left": "TFUL",
