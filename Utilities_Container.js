@@ -2143,129 +2143,202 @@ function curlData(url,arg)
 	log.h("Beginning execution of curlData(" + url + "," + arg + ")");
 	var result;
 
-	var scriptPath = documentsPath + "curlData/"
-	var scriptFolder = new Folder(scriptPath);
-
-	var localDataFilePath = scriptPath + "curlData.txt";
-	var localDataFile = File(localDataFilePath);
-	var executor = File(resourcePath + "curl_from_illustrator.app");
-	var killExecutor = File(resourcePath + "kill_curl_from_illustrator.app");
-
-
-
-
-	//write the dynamic .scpt file
-	var scptText =
-		[
-			"do shell script ",
-			"\"curl \\\"" + url,
-			arg + "\\\" > \\\"",
-			localDataFile.fsName + "\\\"\""
-		];
-	var dataString = scptText.join("");
-
-	
-	if(!scriptFolder.exists)
+	//temporary hard coded access for dev
+	if(true || $.os.match("Windows"))
+	// if($.os.match("Windows"))
 	{
-		scriptFolder.create();
+		result = curlWorkaround(url + arg);
 	}
-	var scptFile = new File(scriptPath + "curl_from_illustrator.scpt");
 
-	scptFile.open("w");
-	scptFile.write(dataString);
-	scptFile.close();
-
-
-	//clear out the local data file..
-	//make sure we always start with an empty string
-	localDataFile.open("w");
-	localDataFile.write("");
-	localDataFile.close();
-
-	
-
-	//try to read the data
-	var curTries = 0;
-	var maxTries;
-	var delay;
-
-	//if the user is in the DR, set a long timeout
-	//otherwise keep it short
-	if(DR_USERS.indexOf(user)>-1)
-	{
-		maxTries = 600;
-		delay = 200
-	}
 	else
 	{
-		maxTries = 101;
-		delay = 100;
-	}
-	var parsedJSON;
-	var htmlRegex = /<html>/gmi;
+		//mac version
+		var scriptPath = documentsPath + "curlData/"
+		var scriptFolder = new Folder(scriptPath);
 
-	//as long as the json data is invalid
-	//and the max number of attempts has not been exhausted
-	//try and gather the data
-	while(!parsedJSON && curTries < maxTries)
-	{
-		if(result === "")
+		var localDataFilePath = scriptPath + "curlData.txt";
+		var localDataFile = File(localDataFilePath);
+		var executor = File(resourcePath + "curl_from_illustrator.app");
+		var killExecutor = File(resourcePath + "kill_curl_from_illustrator.app");
+
+
+
+
+		//write the dynamic .scpt file
+		var scptText =
+			[
+				"do shell script ",
+				"\"curl \\\"" + url,
+				arg + "\\\" > \\\"",
+				localDataFile.fsName + "\\\"\""
+			];
+		var dataString = scptText.join("");
+
+		
+		if(!scriptFolder.exists)
 		{
-			try
-			{
-				if(curTries === 50)
-				{
-					killExecutor.execute();
-					// $.sleep(delay);
-				}
-
-				executor.execute();
-				// $.sleep(delay);
-			}
-			catch(e)
-			{
-				log.e("curlData executor failed..::e = " + e + "::url = " + url + "::arg = " + arg);
-				return;
-			}
+			scriptFolder.create();
 		}
+		var scptFile = new File(scriptPath + "curl_from_illustrator.scpt");
 
-		//check that the local data file was written
-		localDataFile.open("r");
-		result = localDataFile.read();
+		scptFile.open("w");
+		scptFile.write(dataString);
+		scptFile.close();
+
+
+		//clear out the local data file..
+		//make sure we always start with an empty string
+		localDataFile.open("w");
+		localDataFile.write("");
 		localDataFile.close();
 
+		
 
-		//make sure that the data is not in HTML format
-		if(htmlRegex.test(result))
+		//try to read the data
+		var curTries = 0;
+		var maxTries;
+		var delay;
+
+		//if the user is in the DR, set a long timeout
+		//otherwise keep it short
+		if(DR_USERS.indexOf(user)>-1)
 		{
-			log.e("curl command returned html code instead of JSON.::" + result);
-			errorList.push("Netsuite returned improper data for " + arg + ".")
-			break;
+			maxTries = 600;
+			delay = 200
 		}
-
-		if(result !== "")
+		else
 		{
-			//there's SOMETHING in the local data file
-			try
+			maxTries = 101;
+			delay = 100;
+		}
+		var parsedJSON;
+		var htmlRegex = /<html>/gmi;
+
+		//as long as the json data is invalid
+		//and the max number of attempts has not been exhausted
+		//try and gather the data
+		while(!parsedJSON && curTries < maxTries)
+		{
+			if(result === "")
 			{
-				parsedJSON = JSON.parse(result);
-				log.l("data found after " + curTries + " tries.");
-				log.l("execution took " + (curTries * delay) + " milliseconds");
-			}
-			catch(e)
-			{ 
-				//data was invalid
-			}
-		}
+				try
+				{
+					if(curTries === 50)
+					{
+						killExecutor.execute();
+						// $.sleep(delay);
+					}
 
-		curTries++;
-		$.sleep(delay);
+					executor.execute();
+					// $.sleep(delay);
+				}
+				catch(e)
+				{
+					log.e("curlData executor failed..::e = " + e + "::url = " + url + "::arg = " + arg);
+					return;
+				}
+			}
+
+			//check that the local data file was written
+			localDataFile.open("r");
+			result = localDataFile.read();
+			localDataFile.close();
+
+
+			//make sure that the data is not in HTML format
+			if(htmlRegex.test(result))
+			{
+				log.e("curl command returned html code instead of JSON.::" + result);
+				errorList.push("Netsuite returned improper data for " + arg + ".")
+				break;
+			}
+
+			if(result !== "")
+			{
+				//there's SOMETHING in the local data file
+				try
+				{
+					parsedJSON = JSON.parse(result);
+					log.l("data found after " + curTries + " tries.");
+					log.l("execution took " + (curTries * delay) + " milliseconds");
+				}
+				catch(e)
+				{ 
+					//data was invalid
+				}
+			}
+
+			curTries++;
+			$.sleep(delay);
+		}
 	}
+
 
 	log.l("end of curlData function");
 	log.l("returning: " + parsedJSON);
 	return parsedJSON;
 
+}
+
+
+// temporary windows workaround for the curlData function
+//instead of using applescript and bash to get data from netsuite
+//just populate a dialog with the URL to the data. The user will 
+//paste the data into their browser, and copy the resulting data
+//into an edit text box.
+//validate and parse the data
+//return JSON object.
+function curlWorkaround(url)
+{
+	var result;
+
+	var w_dataInput = new Window("dialog","Enter the order data:");
+
+		//labels n such
+		var labelGroup = UI.group(w_dataInput);
+			labelGroup.orientation = "column";
+			var topMsg = UI.static(labelGroup,"Copy this URL into your browser:");
+			var urlDisplay = UI.edit(labelGroup,url);
+
+		//h separator
+		UI.hseparator(w_dataInput,400)
+		//input group
+		var inputGroup = UI.group(w_dataInput);
+			var inputMsg = UI.static(inputGroup,"Paste the contents of the browser window here:")
+			var input = UI.edit(inputGroup,"",40);
+				input.active = true;
+
+		//buttons
+		var btnGroup = UI.group(w_dataInput);
+			var cancel = UI.button(btnGroup,"Cancel",function()
+			{
+				result = undefined;
+				w_dataInput.close();
+			});
+			var submit = UI.button(btnGroup,"Submit",function()
+			{
+				if(input.text !== "")
+				{
+					result = JSON.parse(input.text);
+					if(!result)
+					{
+						alert("Failed to parse the data.. Please try again.");
+					}
+					else
+					{
+						w_dataInput.close();
+					}
+				}
+				else
+				{
+					alert("Please paste the data into the box and try again.");
+					return;
+				}
+			})
+
+	w_dataInput.show();
+
+	return result;
 }
 
 function updateSwatchColor(swatch,name,colors)
