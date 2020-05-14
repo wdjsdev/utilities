@@ -2141,11 +2141,11 @@ function removeAction(actionName)
 function curlData(url,arg)
 {
 	log.h("Beginning execution of curlData(" + url + "," + arg + ")");
-	var result;
+	var result,dataFileContents;
 
 	//temporary hard coded access for dev
-	if(true || $.os.match("Windows"))
-	// if($.os.match("Windows"))
+	// if(true || $.os.match("Windows"))
+	if($.os.match("Windows"))
 	{
 		result = curlWorkaround(url + arg);
 	}
@@ -2211,15 +2211,15 @@ function curlData(url,arg)
 			maxTries = 101;
 			delay = 100;
 		}
-		var parsedJSON;
+		
 		var htmlRegex = /<html>/gmi;
 
 		//as long as the json data is invalid
 		//and the max number of attempts has not been exhausted
 		//try and gather the data
-		while(!parsedJSON && curTries < maxTries)
+		while(!result && curTries < maxTries)
 		{
-			if(result === "")
+			if(dataFileContents === "")
 			{
 				try
 				{
@@ -2241,24 +2241,24 @@ function curlData(url,arg)
 
 			//check that the local data file was written
 			localDataFile.open("r");
-			result = localDataFile.read();
+			dataFileContents = localDataFile.read();
 			localDataFile.close();
 
 
 			//make sure that the data is not in HTML format
-			if(htmlRegex.test(result))
+			if(htmlRegex.test(dataFileContents))
 			{
-				log.e("curl command returned html code instead of JSON.::" + result);
+				log.e("curl command returned html code instead of JSON.::" + dataFileContents);
 				errorList.push("Netsuite returned improper data for " + arg + ".")
 				break;
 			}
 
-			if(result !== "")
+			if(dataFileContents !== "")
 			{
 				//there's SOMETHING in the local data file
 				try
 				{
-					parsedJSON = JSON.parse(result);
+					result = JSON.parse(dataFileContents);
 					log.l("data found after " + curTries + " tries.");
 					log.l("execution took " + (curTries * delay) + " milliseconds");
 				}
@@ -2275,8 +2275,8 @@ function curlData(url,arg)
 
 
 	log.l("end of curlData function");
-	log.l("returning: " + parsedJSON);
-	return parsedJSON;
+	log.l("returning: " + result);
+	return result;
 
 }
 
