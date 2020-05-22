@@ -369,10 +369,6 @@ function executeBatch(func,closeFilePref)
 	for (var x = batchFiles.length - 1; x >= 0; x--)
 	{
 		log.l("Processing file: " + batchFiles[x].name);
-		if(user === "will.dowling")
-		{
-			$.writeln("processing file: " + x + " of " + batchFiles.length);
-		}
 		docRef = batchFiles[x];
 		docRef.activate();
 		func();
