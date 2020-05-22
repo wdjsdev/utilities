@@ -85,7 +85,7 @@ var prepressFolder = new Folder(prepressPath);
 var scriptsPath = libraryPath + "Scripts/";
 var scriptsFolder = new Folder(scriptsPath);
 
-var resourcePath = scriptsPath + "Script Resources/";
+var resourcePath = scriptsPath + "Script_Resources/";
 var resourceFolder = new Folder(resourcePath);
 
 var imagesPath = resourcePath + "Images/";
@@ -1408,7 +1408,7 @@ function sendCustomEmail(emailAddress,subject,msg)
 	tempScript.close();
 
 	//run the executor script
-	var executor = File("/Volumes/Customization/Library/Scripts/Script Resources/send_email.app");
+	var executor = File(resourcePath + "send_email.app");
 	executor.execute();
 }
 
