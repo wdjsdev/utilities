@@ -2141,144 +2141,155 @@ function removeAction(actionName)
 function curlData(url,arg)
 {
 	log.h("Beginning execution of curlData(" + url + "," + arg + ")");
-	var result,dataFileContents;
+	var result,status,dataFileContents;
+	var htmlRegex = /<html>/gmi;
 
-	//temporary hard coded access for dev
-	// if(true || $.os.match("Windows"))
-	if($.os.match("Windows"))
+
+	var curlDataPath = documentsPath + "curlData/"
+	var curlDataFolder = new Folder(curlDataPath);
+	if(!curlDataFolder.exists)
 	{
-		result = curlWorkaround(url + arg);
+		curlDataFolder.create();
 	}
 
+	var localDataFilePath = decodeURI(curlDataPath + "curlData.txt");
+	var localDataFile = File(localDataFilePath);
+
+	//clear out the local data file..
+	//make sure we always start with an empty string
+	localDataFile.open("w");
+	localDataFile.write("");
+	localDataFile.close();
+	status = "empty";
+
+
+	var scriptText,
+		scriptFile,
+		executor,
+		killExecutor;
+
+
+	if($.os.match("Windows"))
+	{
+		//write the bat file that will be
+		//used to execute the vbs script
+		scriptText = "cscript.exe ";
+		scriptText += dataPath + "socket_xhttpRequest.vbs ";
+		scriptText += url + arg + " ";
+		scriptText += localDataFilePath;
+		
+		scriptFile = File(curlDataPath + "batFile.bat");
+		writeScriptFile(scriptText);
+
+		executor = scriptFile;
+	}
 	else
 	{
-		//mac version
-		var scriptPath = documentsPath + "curlData/"
-		var scriptFolder = new Folder(scriptPath);
+		scriptText = [
+			"do shell script ",
+			"\"curl \\\"" + url,
+			arg + "\\\" > \\\"",
+			localDataFilePath + "\\\"\""
+		].join("");
 
-		var localDataFilePath = scriptPath + "curlData.txt";
-		var localDataFile = File(localDataFilePath);
-		var executor = File(resourcePath + "curl_from_illustrator.app");
-		var killExecutor = File(resourcePath + "kill_curl_from_illustrator.app");
+		scriptFile = File(curlDataPath + "curl_from_illustrator.scpt");
+		writeScriptFile(scriptText);
+		executor = File(resourcePath + "curl_from_illustrator.app");
+		killExecutor = File(resourcePath + "kill_curl_from_illustrator.app");
+	}
 
 
 
+	var executorDelay = 2000;
+	var maxExecutorCalls = 5;
+	var currentExecutorCalls = 0;
 
-		//write the dynamic .scpt file
-		var scptText =
-			[
-				"do shell script ",
-				"\"curl \\\"" + url,
-				arg + "\\\" > \\\"",
-				localDataFile.fsName + "\\\"\""
-			];
-		var dataString = scptText.join("");
+	var checkDelay = 10;
+	var numberOfChecks = 50;
 
-		
-		if(!scriptFolder.exists)
+	var parseFailResults = 0;
+
+
+	do
+	{
+		//go get the data
+		executor.execute();
+		$.sleep(executorDelay);
+
+
+		//check the data
+		for(var a=0;a<numberOfChecks && status !== "valid";a++)
 		{
-			scriptFolder.create();
+			checkData()
+			$.sleep(checkDelay);
 		}
-		var scptFile = new File(scriptPath + "curl_from_illustrator.scpt");
 
-		scptFile.open("w");
-		scptFile.write(dataString);
-		scptFile.close();
+	}
+	while(status !== "valid" && status !== "html" && currentExecutorCalls < maxExecutorCalls);
 
 
-		//clear out the local data file..
-		//make sure we always start with an empty string
-		localDataFile.open("w");
-		localDataFile.write("");
-		localDataFile.close();
+	//validate
+	if(status === "html" || (status === "empty" && parseFailResults.length))
+	{
+		errorList.push("Netsuite returned invalid data for " + arg);
+		log.e("curl command failed. status = " + status + "::parseFailResults = " + parseFailResults);
+	}
+	else if(status === "valid")
+	{
+		log.l("Valid data.");
+		return result;
+	}
+	
 
-		
 
-		//try to read the data
-		var curTries = 0;
-		var maxTries;
-		var delay;
+	function readDataFile()
+	{
+		var file = localDataFile;
+		file.open("r");
+		var contents = file.read();
+		file.close();
 
-		//if the user is in the DR, set a long timeout
-		//otherwise keep it short
-		if(DR_USERS.indexOf(user)>-1)
+		return contents;
+	}
+
+	function checkData()
+	{
+		var contents = readDataFile();
+		if(contents === "")
 		{
-			maxTries = 600;
-			delay = 200
+			status = "empty";
+		}
+		else if(contents.match(htmlRegex))
+		{
+			status = "html";
 		}
 		else
 		{
-			maxTries = 101;
-			delay = 100;
+			try
+			{
+				result = JSON.parse(contents);
+				status = "valid";
+			}
+			catch(e)
+			{
+				status = "parseFail";
+				parseFailResults++;
+			}
 		}
-		
-		var htmlRegex = /<html>/gmi;
-
-		//as long as the json data is invalid
-		//and the max number of attempts has not been exhausted
-		//try and gather the data
-		while(!result && curTries < maxTries)
-		{
-			if(dataFileContents === "")
-			{
-				try
-				{
-					if(curTries === 50)
-					{
-						killExecutor.execute();
-						// $.sleep(delay);
-					}
-
-					executor.execute();
-					// $.sleep(delay);
-				}
-				catch(e)
-				{
-					log.e("curlData executor failed..::e = " + e + "::url = " + url + "::arg = " + arg);
-					return;
-				}
-			}
-
-			//check that the local data file was written
-			localDataFile.open("r");
-			dataFileContents = localDataFile.read();
-			localDataFile.close();
-
-
-			//make sure that the data is not in HTML format
-			if(htmlRegex.test(dataFileContents))
-			{
-				log.e("curl command returned html code instead of JSON.::" + dataFileContents);
-				errorList.push("Netsuite returned improper data for " + arg + ".")
-				break;
-			}
-
-			if(dataFileContents !== "")
-			{
-				//there's SOMETHING in the local data file
-				try
-				{
-					result = JSON.parse(dataFileContents);
-					log.l("data found after " + curTries + " tries.");
-					log.l("execution took " + (curTries * delay) + " milliseconds");
-				}
-				catch(e)
-				{ 
-					//data was invalid
-				}
-			}
-
-			curTries++;
-			$.sleep(delay);
-		}
+	}
+	function writeScriptFile(txt)
+	{
+		scriptFile.open("w");
+		scriptFile.write(txt);
+		scriptFile.close();
 	}
 
 
-	log.l("end of curlData function");
-	log.l("returning: " + result);
-	return result;
-
 }
+
+
+
+
 
 
 // temporary windows workaround for the curlData function
