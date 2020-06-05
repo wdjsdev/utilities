@@ -2173,8 +2173,10 @@ function curlData(url,arg)
 	{
 		//write the bat file that will be
 		//used to execute the vbs script
+
+		writeVbsFile();
 		scriptText = "cscript.exe ";
-		scriptText += dataPath + "socket_xhttpRequest.vbs ";
+		scriptText += documentsPath + "curlData/socket_xhttpRequest.vbs ";
 		scriptText += url + arg + " ";
 		scriptText += localDataFilePath;
 		
@@ -2250,6 +2252,18 @@ function curlData(url,arg)
 		file.close();
 
 		return contents;
+	}
+
+	function writeVbsFile()
+	{
+		var srcFile = File(dataPath + "socket_xhttpRequest.vbs");
+		var destFile = File(documentsPath + "curlData/socket_xhttpRequest.vbs");
+
+		srcFile.open("r");
+		var srcContents = srcFile.read();
+		srcFile.close();
+
+		writeDatabase(destFile,srcContents);
 	}
 
 	function checkData()
