@@ -29,6 +29,7 @@ if($.os.match('Windows'))
 	customizationPath = "//AD4/Customization/";
 	var homeFolderPath = "~/";//
 	var homeFolder = Folder(homeFolderPath);
+	var os = "windows";
 }
 else
 {
@@ -37,6 +38,7 @@ else
 	customizationPath = "/Volumes/Customization/";
 	var homeFolderPath = "/Volumes/Macintosh HD/Users/" + user + "/";
 	var homeFolder = new Folder(homeFolderPath);
+	var os = "mac";
 	// if(!homeFolder.exists)
 	// {
 	// 	homeFolder = new Folder("~/");
