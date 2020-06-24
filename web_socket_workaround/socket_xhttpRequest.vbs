@@ -1,4 +1,3 @@
-
 Dim fso
 Set fso = CreateObject("Scripting.FileSystemObject")
 
@@ -11,6 +10,8 @@ If WScript.arguments.count>0 then
 	tempFilePath = WScript.arguments(1)
 End If
 
+MsgBox "url = " & url
+MsgBox "tempFilePath " & tempFilePath
 
 'setup the xmlhttp object'
 Dim http

@@ -2146,6 +2146,7 @@ function curlData(url,arg)
 	var result,status,dataFileContents;
 	var htmlRegex = /<html>/gmi;
 
+	url = url+arg;
 
 	var curlDataPath = documentsPath + "curlData/"
 	var curlDataFolder = new Folder(curlDataPath);
@@ -2177,9 +2178,13 @@ function curlData(url,arg)
 		//used to execute the vbs script
 
 		writeVbsFile();
+		
+		//define the executor script
+		//cscript.exe runs the .vbs file as though the CL is being used
 		scriptText = "cscript.exe ";
+
 		scriptText += localDataFilePath + "socket_xhttpRequest.vbs";
-		scriptText += " " + url + arg + " ";
+		scriptText += " " + url + " ";
 		scriptText += localDataFilePath;
 		
 		scriptFile = File(curlDataPath + "batFile.bat");
