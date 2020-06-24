@@ -2188,7 +2188,7 @@ function curlData(url,arg)
 		scriptText += localDataFilePath;
 		
 		scriptFile = File(curlDataPath + "batFile.bat");
-		writeScriptFile(scriptFile,scriptText);
+		writeScriptFile(scriptFile,scriptText.replace("&","\"&\""));
 
 		executor = scriptFile;
 	}
