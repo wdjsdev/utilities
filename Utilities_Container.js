@@ -2186,9 +2186,13 @@ function curlData(url,arg)
 		scriptText += localDataFilePath + "socket_xhttpRequest.vbs";
 		scriptText += " " + url + " ";
 		scriptText += localDataFilePath;
+
+		scriptText = scriptText.replace(/\&/g,"\"&\"");
+
+		$.writeln(scriptText);
 		
 		scriptFile = File(curlDataPath + "batFile.bat");
-		writeScriptFile(scriptFile,scriptText.replace("&","\"&\""));
+		writeScriptFile(scriptFile,scriptText)
 
 		executor = scriptFile;
 	}
