@@ -1,28 +1,18 @@
-Dim responseTextString
-Dim url,tempFilePath
+Dim fso
+Set fso = CreateObject("Scripting.FileSystemObject")
 
-'parse the arguments and save them to variables'
-If WScript.arguments.count>0 then
-	url=WScript.arguments(0)
-	tempFilePath = WScript.arguments(1)
-End If
+' Dim responseTextString as String
+' Set responseTextString = "test"
+responseTextString = "test"
 
+Const ForReading = 1, ForWriting = 2, ForAppending = 8
+Dim MyFile, FileName, TextLine
 
-'setup the xmlhttp object'
-Dim http
-Set http = CreateObject("MSXML2.XMLHTTP")
-
+' Open the file for output.
+FileName = "~/Documents/curlData/curlData.txt"
 
 
-'go get the data'
-http.open "GET", url, False
-http.send
+Set MyFile = fso.OpenTextFile(FileName, ForWriting, True)
 
-If http.Status = 200 Then
-	responseTextString = http.responseText
-Else
-	responseTextString = "ERRCODE : " & http.status
-End If
-
-MsgBox(responseTextString)
-
+' Write to the file.
+MyFile.WriteLine responseTextString
