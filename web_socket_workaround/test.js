@@ -39,6 +39,11 @@ function test()
 
 	}
 
+	var utilities = getUtilities();
+	for(var u=0,len=utilities.length;u<len;u++)
+	{
+		eval("#include \"" + utilities[u] + "\"");	
+	}
 
 	var on = "3025773"
 
