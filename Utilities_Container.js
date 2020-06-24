@@ -2178,12 +2178,12 @@ function curlData(url,arg)
 
 		writeVbsFile();
 		scriptText = "cscript.exe ";
-		scriptText += documentsPath + "curlData/socket_xhttpRequest.vbs";
-		scriptText += url + arg + " ";
+		scriptText += localDataFilePath + "socket_xhttpRequest.vbs";
+		scriptText += " " + url + arg + " ";
 		scriptText += localDataFilePath;
 		
 		scriptFile = File(curlDataPath + "batFile.bat");
-		writeScriptFile(scriptText);
+		writeScriptFile(scriptFile,scriptText);
 
 		executor = scriptFile;
 	}
@@ -2197,7 +2197,7 @@ function curlData(url,arg)
 		].join("");
 
 		scriptFile = File(curlDataPath + "curl_from_illustrator.scpt");
-		writeScriptFile(scriptText);
+		writeScriptFile(scriptFile,scriptText);
 		executor = File(resourcePath + "curl_from_illustrator.app");
 		killExecutor = File(resourcePath + "kill_curl_from_illustrator.app");
 	}
@@ -2293,11 +2293,11 @@ function curlData(url,arg)
 			}
 		}
 	}
-	function writeScriptFile(txt)
+	function writeScriptFile(file,txt)
 	{
-		scriptFile.open("w");
-		scriptFile.write(txt);
-		scriptFile.close();
+		file.open("w");
+		file.write(txt);
+		file.close();
 	}
 
 
