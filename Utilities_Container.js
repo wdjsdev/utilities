@@ -2258,13 +2258,25 @@ function curlData(url,arg)
 
 	function writeVbsFile()
 	{
+		//go to the network and copy the contents of the
+		//socket_xhttpRequest.vbs file
+		//this allows me to manage updates by updating a
+		//single central file, but each person will be executing
+		//their own copy, which should avoid someone being denied
+		//access because another person is already executing the file?
+
+		//central file
 		var srcFile = File(dataPath + "socket_xhttpRequest.vbs");
+
+		//local file
 		var destFile = File(documentsPath + "curlData/socket_xhttpRequest.vbs");
 
+		//read the source file's contents
 		srcFile.open("r");
 		var srcContents = srcFile.read();
 		srcFile.close();
 
+		//write the contents to the local file
 		writeDatabase(destFile,srcContents);
 	}
 
