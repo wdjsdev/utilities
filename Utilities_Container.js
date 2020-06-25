@@ -2183,7 +2183,7 @@ function curlData(url,arg)
 		//cscript.exe runs the .vbs file as though the CL is being used
 		scriptText = "cscript.exe ";
 
-		scriptText += localDataFilePath + "socket_xhttpRequest.vbs";
+		scriptText += curlDataPath + "socket_xhttpRequest.vbs";
 		scriptText += " " + url + " ";
 		scriptText += localDataFilePath;
 
