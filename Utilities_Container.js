@@ -27,7 +27,7 @@ if($.os.match('Windows'))
 {
 	var user = $.getenv("USERNAME");
 	customizationPath = "//AD4/Customization/";
-	var homeFolderPath = "~/";//
+	var homeFolderPath = "C:/Users/" + user + "/";
 	var homeFolder = Folder(homeFolderPath);
 	var os = "windows";
 }
