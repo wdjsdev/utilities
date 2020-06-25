@@ -2182,11 +2182,11 @@ function curlData(url,arg)
 		
 		//define the executor script
 		//cscript.exe runs the .vbs file as though the CL is being used
-		scriptText = "cscript.exe ";
+		scriptText = "cscript.exe \"";
 
-		scriptText += curlDataPath + "socket_xhttpRequest.vbs";
-		scriptText += " " + url + " ";
-		scriptText += localDataFile.fullName;
+		scriptText += curlDataPath + "socket_xhttpRequest.vbs\"";
+		scriptText += " \"" + url + "\" \"";
+		scriptText += localDataFile.fullName + "\"";
 
 
 		$.writeln(scriptText);
@@ -2264,7 +2264,7 @@ function curlData(url,arg)
 
 		return contents;
 	}
-	
+
 	function writeScriptFile(file,txt)
 	{
 		file.open("w");
