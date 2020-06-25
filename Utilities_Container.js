@@ -2148,15 +2148,16 @@ function curlData(url,arg)
 
 	url = url+arg;
 
+
+	//variables for the local data stuff
 	var curlDataPath = documentsPath + "curlData/"
 	var curlDataFolder = new Folder(curlDataPath);
 	if(!curlDataFolder.exists)
 	{
 		curlDataFolder.create();
 	}
+	var localDataFile = File(curlDataPath + "curlData.txt");
 
-	var localDataFilePath = decodeURI(curlDataPath + "curlData.txt");
-	var localDataFile = File(localDataFilePath);
 
 	//clear out the local data file..
 	//make sure we always start with an empty string
@@ -2185,9 +2186,8 @@ function curlData(url,arg)
 
 		scriptText += curlDataPath + "socket_xhttpRequest.vbs";
 		scriptText += " " + url + " ";
-		scriptText += localDataFilePath;
+		scriptText += localDataFile.fullName;
 
-		scriptText = scriptText.replace(/\&/g,"\"&\"");
 
 		$.writeln(scriptText);
 		
@@ -2264,6 +2264,13 @@ function curlData(url,arg)
 
 		return contents;
 	}
+	
+	function writeScriptFile(file,txt)
+	{
+		file.open("w");
+		file.write(txt);
+		file.close();
+	}
 
 	function writeVbsFile()
 	{
@@ -2278,7 +2285,7 @@ function curlData(url,arg)
 		var srcFile = File(dataPath + "socket_xhttpRequest.vbs");
 
 		//local file
-		var destFile = File(documentsPath + "curlData/socket_xhttpRequest.vbs");
+		var destFile = File(curlDataPath + "socket_xhttpRequest.vbs");
 
 		//read the source file's contents
 		srcFile.open("r");
@@ -2314,12 +2321,7 @@ function curlData(url,arg)
 			}
 		}
 	}
-	function writeScriptFile(file,txt)
-	{
-		file.open("w");
-		file.write(txt);
-		file.close();
-	}
+	
 
 
 }
