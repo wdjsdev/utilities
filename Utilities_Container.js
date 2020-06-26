@@ -39,11 +39,6 @@ else
 	var homeFolderPath = "/Volumes/Macintosh HD/Users/" + user + "/";
 	var homeFolder = new Folder(homeFolderPath);
 	var os = "mac";
-	// if(!homeFolder.exists)
-	// {
-	// 	homeFolder = new Folder("~/");
-	// 	homeFolderPath = "~/";
-	// }
 }
 
 
@@ -2186,7 +2181,7 @@ function curlData(url,arg)
 
 		scriptText += curlDataPath + "socket_xhttpRequest.vbs\"";
 		scriptText += " \"" + url + "\" \"";
-		scriptText += localDataFile.fullName + "\"";
+		scriptText += curlDataPath + "\"";
 
 
 		$.writeln(scriptText);
@@ -2257,7 +2252,7 @@ function curlData(url,arg)
 
 	function readDataFile()
 	{
-		var file = localDataFile;
+		var file = File(curlDataPath + "curlData.txt");
 		file.open("r");
 		var contents = file.read();
 		file.close();
