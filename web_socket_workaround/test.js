@@ -48,7 +48,7 @@ function test()
 
 	var on = "3025773"
 
-	curlData(NOD,on);
+	$.writeln(JSON.stringify(curlData(NOD,on)));
 	
 }
 test();
