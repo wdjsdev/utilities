@@ -1,7 +1,6 @@
 Dim fso
 Set fso = CreateObject("Scripting.FileSystemObject")
 
-Dim responseTextString
 Dim url,tempFilePath
 
 'parse the arguments and save them to variables'
@@ -10,15 +9,11 @@ If WScript.arguments.count>0 then
 	tempFilePath = WScript.arguments(1)
 End If
 
-MsgBox "url = " & url
-MsgBox "tempFilePath " & tempFilePath
-
+' make the http call
 'setup the xmlhttp object'
 Dim http
 Set http = CreateObject("MSXML2.XMLHTTP")
-
-
-
+Dim responseTextString
 'go get the data'
 http.open "GET", url, False
 http.send
@@ -29,11 +24,7 @@ Else
 	responseTextString = "ERRCODE : " & http.status
 End If
 
-
-
 'got the data.. time to write it to a local file
-
-
 Const ForReading = 1, ForWriting = 2, ForAppending = 8
 Dim MyFile, FileName, TextLine
 
