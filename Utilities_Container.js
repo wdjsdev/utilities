@@ -39,6 +39,11 @@ else
 	var homeFolderPath = "/Volumes/Macintosh HD/Users/" + user + "/";
 	var homeFolder = new Folder(homeFolderPath);
 	var os = "mac";
+	// if(!homeFolder.exists)
+	// {
+	// 	homeFolder = new Folder("~/");
+	// 	homeFolderPath = "~/";
+	// }
 }
 
 
@@ -2168,6 +2173,7 @@ function curlData(url,arg)
 		killExecutor;
 
 
+
 	if($.os.match("Windows"))
 	{
 		//write the bat file that will be
@@ -2179,9 +2185,14 @@ function curlData(url,arg)
 		//cscript.exe runs the .vbs file as though the CL is being used
 		scriptText = "cscript.exe \"";
 
+		//path to vbs script
 		scriptText += curlDataPath + "socket_xhttpRequest.vbs\"";
+
+		//vbs argument 1 = url
 		scriptText += " \"" + url + "\" \"";
-		scriptText += curlDataPath + "\"";
+
+		//vbs argument 2 = path to curlData.txt file
+		scriptText += curlDataPath + "curlData.txt";
 
 
 		$.writeln(scriptText);
@@ -2252,7 +2263,7 @@ function curlData(url,arg)
 
 	function readDataFile()
 	{
-		var file = File(curlDataPath + "curlData.txt");
+		var file = localDataFile;
 		file.open("r");
 		var contents = file.read();
 		file.close();
