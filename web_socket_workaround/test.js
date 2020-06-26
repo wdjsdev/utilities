@@ -12,7 +12,7 @@ function test()
 		var devUtilitiesPreferenceFile = File("~/Documents/script_preferences/dev_utilities.txt");
 
 		if(devUtilitiesPreferenceFile.exists)
-		{
+		{	
 			devUtilitiesPreferenceFile.open("r");
 			var prefContents = devUtilitiesPreferenceFile.read();
 			devUtilitiesPreferenceFile.close();
@@ -46,9 +46,12 @@ function test()
 		eval("#include \"" + utilities[u] + "\"");	
 	}
 
-	var on = "3025773"
+	// var on = "3025773"
+	var on = "2983536"
 
-	$.writeln(JSON.stringify(curlData(NOD,on)));
+	var result = curlData(NOD,on);
+
+	$.writeln(JSON.stringify(result));
 	
 }
 test();
