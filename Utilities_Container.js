@@ -2207,8 +2207,8 @@ function curlData(url,arg)
 		scriptText = [
 			"do shell script ",
 			"\"curl \\\"" + url,
-			arg + "\\\" > \\\"",
-			localDataFilePath + "\\\"\""
+			"\\\" > \\\"",
+			curlDataPath + "curlData.txt" + "\\\"\""
 		].join("");
 
 		scriptFile = File(curlDataPath + "curl_from_illustrator.scpt");
