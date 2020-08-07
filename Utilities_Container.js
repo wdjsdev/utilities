@@ -1419,6 +1419,7 @@ function sendCustomEmail(emailAddress,subject,msg)
 /******UI Components***/
 /**********************/
 
+var STANDARD_LISTBOX_DIMENSIONS = [50,50,200,200]
 var UI = 
 {
 	"window":function(title,func)
@@ -1510,6 +1511,10 @@ var UI =
 
 	"listbox":function(parent,dimensions,children,resourceString)
 	{
+		if(!dimensions)
+		{
+			dimensions = STANDARD_LISTBOX_DIMENSIONS;
+		}
 		var result = parent.add("listbox",dimensions,[],resourceString);
 		if(children)
 		{
