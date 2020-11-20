@@ -158,6 +158,8 @@ var Stopwatch = function()
 	this.taskEnd = 0;
 	this.stepLabel = "";
 
+	this.currentTasks = {};
+
 	this.logStart = function()
 	{
 		var curDate = new Date();
@@ -170,14 +172,13 @@ var Stopwatch = function()
 	}
 	this.beginTask = function(label)
 	{
-		this.stepLabel = label;
-		this.taskStart = new Date().getTime();
+		this.currentTasks[label] = {"label":label,"taskStart":new Date().getTime(),"taskEnd":undefined};
 	}
-	this.endTask = function()
+	this.endTask = function(label)
 	{
-		this.taskEnd = new Date().getTime();
-		var stepDuration =  this.taskEnd - this.taskStart;
-		var msg = this.stepLabel + " step took " + stepDuration + " ms.";
+		this.currentTasks[label].taskEnd = new Date().getTime();
+		var stepDuration =  this.currentTasks[label].taskEnd - this.currentTasks[label].taskStart;
+		var msg = label + " step took " + stepDuration + " ms.";
 		log.l(msg);
 	}
 	this.getElapsed = function()
@@ -689,14 +690,18 @@ function findChildByName(parent,name,type)
 //display a dialog with a listbox populated
 //with an array of items. Return the selected
 //items as an array
-function chooseFromListbox(items,msg)
+function chooseFromListbox(items,msg,size)
 {
+	if(!size)
+	{
+		size = [50,50,200,200];
+	}
 	var result = [];
 	var cfl = new Window("dialog","Choose the desired item(s)");
 		var topTxt = UI.static(cfl,msg);
 		var topTxt2 = UI.static(cfl,"Use Control/Command to select multiple items.");
 		var lbGroup = UI.group(cfl);
-			var lb = UI.listbox(lbGroup,[50,50,200,200],items,{multiselect:true});
+			var lb = UI.listbox(lbGroup,size,items,{multiselect:true});
 
 		var btnGroup = UI.group(cfl);
 			var cancel = UI.button(btnGroup,"Cancel",function()
