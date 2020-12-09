@@ -2136,7 +2136,7 @@ function trimSpacesArray(arr)
 //create and load a new action
 function createAction(name,actionString)
 {
-	var dest = new Folder("~/Documents");
+	var dest = new Folder(documentsPath);
 	var actionFile = new File(dest + "/" + name + ".aia" );
 
 	actionFile.open("w");
