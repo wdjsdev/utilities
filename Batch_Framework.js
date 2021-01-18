@@ -33,7 +33,10 @@ function batchInit(func,readMeMsg)
 	if(valid && batchFiles.length)
 	{
 		executeBatch(func,closeFilePref);
-		writeReadMe(saveDest,readMeMsg);
+		if(readMeMsg !== "")
+		{
+			writeReadMe(saveDest,readMeMsg);
+		}
 	}
 }
 

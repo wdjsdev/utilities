@@ -1,26 +1,4 @@
 //array.indexOf prototype
-Array.prototype.indexOf=function(a,b,c){for(c=this.length,b=(c+~~b)%c;b<c&&(!(b in this)||this[b]!==a);b++);return b^c?b:-1;}
-
-//list of dr users
-var DR_USERS = 
-[
-	"acacio.sabino",
-	"juan.garabito",
-	"medelyn.tavarez",
-	"rafael.nolasco",
-	"nicolas.nicasio"
-];
-
-if(typeof scriptName === "undefined")
-{
-	//no scriptName variable existed. create one.
-	var scriptName = $.fileName;
-	scriptName = scriptName.substring(scriptName.lastIndexOf("/")+1,scriptName.lastIndexOf("."));
-	scriptName = scriptName.toLowerCase();
-}
-
-
-
 //Network Storage. Production version
 var customizationPath;
 if($.os.match('Windows'))
@@ -47,15 +25,62 @@ else
 }
 
 
+//array.indexOf()
+Array.prototype.indexOf=function(a,b,c){for(c=this.length,b=(c+~~b)%c;b<c&&(!(b in this)||this[b]!==a);b++);return b^c?b:-1;}
+
+//list of dr users
+var DR_USERS = 
+[
+	"medelyn.tavarez",
+	"rafael.nolasco",
+	"nicolas.nicasio",
+	"arlan.grullon",
+	"deivison.urena",
+	"eliezer.lopez",
+	"maximo.montesino"
+];
+
+
+
+
+
+
+
+
+//specific fix for Sam Bateman's home computer..
+//her username is "thell".
+//And she typically works on the "D" drive instead of "C"
+//then she has to manually move things from D over to C after
+//a script is finished. let's just change her home folder to the
+//D drive so she doesn't have to move everything after the script runs
+if(user === "thell")
+{
+	homeFolderPath = homeFolderPath.replace("C:","D:");
+	homeFolder = Folder(homeFolderPath);
+}
+
+
 
 //boolean to determine whether to use the CustomizationDR drive for testing.
 var spoofDRUser = false;
 if(DR_USERS.indexOf(user)>-1 || (spoofDRUser && user === "will.dowling"))
 {
-	customizationPath.replace("Customization","CustomizationDR");
+	customizationPath = customizationPath.replace("Customization","CustomizationDR");
 }	
 
-var customizationFolder = new Folder(customizationPath);
+
+
+
+
+
+
+if(typeof scriptName === "undefined")
+{
+	//no scriptName variable existed. create one.
+	var scriptName = $.fileName;
+	scriptName = scriptName.substring(scriptName.lastIndexOf("/")+1,scriptName.lastIndexOf("."));
+	scriptName = scriptName.toLowerCase();
+}
 
 
 
@@ -66,14 +91,7 @@ var desktopFolder = new Folder(desktopPath);
 var documentsPath = homeFolderPath + "Documents/";
 var documentsFolder = new Folder(documentsPath);
 
-////////////////////////
-////////ATTENTION://////
-//
-//		remote database
-//
-////////////////////////
-// customizationPath = desktopPath + "automation/local_data/";
-// customizationFolder = new Folder(customizationPath);
+var customizationFolder = new Folder(customizationPath);
 
 var libraryPath = customizationPath + "Library/";
 var libraryFolder = new Folder(libraryPath);
@@ -463,8 +481,14 @@ function printSpecialtyLog(file,msg)
 
 //string.toTitleCase() 
 //prototype function to convert entire string to titlecase
+var titleCaseDotRegEx = /((\w\S)|(\w\.))*/g;
+String.prototype.toTitleCaseAfterDots = function () {
+    return this.replace(titleCaseDotRegEx, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+};
+
+var titleCaseRegex = /\w\S*/g;
 String.prototype.toTitleCase = function () {
-    return this.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+    return this.replace(titleCaseRegex, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
 };
 
 //////////////
@@ -722,7 +746,7 @@ function chooseFromListbox(items,msg)
 	return result;
 }
 
-function findSpecificLayer(parent,layerName)
+function findSpecificLayer(parent,layerName,crit)
 {
 	var result,layers;
 
@@ -737,7 +761,11 @@ function findSpecificLayer(parent,layerName)
 	
 	for(var x=0,len=layers.length;x<len && !result;x++)
 	{
-		if(layers[x].name.toLowerCase() === layerName.toLowerCase())
+		if(crit === "any" && layers[x].name.toLowerCase().indexOf(layerName.toLowerCase())>-1)
+		{
+			result = layers[x];
+		}
+		else if(layers[x].name.toLowerCase() === layerName.toLowerCase())
 		{
 			result = layers[x];
 		}
@@ -770,7 +798,7 @@ function findSpecificPageItem(parent,itemName,crit)
 				{
 					result.push(curItem);
 				}
-				else if(crit === "any" && curItem.name.indexOf(itemName)>-1)
+				else if(crit === "any" && curItem.name.toLowerCase().indexOf(itemName.toLowerCase())>-1)
 				{
 					result.push(curItem);
 				}
@@ -791,6 +819,10 @@ function findSpecificPageItem(parent,itemName,crit)
 			result = chooseFromListbox(result,msg);
 		}
 		result = result[0];
+	}
+	else
+	{
+		result = undefined;
 	}
 	
 	return result;
@@ -2018,10 +2050,22 @@ function getCenterPoint(item)
 	return [item.left + item.width/2,item.top - item.height/2];
 }
 
-function setCenterPoint(item,coords)
+function setCenterPoint(item,coords,dim)
 {
-	item.left = coords[0] - item.width/2;
-	item.top = coords[1] + item.height/2;
+	if(dim === "h")
+	{
+		item.left = coords[0] - item.width/2;
+	}
+	else if(dim === "v")
+	{
+		item.top = coords[1] + item.height/2;
+	}
+	else
+	{
+		item.left = coords[0] - item.width/2;
+		item.top = coords[1] + item.height/2;	
+	}
+	
 }
 
 
@@ -2109,8 +2153,8 @@ function trimSpacesArray(arr)
 //create and load a new action
 function createAction(name,actionString)
 {
-	var dest = new Folder("~/Documents");
-	var actionFile = new File(dest + "/" + name + ".aia" );
+	var dest = new Folder(documentsPath);
+	var actionFile = new File(decodeURI(dest + "/" + name + ".aia" ));
 
 	actionFile.open("w");
 	actionFile.write(actionString.join("\n"));
@@ -2142,8 +2186,37 @@ function removeAction(actionName)
 //curl data from a specified url and return the data as an anonymous object
 function curlData(url,arg)
 {
-	log.h("Beginning execution of curlData(" + url + "," + arg + ")");
-	var result,dataFileContents;
+	log.h("Beginning execution of curlData(" + url + arg + ")");
+	var result,status,dataFileContents;
+	var htmlRegex = /<html>/gmi;
+
+	url = url+arg;
+
+
+	//variables for the local data stuff
+	var curlDataPath = documentsPath + "curlData/"
+	var curlDataFolder = new Folder(curlDataPath);
+	if(!curlDataFolder.exists)
+	{
+		curlDataFolder.create();
+	}
+	var localDataFile = File(curlDataPath + "curlData.txt");
+
+
+	//clear out the local data file..
+	//make sure we always start with an empty string
+	localDataFile.open("w");
+	localDataFile.write("");
+	localDataFile.close();
+	status = "empty";
+
+
+	var scriptText,
+		scriptFile,
+		executor,
+		killExecutor;
+
+
 
 	//temporary hard coded access for dev
 	// if(true || $.os.match("Windows"))
