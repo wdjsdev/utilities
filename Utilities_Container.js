@@ -503,30 +503,6 @@ String.prototype.toTitleCase = function () {
 
 
 
-//normalize local file path
-//due to the strange way home folders are
-//determined with our setup, file paths are
-//usually rendered incorrectly by using
-//a relative path to the home folder. this relative
-//path leads to some network version of the user folder
-//which is almost never what we want. this function will
-//replace the relative file path with a hard coded path
-//to the home folder.
-function normalizeLocalFilePath(path)
-{
-	return path.replace(/(^.*users\/)|(^~\/)/i,homeFolderPath);
-function unlockGuides()
-{
-	var tmpLay = app.activeDocument.layers.add();
-	var rect = tmpLay.pathItems.rectangle(0,0,5,5);
-	app.selection = null;
-	rect.selected = true;
-	if(!app.activeDocument.selection.length)
-	{
-		app.executeMenuCommand("lockGuide");
-	}
-	tmpLay.remove();
-}
 
 //normalize local file path
 //due to the strange way home folders are
