@@ -502,6 +502,19 @@ String.prototype.toTitleCase = function () {
 
 
 
+function unlockGuides()
+{
+	var tmpLay = app.activeDocument.layers.add();
+	var rect = tmpLay.pathItems.rectangle(0,0,5,5);
+	app.selection = null;
+	rect.selected = true;
+	if(!app.activeDocument.selection.length)
+	{
+		app.executeMenuCommand("lockGuide");
+	}
+	tmpLay.remove();
+}
+
 //get unique from array
 //pass in an array and this function
 //returns only the unique elements
@@ -2190,7 +2203,7 @@ function curlData(url,arg)
 	var result,status,dataFileContents;
 	var htmlRegex = /<html>/gmi;
 
-	url = url+arg;
+	// url = url+arg;
 
 
 	//variables for the local data stuff
