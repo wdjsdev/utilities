@@ -5,7 +5,7 @@ if($.os.match('Windows'))
 {
 	var user = $.getenv("USERNAME");
 	customizationPath = "//AD4/Customization/";
-	var homeFolderPath = "~/";//
+	var homeFolderPath = "C:/Users/" + user + "/";
 	var homeFolder = Folder(homeFolderPath);
 	var os = "windows";
 }
@@ -176,6 +176,8 @@ var Stopwatch = function()
 	this.taskEnd = 0;
 	this.stepLabel = "";
 
+	this.currentTasks = {};
+
 	this.logStart = function()
 	{
 		var curDate = new Date();
@@ -188,14 +190,13 @@ var Stopwatch = function()
 	}
 	this.beginTask = function(label)
 	{
-		this.stepLabel = label;
-		this.taskStart = new Date().getTime();
+		this.currentTasks[label] = {"label":label,"taskStart":new Date().getTime(),"taskEnd":undefined};
 	}
-	this.endTask = function()
+	this.endTask = function(label)
 	{
-		this.taskEnd = new Date().getTime();
-		var stepDuration =  this.taskEnd - this.taskStart;
-		var msg = this.stepLabel + " step took " + stepDuration + " ms.";
+		this.currentTasks[label].taskEnd = new Date().getTime();
+		var stepDuration =  this.currentTasks[label].taskEnd - this.currentTasks[label].taskStart;
+		var msg = label + " step took " + stepDuration + " ms.";
 		log.l(msg);
 	}
 	this.getElapsed = function()
@@ -502,6 +503,18 @@ String.prototype.toTitleCase = function () {
 
 
 
+//normalize local file path
+//due to the strange way home folders are
+//determined with our setup, file paths are
+//usually rendered incorrectly by using
+//a relative path to the home folder. this relative
+//path leads to some network version of the user folder
+//which is almost never what we want. this function will
+//replace the relative file path with a hard coded path
+//to the home folder.
+function normalizeLocalFilePath(path)
+{
+	return path.replace(/(^.*users\/)|(^~\/)/i,homeFolderPath);
 function unlockGuides()
 {
 	var tmpLay = app.activeDocument.layers.add();
@@ -513,6 +526,20 @@ function unlockGuides()
 		app.executeMenuCommand("lockGuide");
 	}
 	tmpLay.remove();
+}
+
+//normalize local file path
+//due to the strange way home folders are
+//determined with our setup, file paths are
+//usually rendered incorrectly by using
+//a relative path to the home folder. this relative
+//path leads to some network version of the user folder
+//which is almost never what we want. this function will
+//replace the relative file path with a hard coded path
+//to the home folder.
+function normalizeLocalFilePath(path)
+{
+	return path.replace(/(^.*users\/)|(^~\/)/i,homeFolderPath);
 }
 
 //get unique from array
@@ -726,14 +753,18 @@ function findChildByName(parent,name,type)
 //display a dialog with a listbox populated
 //with an array of items. Return the selected
 //items as an array
-function chooseFromListbox(items,msg)
+function chooseFromListbox(items,msg,size)
 {
+	if(!size)
+	{
+		size = [50,50,200,200];
+	}
 	var result = [];
 	var cfl = new Window("dialog","Choose the desired item(s)");
 		var topTxt = UI.static(cfl,msg);
 		var topTxt2 = UI.static(cfl,"Use Control/Command to select multiple items.");
 		var lbGroup = UI.group(cfl);
-			var lb = UI.listbox(lbGroup,[50,50,200,200],items,{multiselect:true});
+			var lb = UI.listbox(lbGroup,size,items,{multiselect:true});
 
 		var btnGroup = UI.group(cfl);
 			var cancel = UI.button(btnGroup,"Cancel",function()
@@ -1464,6 +1495,7 @@ function sendCustomEmail(emailAddress,subject,msg)
 /******UI Components***/
 /**********************/
 
+var STANDARD_LISTBOX_DIMENSIONS = [50,50,200,200]
 var UI = 
 {
 	"window":function(title,func)
@@ -1555,6 +1587,10 @@ var UI =
 
 	"listbox":function(parent,dimensions,children,resourceString)
 	{
+		if(!dimensions)
+		{
+			dimensions = STANDARD_LISTBOX_DIMENSIONS;
+		}
 		var result = parent.add("listbox",dimensions,[],resourceString);
 		if(children)
 		{
@@ -2231,142 +2267,195 @@ function curlData(url,arg)
 
 
 
-	//temporary hard coded access for dev
-	// if(true || $.os.match("Windows"))
+	url = url+arg;
+
+
+	//variables for the local data stuff
+	var curlDataPath = documentsPath + "curlData/"
+	var curlDataFolder = new Folder(curlDataPath);
+	if(!curlDataFolder.exists)
+	{
+		curlDataFolder.create();
+	}
+	var localDataFile = File(curlDataPath + "curlData.txt");
+
+
+	//clear out the local data file..
+	//make sure we always start with an empty string
+	localDataFile.open("w");
+	localDataFile.write("");
+	localDataFile.close();
+	status = "empty";
+
+
+	var scriptText,
+		scriptFile,
+		executor,
+		killExecutor;
+
+
+
 	if($.os.match("Windows"))
 	{
-		result = curlWorkaround(url + arg);
-	}
+		//write the bat file that will be
+		//used to execute the vbs script
 
+		writeVbsFile();
+		
+		//define the executor script
+		//cscript.exe runs the .vbs file as though the CL is being used
+		scriptText = "cscript.exe \"";
+
+		//path to vbs script
+		scriptText += curlDataPath + "socket_xhttpRequest.vbs\"";
+
+		//vbs argument 1 = url
+		scriptText += " \"" + url + "\" \"";
+
+		//vbs argument 2 = path to curlData.txt file
+		scriptText += curlDataPath + "curlData.txt";
+
+
+		$.writeln(scriptText);
+		
+		scriptFile = File(curlDataPath + "batFile.bat");
+		writeScriptFile(scriptFile,scriptText)
+
+		executor = scriptFile;
+	}
 	else
 	{
-		//mac version
-		var scriptPath = documentsPath + "curlData/"
-		var scriptFolder = new Folder(scriptPath);
+		scriptText = [
+			"do shell script ",
+			"\"curl \\\"" + url,
+			"\\\" > \\\"",
+			curlDataPath + "curlData.txt" + "\\\"\""
+		].join("");
 
-		var localDataFilePath = scriptPath + "curlData.txt";
-		var localDataFile = File(localDataFilePath);
-		var executor = File(resourcePath + "curl_from_illustrator.app");
-		var killExecutor = File(resourcePath + "kill_curl_from_illustrator.app");
+		scriptFile = File(curlDataPath + "curl_from_illustrator.scpt");
+		writeScriptFile(scriptFile,scriptText);
+		executor = File(resourcePath + "curl_from_illustrator.app");
+		killExecutor = File(resourcePath + "kill_curl_from_illustrator.app");
+	}
 
 
 
+	var executorDelay = 2000;
+	var maxExecutorCalls = 5;
+	var currentExecutorCalls = 0;
 
-		//write the dynamic .scpt file
-		var scptText =
-			[
-				"do shell script ",
-				"\"curl \\\"" + url,
-				arg + "\\\" > \\\"",
-				localDataFile.fsName + "\\\"\""
-			];
-		var dataString = scptText.join("");
+	var checkDelay = 10;
+	var numberOfChecks = 50;
 
-		
-		if(!scriptFolder.exists)
+	var parseFailResults = 0;
+
+
+	do
+	{
+		//go get the data
+		executor.execute();
+		$.sleep(executorDelay);
+
+
+		//check the data
+		for(var a=0;a<numberOfChecks && status !== "valid";a++)
 		{
-			scriptFolder.create();
+			checkData()
+			$.sleep(checkDelay);
 		}
-		var scptFile = new File(scriptPath + "curl_from_illustrator.scpt");
 
-		scptFile.open("w");
-		scptFile.write(dataString);
-		scptFile.close();
+	}
+	while(status !== "valid" && status !== "html" && currentExecutorCalls < maxExecutorCalls);
 
 
-		//clear out the local data file..
-		//make sure we always start with an empty string
-		localDataFile.open("w");
-		localDataFile.write("");
-		localDataFile.close();
+	//validate
+	if(status === "html" || (status === "empty" && parseFailResults.length))
+	{
+		errorList.push("Netsuite returned invalid data for " + arg);
+		log.e("curl command failed. status = " + status + "::parseFailResults = " + parseFailResults);
+	}
+	else if(status === "valid")
+	{
+		log.l("Valid data.");
+		return result;
+	}
+	
 
-		
 
-		//try to read the data
-		var curTries = 0;
-		var maxTries;
-		var delay;
+	function readDataFile()
+	{
+		var file = localDataFile;
+		file.open("r");
+		var contents = file.read();
+		file.close();
 
-		//if the user is in the DR, set a long timeout
-		//otherwise keep it short
-		if(DR_USERS.indexOf(user)>-1)
+		return contents;
+	}
+
+	function writeScriptFile(file,txt)
+	{
+		file.open("w");
+		file.write(txt);
+		file.close();
+	}
+
+	function writeVbsFile()
+	{
+		//go to the network and copy the contents of the
+		//socket_xhttpRequest.vbs file
+		//this allows me to manage updates by updating a
+		//single central file, but each person will be executing
+		//their own copy, which should avoid someone being denied
+		//access because another person is already executing the file?
+
+		//central file
+		var srcFile = File(dataPath + "socket_xhttpRequest.vbs");
+
+		//local file
+		var destFile = File(curlDataPath + "socket_xhttpRequest.vbs");
+
+		//read the source file's contents
+		srcFile.open("r");
+		var srcContents = srcFile.read();
+		srcFile.close();
+
+		//write the contents to the local file
+		writeDatabase(destFile,srcContents);
+	}
+
+	function checkData()
+	{
+		var contents = readDataFile();
+		if(contents === "")
 		{
-			maxTries = 600;
-			delay = 200
+			status = "empty";
+		}
+		else if(contents.match(htmlRegex))
+		{
+			status = "html";
 		}
 		else
 		{
-			maxTries = 101;
-			delay = 100;
-		}
-		
-		var htmlRegex = /<html>/gmi;
-
-		//as long as the json data is invalid
-		//and the max number of attempts has not been exhausted
-		//try and gather the data
-		while(!result && curTries < maxTries)
-		{
-			if(dataFileContents === "")
+			try
 			{
-				try
-				{
-					if(curTries === 50)
-					{
-						killExecutor.execute();
-						// $.sleep(delay);
-					}
-
-					executor.execute();
-					// $.sleep(delay);
-				}
-				catch(e)
-				{
-					log.e("curlData executor failed..::e = " + e + "::url = " + url + "::arg = " + arg);
-					return;
-				}
+				result = JSON.parse(contents);
+				status = "valid";
 			}
-
-			//check that the local data file was written
-			localDataFile.open("r");
-			dataFileContents = localDataFile.read();
-			localDataFile.close();
-
-
-			//make sure that the data is not in HTML format
-			if(htmlRegex.test(dataFileContents))
+			catch(e)
 			{
-				log.e("curl command returned html code instead of JSON.::" + dataFileContents);
-				errorList.push("Netsuite returned improper data for " + arg + ".")
-				break;
+				status = "parseFail";
+				parseFailResults++;
 			}
-
-			if(dataFileContents !== "")
-			{
-				//there's SOMETHING in the local data file
-				try
-				{
-					result = JSON.parse(dataFileContents);
-					log.l("data found after " + curTries + " tries.");
-					log.l("execution took " + (curTries * delay) + " milliseconds");
-				}
-				catch(e)
-				{ 
-					//data was invalid
-				}
-			}
-
-			curTries++;
-			$.sleep(delay);
 		}
 	}
+	
 
-
-	log.l("end of curlData function");
-	log.l("returning: " + result);
-	return result;
 
 }
+
+
+
+
 
 
 // temporary windows workaround for the curlData function
@@ -2436,6 +2525,92 @@ function updateSwatchColor(swatch,name,colors)
 	{
 		swatch.color.spot.color[color] = colors[color];
 	}
+}
+
+//for the given layer, check for pageItems on layer
+//if one is found, select it, then deselect it.
+//that should activate the parent layer so that a new
+//item is placed inside of it instead of whatever layer
+//was last selected by the user
+function activateLayer(layer)
+{
+	var result = false;
+	var itemLocked = false,itemHidden = false;
+	var items = layer.pageItems;
+	if(items.length)
+	{
+		if(items[0].locked)
+		{
+			itemLocked = true;
+			items[0].locked = false;
+		}
+		if(items[0].hidden)
+		{
+			itemHidden = true;
+			items[0].hidden = false;
+		}
+		items[0].selected = true;
+		app.activeDocument.selection = null;
+		items[0].locked = itemLocked;
+		items[0].hidden = itemHidden;
+		result = true;
+	}
+	else
+	{
+		result = false;
+	}
+	return result;
+}
+
+
+//in the active document, first check to see
+//whether guides are locked. this will be done
+//by drawing a rectangle in the document,
+//converting it to guides, then trying to select
+//that rectangle object. if it's not selected,
+//then guides are locked and we should toggle
+//the setting
+function unlockGuides()
+{
+	var doc = app.activeDocument;
+	var layers = doc.layers;
+	var activatedLayer;
+
+	for(var x=0, len = layers[0].layers.length;x<len && !activatedLayer;x++)
+	{
+		if(activateLayer(layers[0].layers[x]))
+		{
+			activatedLayer = layers[0].layers[x];
+		}
+	}
+	if(activatedLayer)
+	{
+		if(activatedLayer.locked)
+		{
+			activatedLayer.locked = false;
+		}
+		if(!activatedLayer.visible)
+		{
+			activatedLayer.visible = true;
+		}
+		var rect = doc.pathItems.rectangle(-100,0,50,50);
+		rect.guides = true;
+
+		rect.selected = true;
+
+		if(!rect.selected)
+		{
+			log.l("unlocking the guides.");
+			app.executeMenuCommand("lockguide");
+		}
+		rect.remove();
+	}
+	
+
+
+	
+
+	
 }
 
 
@@ -2695,6 +2870,95 @@ var ADD_NEW_FILL_ACTION_STRING =
 		"		}",
 		"	}",
 		"}"
+	]
+
+var EXPORT_JPG_HIGH_QUALITY_ACTION_STRING =	
+	[	
+		"/version 3",
+		"/name [ 10",
+		"	6578706f7274206a7067",
+		"]",
+		"/isOpen 1",
+		"/actionCount 1",
+		"/action-1 {",
+		"	/name [ 10",
+		"		6578706f7274206a7067",
+		"	]",
+		"	/keyIndex 0",
+		"	/colorIndex 0",
+		"	/isOpen 1",
+		"	/eventCount 1",
+		"	/event-1 {",
+		"		/useRulersIn1stQuadrant 0",
+		"		/internalName (adobe_exportDocument)",
+		"		/localizedName [ 9",
+		"			4578706f7274204173",
+		"		]",
+		"		/isOpen 0",
+		"		/isOn 1",
+		"		/hasDialog 1",
+		"		/showDialog 0",
+		"		/parameterCount 7",
+		"		/parameter-1 {",
+		"			/key 1885434477",
+		"			/showInPalette 0",
+		"			/type (raw)",
+		"			/value < 100",
+		"				0700000001000000030000000300000000009600020000000000000001000000",
+		"				69006d006100670065006d006100700000000000000000000000000000000000",
+		"				0000000000000000000000000000000000000000000000000000000000000000",
+		"				00000100",
+		"			>",
+		"			/size 100",
+		"		}",
+		"		/parameter-2 {",
+		"			/key 1851878757",
+		"			/showInPalette 4294967295",
+		"			/type (ustring)",
+		"			/value [ **folder_char_length**",
+		"				**hex_folder_path**",
+		"			]",
+		"		}",
+		"		/parameter-3 {",
+		"			/key 1718775156",
+		"			/showInPalette 4294967295",
+		"			/type (ustring)",
+		"			/value [ 16",
+		"				4a5045472066696c6520666f726d6174",
+		"			]",
+		"		}",
+		"		/parameter-4 {",
+		"			/key 1702392942",
+		"			/showInPalette 4294967295",
+		"			/type (ustring)",
+		"			/value [ 12",
+		"				6a70672c6a70652c6a706567",
+		"			]",
+		"		}",
+		"		/parameter-5 {",
+		"			/key 1936548194",
+		"			/showInPalette 4294967295",
+		"			/type (boolean)",
+		"			/value 1",
+		"		}",
+		"		/parameter-6 {",
+		"			/key 1935764588",
+		"			/showInPalette 4294967295",
+		"			/type (boolean)",
+		"			/value 0",
+		"		}",
+		"		/parameter-7 {",
+		"			/key 1936875886",
+		"			/showInPalette 4294967295",
+		"			/type (ustring)",
+		"			/value [ 1",
+		"				31",
+		"			]",
+		"		}",
+		"	}",
+		"}",
+
+
 	]
 
 
