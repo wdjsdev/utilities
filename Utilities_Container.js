@@ -1,29 +1,4 @@
 //array.indexOf prototype
-Array.prototype.indexOf=function(a,b,c){for(c=this.length,b=(c+~~b)%c;b<c&&(!(b in this)||this[b]!==a);b++);return b^c?b:-1;}
-
-//list of dr users
-var DR_USERS = 
-[
-	"acacio.sabino",
-	"juan.garabito",
-	"medelyn.tavarez",
-	"rafael.nolasco",
-	"nicolas.nicasio",
-	"arlan.grullon",
-	"deivison.urena",
-	"eliezer.lopez"
-];
-
-if(typeof scriptName === "undefined")
-{
-	//no scriptName variable existed. create one.
-	var scriptName = $.fileName;
-	scriptName = scriptName.substring(scriptName.lastIndexOf("/")+1,scriptName.lastIndexOf("."));
-	scriptName = scriptName.toLowerCase();
-}
-
-
-
 //Network Storage. Production version
 var customizationPath;
 if($.os.match('Windows'))
@@ -50,15 +25,62 @@ else
 }
 
 
+//array.indexOf()
+Array.prototype.indexOf=function(a,b,c){for(c=this.length,b=(c+~~b)%c;b<c&&(!(b in this)||this[b]!==a);b++);return b^c?b:-1;}
+
+//list of dr users
+var DR_USERS = 
+[
+	"medelyn.tavarez",
+	"rafael.nolasco",
+	"nicolas.nicasio",
+	"arlan.grullon",
+	"deivison.urena",
+	"eliezer.lopez",
+	"maximo.montesino"
+];
+
+
+
+
+
+
+
+
+//specific fix for Sam Bateman's home computer..
+//her username is "thell".
+//And she typically works on the "D" drive instead of "C"
+//then she has to manually move things from D over to C after
+//a script is finished. let's just change her home folder to the
+//D drive so she doesn't have to move everything after the script runs
+if(user === "thell")
+{
+	homeFolderPath = homeFolderPath.replace("C:","D:");
+	homeFolder = Folder(homeFolderPath);
+}
+
+
 
 //boolean to determine whether to use the CustomizationDR drive for testing.
 var spoofDRUser = false;
 if(DR_USERS.indexOf(user)>-1 || (spoofDRUser && user === "will.dowling"))
 {
-	customizationPath.replace("Customization","CustomizationDR");
+	customizationPath = customizationPath.replace("Customization","CustomizationDR");
 }	
 
-var customizationFolder = new Folder(customizationPath);
+
+
+
+
+
+
+if(typeof scriptName === "undefined")
+{
+	//no scriptName variable existed. create one.
+	var scriptName = $.fileName;
+	scriptName = scriptName.substring(scriptName.lastIndexOf("/")+1,scriptName.lastIndexOf("."));
+	scriptName = scriptName.toLowerCase();
+}
 
 
 
@@ -69,14 +91,7 @@ var desktopFolder = new Folder(desktopPath);
 var documentsPath = homeFolderPath + "Documents/";
 var documentsFolder = new Folder(documentsPath);
 
-////////////////////////
-////////ATTENTION://////
-//
-//		remote database
-//
-////////////////////////
-// customizationPath = desktopPath + "automation/local_data/";
-// customizationFolder = new Folder(customizationPath);
+var customizationFolder = new Folder(customizationPath);
 
 var libraryPath = customizationPath + "Library/";
 var libraryFolder = new Folder(libraryPath);
@@ -467,8 +482,14 @@ function printSpecialtyLog(file,msg)
 
 //string.toTitleCase() 
 //prototype function to convert entire string to titlecase
+var titleCaseDotRegEx = /((\w\S)|(\w\.))*/g;
+String.prototype.toTitleCaseAfterDots = function () {
+    return this.replace(titleCaseDotRegEx, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+};
+
+var titleCaseRegex = /\w\S*/g;
 String.prototype.toTitleCase = function () {
-    return this.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+    return this.replace(titleCaseRegex, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
 };
 
 //////////////
@@ -481,6 +502,31 @@ String.prototype.toTitleCase = function () {
 // eval("@JSXBIN@ES@2.0@MyBbyBnABMAbyBnAIMRbyBn0ABZTnAEXzFjGjMjPjPjSBfjzEiNjBjUjICfRBCzBhLDCzBhKEEXzGjSjBjOjEjPjNFfjCfnfCDCzBhNGVzDjNjBjYHfBVzDjNjJjOIfAnnnndBnnVIfAnnffACH4B0AhAI40BhAC0AzJjHjFjUiSjBjOjEjPjNJAUMWbyBn0AEJYnAEXzEjQjVjTjIKfjzEjNjTjHjTLfRBCDnVzDjNjTjHMfBePjTjFjOjEjJjOjHhAjFjSjSjPjShahAnffJZnASzIjFjSjSjPjSiNjTjHNACDCDnjzJjFjSjSjPjSiMjJjOjFOfeOiFjSjSjPjShAjJjOKiMjJjOjFhAnnneDhAhaKnftOgbbygdn0ABJgdnASNACDnnnehSjBjOhAiJjMjMjVjTjUjSjBjUjPjShAjFjSjSjPjShAjPjDjDjVjSjSjFjEhahAhRhThUhWhUhVhYhRhYhZhAhIhHiNiSiBiQhHhJntfACzDhdhdhdPVMfBnneEjNjSjBjQOgfbyhBn0ABJhBnASNACDnnnePiOjPhAjTjVjDjIhAjFjMjFjNjFjOjUntfACPVMfBnneJjVjOjEjFjGjJjOjFjEnOhEbyhGn0ABJhGnAEXKfjLfRBVNfAffAjzHjEjFjWiNjPjEjFQfbyhKn0ABJhKnAEjzFjBjMjFjSjURfRBVNfAffACN40BiAM40BhABBAzJjTjFjOjEiFjSjSjPjSSAhNMhPbyBn0AEOhRbhUn0ACJhUnABjzHjMjJjCiGjJjMjFTfEjzEiGjJjMjFUfRBCDjzLjEjFjTjLjUjPjQiQjBjUjIVfnneNhPjUjFjNjQhPjUjFjTjUhOjKjTffnfJhVnAEXKfjLfRBFehYjDjIjBjOjHjJjOjHhAjUjPhAjUjFjNjQhAjMjPjDjBjMhAjMjJjCjSjBjSjZhAjGjJjMjFhAjUjPhAjQjSjFjWjFjOjUhAjPjWjFjSjXjSjJjUjFffAjQfnJhXnAEXzEjPjQjFjOWfjTfRBFeBjXffJhYnAEXzFjXjSjJjUjFXfjTfRBjzHjOjFjXiEjBjUjBYfffJhZnAEXzFjDjMjPjTjFZfjTfnf0DzCjPjXgaAhaMhcbyBn0AJJhenAEXKfjLfRBFeLjCjBjDjLjVjQhAjEjBjUjBffJhfnASzGjDjIjPjJjDjFgbACzBhcgcEjJfRCFdBFdjEffnndhInftOiAbyiCn0ABZiCnAnAUzChGhGgdhzBhBgejQfVgbfAnnnJiFnAEXKfjLfRBCDnVgbfAeJjDjIjPjJjDjFhAhdhAnffJiGnASzIjCjEiSjBjOjEjPjNgfBEjJfRCFdBFdmIffnftJiHnABjTfEjUfRBCDjzIjEjBjUjBiQjBjUjIhAfnneThPjDjFjOjUjSjBjMifjMjJjCjSjBjSjZhOjKjTffnfJiInAEjzEjFjWjBjMhBfRBCDCDnXzIjGjVjMjMiOjBjNjFhCfjTfeKhDjJjOjDjMjVjEjFhAhCnnneBhCffJiKnASzHjDjPjVjOjUjFjShDCndAftLiMbyiOn0ABOiObiQn0AIJiQnASzEjJjUjFjNhEEQzAhFfjzMjQjSjFjQjSjFjTjTiJjOjGjPhGfVzEjDjPjEjFhHfDnftJiRnASzKjNjPjDjLjVjQiTjJjajFhIFXhIfVhEfEnftOiTbyiVn0ABJiVnASzNjOjFjXiNjPjDjLjVjQiTjJjajFhJGneDiZiYiTffACPVhIfFnneDiZiYiMOiXbyiZn0ABJiZnAShJGneCiYiTffACPVhIfFnneBiNOibbyidn0ABJidnAShJGneCiYiTffACPVhIfFnneCiYiMbyjBn0ABJjBnAShJGneCiYiMffJjEnABXhIfVhEfEVhJfGnfJjFnABjYfCDnEXzJjTjUjSjJjOjHjJjGjZhKfjzEiKiTiPiOhLfRBjhGfffeTjWjBjShAjQjSjFjQjSjFjTjTiJjOjGjPhAhdhAnnfJjGnAEXKfjLfRBCDnVhHfDeKjCjBjDjLjFjEhAjVjQhAnffJjHnAEjgafnfDjInAhFtACPVhDfCVgffBnnbyjMn0ABJjMnAThDCBtAVhHfDjhGfyBhFfAHhE4E0AiAgb40BiAgf4B0AiAhD4C0AiAhH4D0AiAhI4F0AiAhJ4G0AiAAHAzKjCjBjDjLjVjQiEjBjUjBhMAjPMjRbyBn0ACOjTbjVn0ACJjVnAEXKfjLfRBFeEjMjPjPjQffZjWnAnAjQfnljYbyjan0ABJjanAEXzHjXjSjJjUjFjMjOhNfjzBhEhOfRBFeAffAn0DzEjMjPjPjQhPAjcMjebyBn0ACJkAnAEXKfjLfRBFeEjVjOjEjPffKkBbykDn0ABgkDbyBn0ABJkFnAEXzEjVjOjEjPhQfjzDjBjQjQhRfnfABnzBjFhSnbyBn0ABDkJnAhFfARCSzBjVhTAndAftSzDjMjFjOhUBndhSfttCgcVhTfAVhUfBnnThTABtAChT40BiAhU4B0AiAACAhQAkMMkPbyBn0ADJkSnASzKjBjVjUjIjPjSjJjajFjEhVBAREFeGjBjOjEjSjFjXFeGjLjBjZjMjFjBFeFjBjJjNjFjFFeEjNjBjSjLfnftOkTbkVn0ACJkVnAEXKfjLfRBFeKjBjVjUjIjPjSjJjajFjEffJkWnASzGjSjFjTjVjMjUhWAnctffACzBhehXEXzHjJjOjEjFjYiPjGhYfVhVfBRBEXzJjTjVjCjTjUjSjJjOjHhZfjzEjVjTjFjShafRCFdAEXhYfjhafRBFeBhOffffffnndyBbkan0ADJkanASFCEjJfRCFdBFdKffnftJkbnAEXKfjLfRBCDnVFfCeMjEjJhAjSjBjOjEjPjNhAhdhAnffckcnAVFfCERFFdBFdCFdDFdEFdFfRCFdGFdHfRCFdIFdJfRBFdKfEblDn0ADJlDnAEjhPfnfJlEnAShWAncfffDlFnAhFtblIn0AEJlInAEjSfRBFeEjNjSjBjQffJlJnAEjhMfnfJlKnAShWAncfffDlLnAhFtblOn0AEJlOnAEjSfRBFeJjVjOjEjFjGjJjOjFjEffJlPnAEjhMfnfJlQnAShWAncfffDlRnAhFtblTn0ACJlTnAEjhQfnfJlUnAShWAnctffZlXnAVhWf0ADF4C0AiAhV4B0AiAhW40BiAADAzOjEjFjUjFjSjNjJjOjFiJjTjTjVjFhbAlYMlabyBn0ABJlcnABjzFjWjBjMjJjEhcfEjhbfnfnf0DzDiXiSiPhdAldLJCnABXhYfXzJjQjSjPjUjPjUjZjQjFhefjzFiBjSjSjBjZhffNyBnAMCbyBn0ACKCnARCSzBjDiACXzGjMjFjOjHjUjIiBfezEjUjIjJjTiCfnffSzBjCiDBCzBhFiECDViAfChzBjeiFhiFViDfBnnViAfCnnnfftUgdCgcViDfBViAfCnnUzCjcjciGhgeCzCjJjOiHViDfBeiCfnnCzDhBhdhdiIQhFfeiCfViDfBVzBjBiJfAnnnnnnTiDBBtZyCnAdCzBieiKViDfBViAfCnnViDfBFdyBADiJ40BhAiD4B0AhAiA4C0AhAD0AhFCCnfODbyDn0ABJDnABXhLfeiCfWzGiPjCjKjFjDjUiLAnfAhgeXhLfeiCfnJyDnAENyBnAMDbyBnADMDbyBn0ABZyDnAdCgcVzBjOiMfAnndKCDnViMfAeBhQnViMf0ABiM40BhAB0AzBjGiNADMDbyBn0ACJyDnABXzJjMjBjTjUiJjOjEjFjYiOfjzJjFjTjDjBjQjBjCjMjFiPfndAfZyDnAdEXzEjUjFjTjUiQfjiPfRBVzGjTjUjSjJjOjHiRfAffCDCDnEXzHjSjFjQjMjBjDjFiSfViRfARCjiPfNyBnAMDbyBn0ACJyDnASiAAQhFfjzEjNjFjUjBiTfViJfBnftZyDnAdCPizGjUjZjQjFjPjGiUViAfAnneGjTjUjSjJjOjHViAfACDnEXzFjTjMjJjDjFiVfCDnEXzIjUjPiTjUjSjJjOjHiWfEXzKjDjIjBjSiDjPjEjFiBjUiXfViJfBRBFdAffRBFdQffeEhQhQhQhQnRBFdyEffeCicjVnACiJ40BhAiA40BiABBAhFCDffeBhCnnneBhCCDCDnViRfAeBhCnnneBhCABiR40BhAB0AzFjRjVjPjUjFiYADMDbyBn0AFbyDn0ACJyDnASzEjNjJjOjEiZEjzDjHjBjQiafnftJyDnASzFjWjBjMjVjFibGQhFfVzGjIjPjMjEjFjSicfIVzDjLjFjZidfHnftOyDbyDn0ABJyDnASibGEXzGjUjPiKiTiPiOiefVibfGRBVidfHffnffAUgdUgdVibfGCPiiUVibfGnneGjPjCjKjFjDjUnnCPiiUXiefVibfGnneIjGjVjOjDjUjJjPjOnnnOyDbyDn0ABJyDnASibGEXzEjDjBjMjMiffjzDjSjFjQjAfRDVicfIVidfHVibfGffnffACPiiUjjAfnneIjGjVjOjDjUjJjPjOncyDnAiiUVibfGERBFeGjTjUjSjJjOjHfRBFeGjOjVjNjCjFjSfRCFeHjCjPjPjMjFjBjOFeEjOjVjMjMfRBFeGjPjCjKjFjDjUfEbyDn0ABZyDnAEjiYfRBVibfGffbyDn0ABZyDnAdEjzIjJjTiGjJjOjJjUjFjBfRBVibfGffEjzGiTjUjSjJjOjHjCfRBVibfGffFeEjOjVjMjMbyDn0ABZyDnAEjjCfRBVibfGffbyDn0AIOyDbyDn0ABZyDnAFeEjOjVjMjMAhgeVibfGnJyDnABjiafCDnjzGjJjOjEjFjOjUjDfnnntJyDnASzHjQjBjSjUjJjBjMjEFAnnffOyDbyDn0AFJyDnASiBDXiBfVibfGnffayDbyDn0ABJyDnABQhFfVjEfFVzBjJjFfAUiGEjzDjTjUjSjGfRCVjFfAVibfGffnneEjOjVjMjMnfAVjFf0AViBfDByBgcJyDnASzBjWjHCddCPXiBfVjEfFnndAFeCibidjiafCDCDCDCDCDnjiafeCibKnEXzEjKjPjJjOjIfVjEfFRBCDnjiafeChMKnffnnnneBKViZfEnnnneBidCDCDnEXjIfVjEfFRBFeBhMffeBibnnneBidnffJyDnABjiafViZfEnfZyDnAVjHfCACPEXzFjBjQjQjMjZjJfXiWfXhefjiLfRBVibfGffnneOibjPjCjKjFjDjUhAiBjSjSjBjZidnOyDbyDn0ACJyDnASiBDXiBfjjAfnffayDbyDn0ACJyDnASzBjLjKBQhFfjjAfVjFfAnffOyDbyDn0ACJyDnASjHCEjjGfRCVjKfBVibfGffnffOyDbyDn0ABJyDnAEXKfVjEfFRBCDCDEjiYfRBVjKfBffdjiafFeChahAFeBhannVjHfCnnffAVjHfCnACPiiUVjKfBnneGjTjUjSjJjOjHnAVjFf0AViBfDByBgcAUgdjjAfCPiiUjjAfnneGjPjCjKjFjDjUnnbyDn0ABLyDbyDn0ABOyDbyDn0ACJyDnASjHCEjjGfRCVjKfBVibfGffnffOyDbyDn0ABJyDnAEXKfVjEfFRBCDCDEjiYfRBVjKfBffdjiafFeChahAFeBhannVjHfCnnffAVjHfCnAEXiffXzOjIjBjTiPjXjOiQjSjPjQjFjSjUjZjLfjiLfRCVibfGVjKfBffnAVjKfBVibfGyBhFfJyDnASjHCddCPXiBfVjEfFnndAFeCjbjdjiafCDCDCDCDCDnjiafeCjbKnEXjIfVjEfFRBCDnjiafeChMKnffnnnneBKViZfEnnnneBjdCDCDnEXjIfVjEfFRBFeBhMffeBjbnnneBjdnffJyDnABjiafViZfEnfZyDnAVjHfCZyDnAVjHfCAJjF40BiAib4G0AiAiB4D0AiAjH4C0AiAid40BhAic4B0AhAjK4B0AiAiZ4E0AiAjE4F0AiACHAjGADEOyDbyDn0ACJyDnABXiefXhefjzEiEjBjUjFjMfNyBnAMDbyBn0ABZyDnAdEjjBfRBEXzHjWjBjMjVjFiPjGjNfeiCfnfffCDCDCDCDCDCDCDCDCDCDCDEXzOjHjFjUiViUiDiGjVjMjMiZjFjBjSjOfeiCfnfnneBhNEjiNfRBCDEXzLjHjFjUiViUiDiNjPjOjUjIjPfeiCfnfnndBffnnnneBhNEjiNfRBEXzKjHjFjUiViUiDiEjBjUjFjQfeiCfnfffnnnneBiUEjiNfRBEXzLjHjFjUiViUiDiIjPjVjSjTjRfeiCfnfffnnnneBhaEjiNfRBEXzNjHjFjUiViUiDiNjJjOjVjUjFjTjSfeiCfnfffnnnneBhaEjiNfRBEXzNjHjFjUiViUiDiTjFjDjPjOjEjTjTfeiCfnfffnnnneBiaFbABid40BhAB0AhFCDnfJyDnABXiefXhefjjCfBXiefXhefjzGiOjVjNjCjFjSjUfBXiefXhefjzHiCjPjPjMjFjBjOjVfNyBnAMDbyBn0ABZyDnAEXjNfeiCfnfABid40BhAB0AhFCDnfnfnfACiIiiUXiefXhefjjMfnneIjGjVjOjDjUjJjPjOnbyDn0ADJyDnASzCjDjYjWAYjHibicjVhQhQhQhQicjVhQhQjBjEicjVhQhWhQhQhNicjVhQhWhQhUicjVhQhXhQjGicjVhRhXjChUicjVhRhXjChVicjVhShQhQjDhNicjVhShQhQjGicjVhShQhShYhNicjVhShQhSjGicjVhShQhWhQhNicjVhShQhWjGicjVjGjFjGjGicjVjGjGjGhQhNicjVjGjGjGjGidBjHnftJyDnASiPBYjXibicicichCicjYhQhQhNicjYhRjGicjYhXjGhNicjYhZjGicjVhQhQjBjEicjVhQhWhQhQhNicjVhQhWhQhUicjVhQhXhQjGicjVhRhXjChUicjVhRhXjChVicjVhShQhQjDhNicjVhShQhQjGicjVhShQhShYhNicjVhShQhSjGicjVhShQhWhQhNicjVhShQhWjGicjVjGjFjGjGicjVjGjGjGhQhNicjVjGjGjGjGidBjHnftJyDnASiTEWiLHzBIjXFeCicjCzBJjYFeCicjUzBKjZFeCicjOzBMjaFeCicjGzBNjbFeCicjSzBhCjcFeCichCzBicjdFeCicicnftOyDbyDn0ABJyDnABXhKfjhLfNyBnAMDbyBn0AGJyDnABjiafneAfJyDnABjjDfneAfOyDbyDn0ABayDbyDn0ABJyDnABjjDfCDnnneBhAntAVjFf0AVzFjTjQjBjDjFjefDByBgcACPiiUVjefDnneGjOjVjNjCjFjSbyDn0ABOyDbyDn0ABJyDnABjjDfVjefDnfACPiiUVjefDnneGjTjUjSjJjOjHnJyDnABjjAfVzIjSjFjQjMjBjDjFjSjffCnfOyDbyDn0ABfyDnAEjzFiFjSjSjPjSkAfRBFeOiKiTiPiOhOjTjUjSjJjOjHjJjGjZftAUgdUgdVjffCCiIiiUVjffCnneIjGjVjOjDjUjJjPjOnnUiGCiIiiUVjffCnneGjPjCjKjFjDjUCiIiiUXiBfVjffCnneGjOjVjNjCjFjSnnnnnZyDnAEjjGfRCFeAWiLBhFVibfBffAEjf4B0AhAjF40BiAje4C0AhAib40BhADBAhFCDnfACiIiiUXhKfjhLfnneIjGjVjOjDjUjJjPjOnOyDbyDn0ABJyDnABXzFjQjBjSjTjFkBfjhLfNyBnAMDbyBnABMDbyBn0ADJyDnASibCQhFfVicfDVidfEnftOyDbyDn0ABLyDbyDn0ABOyDbyDn0ACJyDnASjHBEjzEjXjBjMjLkCfRCVibfCVjKfAffnffOyDbyDn0ABJyDnABQhFfVibfCVjKfAVjHfBnfACiIVjHfBjzJjVjOjEjFjGjJjOjFjEkDfnnbyDn0ABJyDnAizGjEjFjMjFjUjFkEQhFfVibfCVjKf0AEXiffXjLfjiLfRCVibfCVjKfAffnAVjKfAVibfCyBhFfAUgdVibfCCPiiUVibfCnneGjPjCjKjFjDjUnnnZyDnAEXiffjzHjSjFjWjJjWjFjSkFfRDVicfDVidfEVibfCffAFib4C0AiAjH4B0AiAid4B0AhAic40BhAjK40BiACDAkCADFJyDnASzEjUjFjYjUkGBEjjCfRBVkGfBffnffJyDnABXiOfjjWfndAfOyDbyDn0ABJyDnASkGBEXiSfVkGfBRCjjWfNyBnAMDbyBn0ABZyDnACDnEXiVfCDnEXiWfEXiXfViJfARBFdAffRBFdQffeEhQhQhQhQnRBFdyEffeCicjVnABiJ40BhAB0AhFCDffnffAEXiQfjjWfRBVkGfBffnOyDbyDn0ACJyDnASzBjKkHAEjhBfRBCDCDnVkGfBeBhInnneBhJffnffZyDnAdCPiiUVkFfCnneIjGjVjOjDjUjJjPjOEjkCfRCWiLBhFVkHfAFeAffVkHf0AEXiQfYNieibicidhMhajbjdicjTidhKhEARBEXiSfEXiSfEXiSfVkGfBRCYhCicichIhfhaibhCicicichPjCjGjOjSjUidjcjVibhQhNhZjBhNjGiBhNiGidjbhUjdhJBjHFeBiAffRCYhfhCibiehCicicicjOicjSidhKhCjcjUjSjVjFjcjGjBjMjTjFjcjOjVjMjMjchNhficjEhLhIhfhaichOicjEhKhJhfhIhfhaibjFiFidibhLichNidhficjEhLhJhfBjHFeBidffRCYThIhfhaiejchajchMhJhIhfhaicjThKicibhJhLBjHFeAffffnfyDnAEjzLiTjZjOjUjBjYiFjSjSjPjSkIfRBFeKiKiTiPiOhOjQjBjSjTjFftADkF4B0AhAkH40BiAkG40BhACBAhFCDnfACiIiiUXkBfjhLfnneIjGjVjOjDjUjJjPjOnAGjD4D0AiAjW40BiAiP4B0AiAia4C0AiAiT4E0AiAjA4F0AiAAGAhFCDnfJEnAShaAEXzGjHjFjUjFjOjWkJfjhOfRBFeEiViTiFiSffnftJFnASQBncfftJHnASzHjFjYjQiGjJjMjFkKEEjUfRBFeiDhPiWjPjMjVjNjFjThPiDjVjTjUjPjNjJjajBjUjJjPjOhPiMjJjCjSjBjSjZhPiTjDjSjJjQjUjThPiTjDjSjJjQjUhAiSjFjTjPjVjSjDjFjThPhOjFjYjQhPjFjYjQhOjKjTffnftJInAShAFnehchPiWjPjMjVjNjFjThPiDjVjTjUjPjNjJjajBjUjJjPjOhPiMjJjCjSjBjSjZhPiTjDjSjJjQjUjThPiTjDjSjJjQjUhAiSjFjTjPjVjSjDjFjThPiEjBjUjBftJJnASVGCDCDnVhafAegchPiWjPjMjVjNjFjThPiNjBjDjJjOjUjPjTjIhAiIiEhPiVjTjFjSjThPnnneJhPiEjFjTjLjUjPjQhPnftJKnASLHAnnftgmGbyBn0AIgmIbyBn0ABJmKnASOIEXBfjCfRBCzBhPkLCDCEXiBfVhafAnndhKnndmIEXzGjHjFjUiEjBjZkMfEjjMfntnfnnffnffABnhSnbyBn0ABJmOnASOyBneDhWhWhVffJmTnAEjhBfRBCDCDnXhCfVkKfEeKhDjJjOjDjMjVjEjFhAhCnnneBhCffJmWnASzFjUjPjEjBjZkNJEjjMfntnftJmXnASzHjDjVjSiEjBjUjFkOKEXzHjHjFjUiUjJjNjFkPfVkNfJnfnftJmYnASzKjGjBjJjMiSjBjOjEjPjNkQLEjJfRCFdBFdEffnftJmZnAEXKfVLfHRBCDnChXVkOfKjzDjFjYjQkRfnneGjFjYjQhAhdhAnffJmanAEXKfVLfHRBCDnVkQfLeNjGjBjJjMiSjBjOjEjPjNhAhdhAnffOmbbmdn0ACJmdnAEXKfVLfHRBFeKjFjYjQhAhdhAjUjSjVjFffJmenAEjhdfnfAUgdChXVkOfKjkRfnnCPVkQfLnndBnnbynCn0ABOnCbnEn0ACJnEnAEXKfVLfHRBFegcjEjFjWhAjNjPjEjFhahAjSjVjOjOjJjOjHhAjXjSjPhAjBjOjZjXjBjZffJnFnAEjhdfnfAVQfBnABnhSnbyBn0ACJnLnAEXKfVLfyBRBFeLjOjPhAjFjYjQhAjGjJjMjFffJnMnAEjhdfnfOnPbynRn0ABJnRnAEXhNfjhOfRBCDnEXjIfVLfHRBFeBKffeGjNjTjHjThaKnffAVQfBnAMkQ4L0AiAha40BiAQ4B0AiAT4C0AiAY4D0AiAkK4E0AiAhA4F0AiAV4G0AiAL4H0AiAO4I0AiAkN4J0AiAkO4K0AiAAMAzRjWjBjMjJjEjBjUjFiFjYjFjDjVjUjJjPjOkSAnUBJnWnAEjkSfnf0DhFByB")
 
 
+
+//normalize local file path
+//due to the strange way home folders are
+//determined with our setup, file paths are
+//usually rendered incorrectly by using
+//a relative path to the home folder. this relative
+//path leads to some network version of the user folder
+//which is almost never what we want. this function will
+//replace the relative file path with a hard coded path
+//to the home folder.
+function normalizeLocalFilePath(path)
+{
+	return path.replace(/(^.*users\/)|(^~\/)/i,homeFolderPath);
+function unlockGuides()
+{
+	var tmpLay = app.activeDocument.layers.add();
+	var rect = tmpLay.pathItems.rectangle(0,0,5,5);
+	app.selection = null;
+	rect.selected = true;
+	if(!app.activeDocument.selection.length)
+	{
+		app.executeMenuCommand("lockGuide");
+	}
+	tmpLay.remove();
+}
 
 //normalize local file path
 //due to the strange way home folders are
@@ -744,7 +790,7 @@ function chooseFromListbox(items,msg,size)
 	return result;
 }
 
-function findSpecificLayer(parent,layerName)
+function findSpecificLayer(parent,layerName,crit)
 {
 	var result,layers;
 
@@ -759,7 +805,11 @@ function findSpecificLayer(parent,layerName)
 	
 	for(var x=0,len=layers.length;x<len && !result;x++)
 	{
-		if(layers[x].name.toLowerCase() === layerName.toLowerCase())
+		if(crit === "any" && layers[x].name.toLowerCase().indexOf(layerName.toLowerCase())>-1)
+		{
+			result = layers[x];
+		}
+		else if(layers[x].name.toLowerCase() === layerName.toLowerCase())
 		{
 			result = layers[x];
 		}
@@ -792,7 +842,7 @@ function findSpecificPageItem(parent,itemName,crit)
 				{
 					result.push(curItem);
 				}
-				else if(crit === "any" && curItem.name.indexOf(itemName)>-1)
+				else if(crit === "any" && curItem.name.toLowerCase().indexOf(itemName.toLowerCase())>-1)
 				{
 					result.push(curItem);
 				}
@@ -813,6 +863,10 @@ function findSpecificPageItem(parent,itemName,crit)
 			result = chooseFromListbox(result,msg);
 		}
 		result = result[0];
+	}
+	else
+	{
+		result = undefined;
 	}
 	
 	return result;
@@ -2045,10 +2099,22 @@ function getCenterPoint(item)
 	return [item.left + item.width/2,item.top - item.height/2];
 }
 
-function setCenterPoint(item,coords)
+function setCenterPoint(item,coords,dim)
 {
-	item.left = coords[0] - item.width/2;
-	item.top = coords[1] + item.height/2;
+	if(dim === "h")
+	{
+		item.left = coords[0] - item.width/2;
+	}
+	else if(dim === "v")
+	{
+		item.top = coords[1] + item.height/2;
+	}
+	else
+	{
+		item.left = coords[0] - item.width/2;
+		item.top = coords[1] + item.height/2;	
+	}
+	
 }
 
 
@@ -2137,7 +2203,7 @@ function trimSpacesArray(arr)
 function createAction(name,actionString)
 {
 	var dest = new Folder(documentsPath);
-	var actionFile = new File(dest + "/" + name + ".aia" );
+	var actionFile = new File(decodeURI(dest + "/" + name + ".aia" ));
 
 	actionFile.open("w");
 	actionFile.write(actionString.join("\n"));
@@ -2169,9 +2235,37 @@ function removeAction(actionName)
 //curl data from a specified url and return the data as an anonymous object
 function curlData(url,arg)
 {
-	log.h("Beginning execution of curlData(" + url + "," + arg + ")");
+	log.h("Beginning execution of curlData(" + url + arg + ")");
 	var result,status,dataFileContents;
 	var htmlRegex = /<html>/gmi;
+
+	// url = url+arg;
+
+
+	//variables for the local data stuff
+	var curlDataPath = documentsPath + "curlData/"
+	var curlDataFolder = new Folder(curlDataPath);
+	if(!curlDataFolder.exists)
+	{
+		curlDataFolder.create();
+	}
+	var localDataFile = File(curlDataPath + "curlData.txt");
+
+
+	//clear out the local data file..
+	//make sure we always start with an empty string
+	localDataFile.open("w");
+	localDataFile.write("");
+	localDataFile.close();
+	status = "empty";
+
+
+	var scriptText,
+		scriptFile,
+		executor,
+		killExecutor;
+
+
 
 	url = url+arg;
 
