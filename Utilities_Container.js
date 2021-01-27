@@ -474,7 +474,17 @@ function printSpecialtyLog(file,msg)
 
 
 
-
+function ungroup(group)
+{
+	group.layer.locked = false;
+	group.layer.visible = true;
+	group.locked = false;
+	group.visible = true;
+	for(var x= group.pageItems.length-1;x>=0;x--)
+	{
+		group.pageItems[x].moveToBeginning(group.layer);
+	}
+}
 
 
 
