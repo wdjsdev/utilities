@@ -282,7 +282,7 @@ function livePrintLog(msg)
 	}
 }
 
-function getLogDest()
+function getLogDest(logName)
 {
 	var userLogPath = logsPath + user + "/";
 	var userLogFolder = Folder(userLogPath);
@@ -290,7 +290,16 @@ function getLogDest()
 	{
 		userLogFolder.create();
 	}
-	var scriptLogFile = File(userLogPath + scriptName + ".txt");
+
+	var scriptLogFile;
+	if(logName)
+	{
+		scriptLogFile = File(userLogPath + logName + ".txt");
+	}
+	else
+	{
+		scriptLogFile = File(userLogPath + scriptName + ".txt");
+	}
 	return scriptLogFile;
 }
 
@@ -773,6 +782,101 @@ function chooseFromListbox(items,msg,size)
 			})
 
 	cfl.show();
+	return result;
+}
+
+
+/*
+	Component Name: reset_graphic_styles_to_param_blocks
+	Author: William Dowling
+	Creation Date: 5 February, 2018
+	Description: 
+		use the given paramLayer to reset
+		the graphic styles to match the style
+		and name of each paramBlock on the paramLayer
+	Arguments
+		paramLayer
+			layer object on the mockup layer of the first 
+			garment in the document. 
+
+			this layer holds the paramcolor blocks that hold
+			the color information for the garment
+	Return value
+		success boolean
+
+*/
+function resetGraphicStylesToParamBlocks(paramLayer)
+{
+	var doc = app.activeDocument;
+
+	//check to make sure there's a valid param layer before
+	//removing the existing graphic styles
+	if(!paramLayer || paramLayer.pageItems.length === 0)
+	{
+		log.e("paramLayer was undefined.");
+		return false;
+	}
+
+
+
+	//first, delete any graphic styles that exist.
+	//then replace them with graphic styles created
+	//directly from the param blocks. this way we'll be
+	//guaranteed to have the correct graphic styles
+	// for(var x = uvFile.graphicStyles.length-1;x>=0;x--)
+	// {
+	// 	uvFile.graphicStyles[x].remove();
+	// }
+
+	//load the "create graphic style" action
+	createAction("graphic_style_from_selection",GRAPHIC_STYLE_FROM_SELECTION_ACTION_STRING);
+
+
+	//loop the paramLayer pageItems 
+	var curBlock,curName,gs;
+	for(var x = paramLayer.pageItems.length - 1; x>=0; x--)
+	{
+		doc.selection = null;
+		curBlock = paramLayer.pageItems[x];
+		curName = curBlock.name.replace("paramcolor-","");
+
+		if(curBlock.name.indexOf("param") === -1)
+		{
+			curBlock.remove();
+			continue;
+		}
+
+		
+		gs = findSpecificGraphicStyle(doc,curName);
+		if(gs)
+		{
+			gs.remove();
+		}
+		
+		curBlock.selected = true;
+
+
+
+		app.doScript("graphic_style_from_selection","graphic_style_from_selection");
+		doc.graphicStyles[doc.graphicStyles.length-1].name = curName;
+		app.redraw();
+	}
+
+	removeAction("graphic_style_from_selection");
+	return true;
+}
+
+
+function findSpecificGraphicStyle(doc,name)
+{
+	var result;
+	for(var x=0;x<doc.graphicStyles.length && !result;x++)
+	{
+		if(doc.graphicStyles[x].name === name)
+		{
+			result = doc.graphicStyles[x]
+		}
+	}
 	return result;
 }
 
