@@ -2061,6 +2061,16 @@ function mergeSwatches(oldSwatchName,newSwatchName)
 	var renameSuccess = false;	
 	var swatchGroup;
 	var overlappingSwatches = false;
+
+
+	//make sure this isn't an rgb document
+	//if it is.. convert it to cmyk
+	if(app.activeDocument.documentColorSpace === DocumentColorSpace.RGB)
+	{
+		app.executeMenuCommand("doc-color-cmyk");
+	}
+
+
 	var swatch = makeNewSpotColor(oldSwatchName);
 	try
 	{
@@ -2122,6 +2132,7 @@ function mergeSwatches(oldSwatchName,newSwatchName)
 			"black": 100
 		}
 	}
+
 
 	for(var color in swatch.color.spot.color)
 	{
