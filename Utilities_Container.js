@@ -25,8 +25,38 @@ else
 }
 
 
+////////////////////////
+////////ATTENTION://////
+//
+//		array prototypes
+//
+////////////////////////
+
 //array.indexOf()
 Array.prototype.indexOf=function(a,b,c){for(c=this.length,b=(c+~~b)%c;b<c&&(!(b in this)||this[b]!==a);b++);return b^c?b:-1;}
+Array.prototype.map = function(callback) {
+    arr = [];
+    for (var i = 0; i < this.length; i++)
+        arr.push(callback(this[i], i, this));
+    return arr;
+};
+Array.prototype.forEach = function(callback) {
+    for (var i = 0; i < this.length; i++)
+        callback(this[i], i, this);
+};
+
+
+
+
+
+
+////////////////////////
+////////ATTENTION://////
+//
+//		array prototypes
+//
+////////////////////////
+
 
 //list of dr users
 var DR_USERS = 
@@ -964,6 +994,54 @@ function findSpecificPageItem(parent,itemName,crit)
 
 
 
+//parent = container object
+//itemName = string
+//[crit] = string representing criteria for a match
+	//"match" means the entire name must match exactly
+	//"imatch" means name must match, but case doesn't matter
+	//"any" means itemName must exist somewhere
+//return an array of objects that matched the criteria
+function findAllPageItems(parent,itemName,crit)
+{
+	var result = [],curItem;
+	if(parent.pageItems.length)
+	{
+		for(var x=0,len=parent.pageItems.length;x<len;x++)
+		{
+			curItem = parent.pageItems[x];
+			if(crit)
+			{
+				if(crit === "match" && curItem.name === itemName)
+				{
+					result.push(curItem);
+				}
+				else if(crit === "imatch" && curItem.name.toLowerCase() === itemName.toLowerCase())
+				{
+					result.push(curItem);
+				}
+				else if(crit === "any" && curItem.name.toLowerCase().indexOf(itemName.toLowerCase())>-1)
+				{
+					result.push(curItem);
+				}
+			}
+			else if(curItem.name.indexOf(itemName)>-1)
+			{
+				result.push(curItem);
+
+			}
+		}
+	}
+
+	if(!result.length)
+	{
+		result = undefined;
+	}
+	
+	return result;
+}
+
+
+
 //dig through the parent object recursively to find
 //something of a specified type and name
 function findSpecificItem(parent,itemType,name)
@@ -1002,6 +1080,29 @@ function findSpecificItem(parent,itemType,name)
 	}
 
 }
+
+
+function arrayFromContainer(container,crit)
+{
+	var result = [];
+	var items;
+	if(!crit || crit === "any")
+	{
+		items = container.pageItems;
+	}
+	else
+	{
+		items = container[crit];
+	}
+	for(var x=0;x<items.length;x++)
+	{
+		result.push(items[x])
+	}
+	return result;
+}
+
+
+
 
 
 //loop all the parent layers in the document
