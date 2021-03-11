@@ -364,7 +364,7 @@ function getDate()
 	//year
 	var y = date.getFullYear().toString();
 	y = y.substring(2,4);
-	var time = d + "/" + m + "/" + y;
+	var time = d + "." + m + "." + y;
 	return time;
 }
 
