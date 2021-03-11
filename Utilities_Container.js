@@ -352,6 +352,22 @@ function logTime()
 	return time;
 }
 
+function getDate()
+{
+	var date = new Date();
+	//month
+	var m = date.getMonth() +1;
+	if(m<10){m = "0" + m};
+	//day
+	var d = date.getDate();
+	if(d<10){d = "0" + d};
+	//year
+	var y = date.getFullYear().toString();
+	y = y.substring(2,4);
+	var time = d + "/" + m + "/" + y;
+	return time;
+}
+
 var log =
 {
 	h : function(msg)
