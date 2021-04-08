@@ -676,6 +676,36 @@ function isContainedWithin(item,dest)
 	return (IL >= DL && IR <= DR && IT <= DT && IB >= DB);
 }
 
+function isContainedWithinBuffer(item,dest,buffer)
+{
+	//item coordinates
+	var IL = item.left;
+	var IT = item.top;
+	var IR = item.left + item.width;
+	var IB = item.top - item.height;
+
+	//dest coordinates
+	if(dest.typename === "Artboard")
+	{
+		var rect = dest.artboardRect;
+		var DL = rect[0];
+		var DT = rect[1];
+		var DR = rect[2];
+		var DB = rect[3];
+	}
+	else
+	{
+		var DL = dest.left;
+		var DT = dest.top;
+		var DR = dest.left + dest.width;
+		var DB = dest.top - dest.height;
+	}
+
+	if(!buffer)buffer = 0;
+
+	return (IL >= DL - buffer && IR <= DR + buffer && IT <= DT + buffer && IB >= DB - buffer);
+}
+
 function findParentArtboard(item,artboards)
 {
 	var result;
