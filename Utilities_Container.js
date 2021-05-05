@@ -862,7 +862,7 @@ function chooseFromListbox(items,msg,size)
 }
 
 
-function graphicStyleFromSelection(item,name)
+function graphicStyleFromItem(item,name)
 {
 	app.activeDocument.selection = null;
 	item.selected = true;
