@@ -862,6 +862,19 @@ function chooseFromListbox(items,msg,size)
 }
 
 
+function graphicStyleFromSelection(item,name)
+{
+	app.activeDocument.selection = null;
+	item.selected = true;
+	createAction("graphic_style_from_selection",GRAPHIC_STYLE_FROM_SELECTION_ACTION_STRING);
+
+	app.doScript("graphic_style_from_selection","graphic_style_from_selection");
+	app.activeDocument.graphicStyles[app.activeDocument.graphicStyles.length-1].name = name;
+	app.redraw();
+
+	removeAction("graphic_style_from_selection");
+}
+
 /*
 	Component Name: reset_graphic_styles_to_param_blocks
 	Author: William Dowling
