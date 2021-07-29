@@ -1005,6 +1005,14 @@ function findSpecificLayer(parent,layerName,crit)
 //return a single object or undefined
 function findSpecificPageItem(parent,itemName,crit)
 {
+	if(!parent)
+	{
+		log.e("undefined parent");
+	}
+	else if(!parent.pageItems)
+	{
+		log.e("parent has no pageItems");
+	}
 	var result = [],curItem;
 	if(parent.pageItems.length)
 	{
@@ -1242,6 +1250,46 @@ function getPPLay(parent)
 	}
 	return result;
 }
+
+
+//for every layer in the active document
+//look for a prepress layer, 
+function touchEveryPrepressItem(func)
+{
+	if(!app.documents.length)return false;
+
+	var doc = app.activeDocument;
+	var layers = doc.layers;
+
+
+	var ppLay;
+	var curLay;
+	var curPpLay;
+	var curPpItem
+	for(var x=0;x<layers.length;x++)
+	{
+		curLay = layers[x];
+		ppLay = findSpecificLayer(curLay,"Prepress","imatch");
+		if(!ppLay)continue;
+
+		for(var y=0;y<ppLay.layers.length;y++)
+		{
+			curPpLay = ppLay.layers[y];
+			for(var z=0;z<curPpLay.pageItems.length;z++)
+			{
+				curPpItem = curPpLay.pageItems[z];
+				func(curPpItem);
+			}
+		}
+	}
+
+
+}
+
+
+
+
+
 
 function coord(ppLay)
 {
@@ -2964,6 +3012,45 @@ function unlockGuides()
 	
 }
 
+//this function is for the add artwork and rebuild template scripts
+//
+//loop the prepress layer to find any pieces
+//matching the names in the rotationSets array
+//rotationSets will look like this:
+// 		[{"angle":-90,"pieces":["front","back"]},{"angle":90,"pieces":["Right Sleeve", "Left Sleeve"]}]
+function rotatePieces(rotationSets)
+{
+	if(typeof ppLay === "undefined")
+	{	
+		var ppLay = getPPLay(app.activeDocument.layers);
+	}
+
+	var curSize, curLay, ppLen = ppLay.layers.length;
+	var pieces,angle,curPiece;
+	for(var rs = 0;rs<rotationSets.length;rs++)
+	{
+		pieces = rotationSets[rs].pieces;
+		angle = rotationSets[rs].angle;
+		for (var si = 0; si < ppLen; si++)
+		{
+			curLay = ppLay.layers[si];
+			curSize = curLay.name;
+			for (var p = 0; p < rotationSets[rs].pieces.length; p++)
+			{
+				// curLay.groupItems[curSize + " " + pieces[p]].rotate(rot);
+				curPiece = findSpecificPageItem(curLay,curSize + " " + pieces[p],"imatch");
+				if(curPiece)
+				{
+					curPiece.rotate(angle);
+				}
+			}
+			
+		}
+	}
+	
+	
+}
+
 
 //
 //action string arrays
@@ -3079,49 +3166,8 @@ var GRAPHIC_STYLE_FROM_SELECTION_ACTION_STRING =
 		"	/keyIndex 0",
 		"	/colorIndex 0",
 		"	/isOpen 1",
-		"	/eventCount 3",
+		"	/eventCount 1",
 		"	/event-1 {",
-		"		/useRulersIn1stQuadrant 0",
-		"		/internalName (ai_plugin_styles)",
-		"		/localizedName [ 14",
-		"			47726170686963205374796c6573",
-		"		]",
-		"		/isOpen 0",
-		"		/isOn 1",
-		"		/hasDialog 0",
-		"		/parameterCount 1",
-		"		/parameter-1 {",
-		"			/key 1835363957",
-		"			/showInPalette 4294967295",
-		"			/type (enumerated)",
-		"			/name [ 17",
-		"				53656c65637420416c6c20556e75736564",
-		"			]",
-		"			/value 14",
-		"		}",
-		"	}",
-		"	/event-2 {",
-		"		/useRulersIn1stQuadrant 0",
-		"		/internalName (ai_plugin_styles)",
-		"		/localizedName [ 14",
-		"			47726170686963205374796c6573",
-		"		]",
-		"		/isOpen 0",
-		"		/isOn 1",
-		"		/hasDialog 1",
-		"		/showDialog 0",
-		"		/parameterCount 1",
-		"		/parameter-1 {",
-		"			/key 1835363957",
-		"			/showInPalette 4294967295",
-		"			/type (enumerated)",
-		"			/name [ 20",
-		"				44656c6574652047726170686963205374796c65",
-		"			]",
-		"			/value 3",
-		"		}",
-		"	}",
-		"	/event-3 {",
 		"		/useRulersIn1stQuadrant 0",
 		"		/internalName (ai_plugin_styles)",
 		"		/localizedName [ 14",
@@ -3142,8 +3188,95 @@ var GRAPHIC_STYLE_FROM_SELECTION_ACTION_STRING =
 		"			/value 1",
 		"		}",
 		"	}",
-		"}",
+		"}"
 	];
+
+//old version.. for some reason i thought it was a good
+//idea to delete any existing unused graphic styles.
+//this is not a good idea. don't do this.
+// var GRAPHIC_STYLE_FROM_SELECTION_ACTION_STRING = 
+// 	[
+// 		"/version 3",
+// 		"/name [ 28",
+// 		"	677261706869635f7374796c655f66726f6d5f73656c656374696f6e",
+// 		"]",
+// 		"/isOpen 1",
+// 		"/actionCount 1",
+// 		"/action-1 {",
+// 		"	/name [ 28",
+// 		"		677261706869635f7374796c655f66726f6d5f73656c656374696f6e",
+// 		"	]",
+// 		"	/keyIndex 0",
+// 		"	/colorIndex 0",
+// 		"	/isOpen 1",
+// 		"	/eventCount 3",
+// 		"	/event-1 {",
+// 		"		/useRulersIn1stQuadrant 0",
+// 		"		/internalName (ai_plugin_styles)",
+// 		"		/localizedName [ 14",
+// 		"			47726170686963205374796c6573",
+// 		"		]",
+// 		"		/isOpen 0",
+// 		"		/isOn 1",
+// 		"		/hasDialog 0",
+// 		"		/parameterCount 1",
+// 		"		/parameter-1 {",
+// 		"			/key 1835363957",
+// 		"			/showInPalette 4294967295",
+// 		"			/type (enumerated)",
+// 		"			/name [ 17",
+// 		"				53656c65637420416c6c20556e75736564",
+// 		"			]",
+// 		"			/value 14",
+// 		"		}",
+// 		"	}",
+// 		"	/event-2 {",
+// 		"		/useRulersIn1stQuadrant 0",
+// 		"		/internalName (ai_plugin_styles)",
+// 		"		/localizedName [ 14",
+// 		"			47726170686963205374796c6573",
+// 		"		]",
+// 		"		/isOpen 0",
+// 		"		/isOn 1",
+// 		"		/hasDialog 1",
+// 		"		/showDialog 0",
+// 		"		/parameterCount 1",
+// 		"		/parameter-1 {",
+// 		"			/key 1835363957",
+// 		"			/showInPalette 4294967295",
+// 		"			/type (enumerated)",
+// 		"			/name [ 20",
+// 		"				44656c6574652047726170686963205374796c65",
+// 		"			]",
+// 		"			/value 3",
+// 		"		}",
+// 		"	}",
+// 		"	/event-3 {",
+// 		"		/useRulersIn1stQuadrant 0",
+// 		"		/internalName (ai_plugin_styles)",
+// 		"		/localizedName [ 14",
+// 		"			47726170686963205374796c6573",
+// 		"		]",
+// 		"		/isOpen 0",
+// 		"		/isOn 1",
+// 		"		/hasDialog 1",
+// 		"		/showDialog 0",
+// 		"		/parameterCount 1",
+// 		"		/parameter-1 {",
+// 		"			/key 1835363957",
+// 		"			/showInPalette 4294967295",
+// 		"			/type (enumerated)",
+// 		"			/name [ 17",
+// 		"				4e65772047726170686963205374796c65",
+// 		"			]",
+// 		"			/value 1",
+// 		"		}",
+// 		"	}",
+// 		"}",
+// 	];
+
+
+
 
 var CLEAR_APPEARANCE_ACTION_STRING = 
 	[
@@ -3446,7 +3579,8 @@ var BOOMBAH_APPROVED_COLORS =
 		"Wine B",
 		"Fuschia Neon B",
 		"Fuschia B",
-		"Charcoal B"
+		"Charcoal B",
+		"Charcoal 2 B"
 	];
 var BOOMBAH_PRODUCTION_COLORS = 
 	['Thru-cut',
@@ -3464,7 +3598,7 @@ var BUILDER_COLOR_CODES = {
 	"BPU" : "BRIGHT PURPLE B",
 	"BN" : "Brown B",
 	"CRD" : "Cardinal B",
-	"C" : "Charcoal B",
+	"C" : "Charcoal 2 B",
 	"CB" : "Columbia B",
 	"CY" : "Cyan B",
 	"DC" : "Dark Charcoal B",
@@ -3799,6 +3933,14 @@ var BOOMBAH_APPROVED_COLOR_VALUES =
 		"black": 51
 	},
 	"Charcoal B":
+	{
+		"cyan": 65,
+		"magenta": 55,
+		"yellow": 52,
+		"black": 28
+
+	},
+	"Charcoal 2 B":
 	{
 		"cyan": 65,
 		"magenta": 55,
