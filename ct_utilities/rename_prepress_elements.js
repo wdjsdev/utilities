@@ -18,8 +18,8 @@ function fixPrepressSizing()
 	//	//for example, if a CT is set up using WM instead of M, we need to strip the "W"
 	function fixerFunction(name)
 	{
-		var reg = /^W/i;
-		return name.replace(reg,"");
+		var reg = /facing 1/;
+		return name.replace(reg,"Facing  1");
 	}
 
 
