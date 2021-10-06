@@ -67,7 +67,8 @@ var DR_USERS =
 	"arlan.grullon",
 	"deivison.urena",
 	"eliezer.lopez",
-	"maximo.montesino"
+	"maximo.montesino",
+	"danny.cabrera"
 ];
 
 
