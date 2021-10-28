@@ -46,12 +46,27 @@ function test()
 		eval("#include \"" + utilities[u] + "\"");	
 	}
 
-	// var on = "3025773"
-	var on = "2983536"
+	
+	var doc = app.activeDocument;
+	//now let's get some properties of the document
+	var layers = doc.layers;
+	var swatches = doc.swatches;
+	var artboards = doc.artboards;
 
-	var result = curlData(NOD,on);
 
-	$.writeln(JSON.stringify(result));
+	//let's make a new layer to work with
+	var workingLayer = layers.add(); //creates a new empty, unnamed layer
+	workingLayer.name = "Working Layer"; //change the name of the layer
+
+	//now let's draw a rectangle on the artboard;
+	var height = 50; //value in points.. every measurement in illustrator scripting is in points
+	var width = 100; //value in points.
+	var x = 100; //x coordinate of new rectangle's top left corner
+	var y = -100 //y coordinate of new rectangle's top left corner
+
+	//rectangle method takes at least 4 arguments
+	//they are: (top coordinate, left coordinate, width, height)
+	var myRect = workingLayer.pathItems.rectangle(y,x,width,height);
 	
 }
 test();
