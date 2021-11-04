@@ -68,7 +68,8 @@ var DR_USERS =
 	"deivison.urena",
 	"eliezer.lopez",
 	"maximo.montesino",
-	"danny.cabrera"
+	"danny.cabrera",
+	"kelvin.ynoa"
 ];
 
 
