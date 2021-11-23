@@ -33,7 +33,10 @@ else
 ////////////////////////
 
 //array.indexOf()
-Array.prototype.indexOf=function(a,b,c){for(c=this.length,b=(c+~~b)%c;b<c&&(!(b in this)||this[b]!==a);b++);return b^c?b:-1;}
+Array.prototype.indexOf = function(a, b, c){
+	for (c = this.length, b = (c + ~~b) % c; b < c && (!(b in this) || this[b] !== a); b++);
+	return b ^ c ? b : -1;
+}
 Array.prototype.map = function(callback) {
     arr = [];
     for (var i = 0; i < this.length; i++)
@@ -69,7 +72,9 @@ var DR_USERS =
 	"eliezer.lopez",
 	"maximo.montesino",
 	"danny.cabrera",
-	"kelvin.ynoa"
+	"kelvin.ynoa",
+	"julio.lora",
+	"ismael.noesi"
 ];
 
 
