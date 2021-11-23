@@ -30,7 +30,7 @@ function batchInit(func,readMeMsg)
 	w = createBatchPreferenceDialog();
 	w.show();
 
-	if(valid && batchFiles.length)
+	if(batchFiles.length)
 	{
 		executeBatch(func,closeFilePref);
 		if(readMeMsg !== "")
