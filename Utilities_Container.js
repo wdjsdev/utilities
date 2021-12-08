@@ -1295,6 +1295,7 @@ function coord(ppLay)
 	var curSize,thisPiece,pieceName;
 	var ppLen = ppLay.layers.length;
 	var subLen;
+	var curBounds;
 
 	if(ppLen > 0 && ppLay.layers[0].pageItems.length > 0)
 	{
@@ -1306,10 +1307,11 @@ function coord(ppLay)
 			for(var b=0;b<subLen;b++)
 			{
 				thisPiece = ppLay.layers[a].groupItems[b];
+				curBounds = getVisibleBounds(thisPiece);
 				pieceName = thisPiece.name;
 				coords[curSize][pieceName] = [];
-				coords[curSize][pieceName][0] = (Math.floor(thisPiece.left *1000)/1000);
-				coords[curSize][pieceName][1] = (Math.floor(thisPiece.top *1000)/1000);
+				coords[curSize][pieceName][0] = (Math.floor(curBounds[0] *1000)/1000);
+				coords[curSize][pieceName][1] = (Math.floor(curBounds[1] *1000)/1000);
 			} 	
 		}
 		return coords;
