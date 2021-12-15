@@ -3123,7 +3123,7 @@ function rotatePieces(rotationSets)
 	}
 
 	var curSize, curLay, ppLen = ppLay.layers.length;
-	var pieces,angle,curPiece;
+	var pieces,angle,curPiece,pieceName,splitName;
 	for(var rs = 0;rs<rotationSets.length;rs++)
 	{
 		pieces = rotationSets[rs].pieces;
@@ -3131,17 +3131,18 @@ function rotatePieces(rotationSets)
 		for (var si = 0; si < ppLen; si++)
 		{
 			curLay = ppLay.layers[si];
-			curSize = curLay.name;
-			for (var p = 0; p < rotationSets[rs].pieces.length; p++)
+
+			for(var pi = 0;pi<curLay.pageItems.length;pi++)
 			{
-				// curLay.groupItems[curSize + " " + pieces[p]].rotate(rot);
-				curPiece = findSpecificPageItem(curLay,curSize + " " + pieces[p],"imatch");
-				if(curPiece)
+				curPiece = curLay.pageItems[pi];
+				curSize = curPiece.name.split(" ")[0];
+				splitName = curPiece.name.split(" ");
+				pieceName = splitName.splice(1,splitName.length).join(" ");
+				if(pieces.indexOf(pieceName)>-1)
 				{
-					curPiece.rotate(angle);
+					curPiece.rotate(angle)
 				}
 			}
-			
 		}
 	}
 	
