@@ -3121,25 +3121,33 @@ function rotatePieces(rotationSets)
 	{	
 		var ppLay = getPPLay(app.activeDocument.layers);
 	}
-
+	log.h("ROTATING PIECES");
 	var curSize, curLay, ppLen = ppLay.layers.length;
 	var pieces,angle,curPiece,pieceName,splitName;
 	for(var rs = 0;rs<rotationSets.length;rs++)
 	{
 		pieces = rotationSets[rs].pieces;
+		log.l("pieces = " + pieces.join(", "));
 		angle = rotationSets[rs].angle;
+		log.l("angle = " + angle + "\n---------\n")
 		for (var si = 0; si < ppLen; si++)
 		{
 			curLay = ppLay.layers[si];
+			log.l("curLay = " + curLay.name);
 
 			for(var pi = 0;pi<curLay.pageItems.length;pi++)
 			{
 				curPiece = curLay.pageItems[pi];
+				if(!curPiece.name)
+					continue;
+				
 				curSize = curPiece.name.split(" ")[0];
 				splitName = curPiece.name.split(" ");
 				pieceName = splitName.splice(1,splitName.length).join(" ");
+				
 				if(pieces.indexOf(pieceName)>-1)
 				{
+					log.l("rotating " + pieceName + " by " + angle + " degrees.");
 					curPiece.rotate(angle)
 				}
 			}
