@@ -25,10 +25,28 @@ var closeFilePref = true;
 
 
 //initialization function
-function batchInit(func,readMeMsg)
+function batchInit(func,readMeMsg,folderPath)
 {
-	w = createBatchPreferenceDialog();
-	w.show();
+	
+	if(!folderPath)
+	{
+		w = createBatchPreferenceDialog();
+		w.show();	
+	}
+	else
+	{
+		var folder = Folder(folderPath);
+		if(folder.exists)
+		{
+			setDefaultLocation(folderPath);
+			batchFiles = openBatchFiles(Folder(folderPath),".ai");
+		}
+		else
+		{
+			alert("No folder exists at: " + folderPath);
+		}
+	}
+	
 
 	if(batchFiles.length)
 	{
