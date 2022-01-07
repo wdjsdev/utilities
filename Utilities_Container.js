@@ -99,7 +99,6 @@ if(user === "thell")
 
 
 //boolean to determine whether to use the CustomizationDR drive for testing.
-var spoofDRUser = false;
 if(DR_USERS.indexOf(user)>-1 || (spoofDRUser && user === "will.dowling"))
 {
 	customizationPath = customizationPath.replace("Customization","CustomizationDR");
@@ -3688,7 +3687,8 @@ var BOOMBAH_APPROVED_COLORS =
 		"Charcoal B",
 		"Charcoal 2 B",
 		"Wolf Gray B",
-		"Arctic Gray B"
+		"Arctic Gray B",
+		"Khaki B"
 	];
 var BOOMBAH_PRODUCTION_COLORS = 
 	['Thru-cut',
@@ -4069,6 +4069,13 @@ var BOOMBAH_APPROVED_COLOR_VALUES =
 		"magenta": 92.28,
 		"yellow": 0,
 		"black": 0
+	},
+	"Khaki B":
+	{
+		"cyan": 29.88,
+		"magenta": 33.12,
+		"yellow": 43.39,
+		"black": 0.52
 	},
 	"PerfCutContour":
 	{
