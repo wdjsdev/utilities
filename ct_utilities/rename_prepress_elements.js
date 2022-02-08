@@ -16,10 +16,11 @@ function fixPrepressSizing()
 	//fix it and then return the fixed name.
 	//typical use case is removing "W" from the beginning of sizes
 	//	//for example, if a CT is set up using WM instead of M, we need to strip the "W"
-	function fixerFunction(name)
+	function fixerFunction(name,curSize)
 	{
-		var reg = /facing 1/;
-		return name.replace(reg,"Facing  1");
+		// var reg = /facing 1/;
+		// return name.replace(reg,"Facing  1");
+		return curSize + " " + name;
 	}
 
 
@@ -36,11 +37,11 @@ function fixPrepressSizing()
 	for(var x=0,len=ppLay.layers.length;x<len;x++)
 	{
 		curLay = ppLay.layers[x];
-		curLay.name = fixerFunction(curLay.name);
+		// curLay.name = fixerFunction(curLay.name);
 		for(var y=0,yLen=curLay.pageItems.length;y<yLen;y++)
 		{
 			curPiece = curLay.pageItems[y];
-			curPiece.name = fixerFunction(curPiece.name);
+			curPiece.name = fixerFunction(curPiece.name,curLay.name);
 		}
 	}	
 }

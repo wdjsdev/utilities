@@ -99,6 +99,7 @@ if(user === "thell")
 
 
 //boolean to determine whether to use the CustomizationDR drive for testing.
+var spoofDRUser = false;
 if(DR_USERS.indexOf(user)>-1 || (spoofDRUser && user === "will.dowling"))
 {
 	customizationPath = customizationPath.replace("Customization","CustomizationDR");
@@ -3114,44 +3115,26 @@ function unlockGuides()
 //matching the names in the rotationSets array
 //rotationSets will look like this:
 // 		[{"angle":-90,"pieces":["front","back"]},{"angle":90,"pieces":["Right Sleeve", "Left Sleeve"]}]
-function rotatePieces(rotationSets)
+//parentLayer is the prepressLayer to rotate.
+function rotatePieces(rotationSets,parentLayer)
 {
-	if(typeof ppLay === "undefined")
-	{	
-		var ppLay = getPPLay(app.activeDocument.layers);
-	}
-	log.h("ROTATING PIECES");
-	var curSize, curLay, ppLen = ppLay.layers.length;
-	var pieces,angle,curPiece,pieceName,splitName;
-	for(var rs = 0;rs<rotationSets.length;rs++)
+	rotationSets.forEach(function(set)
 	{
-		pieces = rotationSets[rs].pieces;
-		log.l("pieces = " + pieces.join(", "));
-		angle = rotationSets[rs].angle;
-		log.l("angle = " + angle + "\n---------\n")
-		for (var si = 0; si < ppLen; si++)
+		var pieces = set.pieces;
+		var angle = set.angle;
+		arrayFromContainer(parentLayer,"layers").forEach(function(sizeLay)
 		{
-			curLay = ppLay.layers[si];
-			log.l("curLay = " + curLay.name);
-
-			for(var pi = 0;pi<curLay.pageItems.length;pi++)
+			arrayFromContainer(sizeLay,"pageItems").forEach(function(piece)
 			{
-				curPiece = curLay.pageItems[pi];
-				if(!curPiece.name)
-					continue;
-				
-				curSize = curPiece.name.split(" ")[0];
-				splitName = curPiece.name.split(" ");
-				pieceName = splitName.splice(1,splitName.length).join(" ");
-				
-				if(pieces.indexOf(pieceName)>-1)
+				var splitName = piece.name.split(" ");
+				var pieceName = splitName.splice(1, splitName.length).join(" ");
+				if(pieceName && pieces.indexOf(pieceName) !== -1)
 				{
-					log.l("rotating " + pieceName + " by " + angle + " degrees.");
-					curPiece.rotate(angle)
+					piece.rotate(angle);
 				}
-			}
-		}
-	}
+			});
+		});
+	})
 	
 	
 }
