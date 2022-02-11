@@ -535,6 +535,49 @@ function printSpecialtyLog(file,msg)
 
 
 
+//execute a generic shell script
+//just pass in the exact text of the shell script
+//no return values. just do a thing, like copy something..
+//remove something.. just don't expect anything back
+function genericShellScript(scriptText)
+{
+	var localScriptPath = documentsPath + "Adobe_Helpers/shell_scripts/";
+	var localScriptFolder = new Folder(localScriptPath);
+	if(!localScriptFolder.exists)
+	{
+		localScriptFolder.create();
+	}
+	var outputFilePath = localScriptPath + "generic_shell_script_output.txt";
+	outputFilePath = outputFilePath.replace(/\s/g,"\\\\ ");
+	// scriptText = "do shell script \"" + scriptText + " > " + outputFilePath + "\"";
+	scriptText = "do shell script \"" + scriptText + "\"";
+
+	
+	scriptFile = File(localScriptPath + "generic_shell_script.scpt");
+	writeScriptFile(scriptFile,scriptText);
+	executor = File(resourcePath + "generic_shell_script.app");
+
+	var executor = File(resourcePath + "generic_shell_script.app");
+
+	executor.execute();
+
+	// var outputFile = File(outputFilePath);
+	// outputFile.open("r");
+	// var outputText = outputFile.read();
+	// outputFile.close();
+
+
+	function writeScriptFile(file,txt)
+	{
+		file.open("w");
+		file.write(txt);
+		file.close();
+	}
+}
+
+
+
+
 
 function ungroup(group)
 {
