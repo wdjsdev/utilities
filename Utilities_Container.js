@@ -47,6 +47,10 @@ Array.prototype.forEach = function(callback) {
     for (var i = 0; i < this.length; i++)
         callback(this[i], i, this);
 };
+Array.prototype.backForEach = function(callback) {
+    for (var i = this.length-1; i >= 0; i--)
+        callback(this[i], i, this);
+};
 
 
 
@@ -585,10 +589,11 @@ function ungroup(group)
 	group.layer.visible = true;
 	group.locked = false;
 	group.visible = true;
-	for(var x= group.pageItems.length-1;x>=0;x--)
+	arrayFromContainer(group,"pageItems").forEach(function(curItem)
 	{
-		group.pageItems[x].moveToBeginning(group.layer);
-	}
+		curItem.moveToBeginning(group.parent);
+	})
+	
 }
 
 
@@ -884,6 +889,13 @@ function chooseFromListbox(items,msg,size)
 				result = undefined;
 				cfl.close();
 			})
+			var allBtn = UI.button(btnGroup,"Choose All",function()
+			{
+				for(var x=0,len=lb.items.length;x<len;x++)
+				{
+					result.push(lb.items[x].text)
+				}
+			})
 			var submit = UI.button(btnGroup,"Submit",function()
 			{
 				if(lb.selection && lb.selection.length)
@@ -1085,11 +1097,11 @@ function findSpecificPageItem(parent,itemName,crit)
 
 	if(result.length)
 	{
-		if(result.length > 1)
-		{
-			var msg = parent + " has multiple items matching the name " + itemName;
-			result = chooseFromListbox(result,msg);
-		}
+		// if(result.length > 1)
+		// {
+		// 	var msg = parent + " has multiple items matching the name " + itemName;
+		// 	result = chooseFromListbox(result,msg);
+		// }
 		result = result[0];
 	}
 	else
@@ -3170,6 +3182,8 @@ function rotatePieces(rotationSets,parentLayer)
 			arrayFromContainer(sizeLay,"pageItems").forEach(function(piece)
 			{
 				var splitName = piece.name.split(" ");
+				if(splitName.length < 2 || !piece.name)
+					return;
 				var pieceName = splitName.splice(1, splitName.length).join(" ");
 				if(pieceName && pieces.indexOf(pieceName) !== -1)
 				{
@@ -3622,30 +3636,6 @@ var BUILDER_GRAPHIC_LOCATION_CODES =
 
 var BOOMBAH_APPROVED_COLORS = 
 	[
-		"Sangria B",
-		"Hot Coral B",
-		"Autumn Glory B",
-		"Amethyst Orchid B",
-		"Violet B",
-		"Kiwi B",
-		"Tropical Green B",
-		"Turquoise B",
-		"Aqua B",
-		"Electric Blue B",
-		"Cobalt B",
-		"Teak Brown B",
-		"Desert B",
-		"Sand B",
-		"Coyote B",
-		"Mulch B",
-		"Tree Bark B",
-		"Oak Brown B",
-		"Storm B",
-		"Slate B",
-		"Foliage B",
-		"Gun Metal B",
-		"Olive Drab B",
-		"Forest Green B",
 		"Black B",
 		"White B",
 		"Gray B",
@@ -3700,22 +3690,48 @@ var BOOMBAH_APPROVED_COLORS =
 		"Cut Line",
 		"MLBPA Red",
 		"MLBPA Navy",
-		"Azure B",
-		"Ice Blue B",
-		"Plum B",
-		"Eggplant B",
-		"Poppy B",
-		"Dusty Rose B",
-		"Peacock B",
-		"Wine B",
 		"Fuschia Neon B",
-		"Fuschia B",
 		"Charcoal B",
 		"Charcoal 2 B",
 		"Wolf Gray B",
 		"Arctic Gray B",
-		"Khaki B"
+		"Storm B",
+		"Slate B",
+		"Gun Metal B",
+		"Steel B copy",
+		"Foliage B",
+		"Cobalt B",
+		"Azure B",
+		"Peacock B",
+		"Tropical Green B",
+		"Turquoise B",
+		"Aqua B",
+		"Ice Blue B",
+		"Desert B",
+		"Khaki B",
+		"Teak Brown B",
+		"Oak Brown B",
+		"Tree Bark B",
+		"Sand B",
+		"Coyote B",
+		"Olive Drab B",
+		"Kiwi B",
+		"Forest Green B",
+		"Mulch B",
+		"Plum B",
+		"Eggplant B",
+		"Wine B",
+		"Sangria B",
+		"Violet B",
+		"Amethyst Orchid B",
+		"Fuschia B",
+		"Dusty Rose B",
+		"Hot Coral B",
+		"Poppy B",
+		"Autumn Glory B",
+		"Electric Blue B"
 	];
+
 var BOOMBAH_PRODUCTION_COLORS = 
 	['Thru-cut',
 	 'CUT LINE',
@@ -3767,7 +3783,42 @@ var BUILDER_COLOR_CODES = {
 	"VG" : "Vegas Gold B",
 	"W" : "White B",
 	"Y" : "Yellow B",
-	"YL" : "Yellow B"
+	"YL" : "Yellow B",
+	'AO': 'Amethyst Orchid',
+	'AQ': 'Aqua',
+	'ARGY': 'Arctic Gray',
+	'AG': 'Autumn Glory',
+	'AZ': 'Azure',
+	'CO': 'Cobalt',
+	'COY': 'Coyote',
+	'D': 'Desert',
+	'DU': 'Dusty Rose',
+	'EG': 'Eggplant',
+	'FOL': 'Foliage',
+	'FO': 'Forest Green',
+	'F': 'Fuschia',
+	'GM': 'Gun Metal',
+	'HCR': 'Hot Coral',
+	'IB': 'Ice Blue',
+	'KH': 'Khaki',
+	'KW': 'Kiwi',
+	'MUL': 'Mulch',
+	'OKB': 'Oak Brown',
+	'OD': 'Olive Drab',
+	'PC': 'Peacock',
+	'PLM': 'Plum',
+	'PO': 'Poppy',
+	'SND': 'Sand',
+	'SNG': 'Sangria',
+	'SLT': 'Slate',
+	'STR': 'Storm',
+	'TKB': 'Teak Brown',
+	'TB': 'Tree Bark',
+	'TG': 'Tropical Green',
+	'TU': 'Turquoise',
+	'V': 'Violet',
+	'WI': 'Wine',
+	'WG': 'Wolf Gray',
 }
 
 var BOOMBAH_APPROVED_COLOR_VALUES =
@@ -4102,6 +4153,251 @@ var BOOMBAH_APPROVED_COLOR_VALUES =
 		"magenta": 33.12,
 		"yellow": 43.39,
 		"black": 0.52
+	},
+	"Wolf Gray B":
+	{
+		"cyan": 25.999,
+		"magenta": 18,
+		"yellow": 15,
+		"black": 0
+	},
+	"Arctic Gray B":
+	{
+		"cyan": 17.187,
+		"magenta": 11.933,
+		"yellow": 10.245,
+		"black": 0
+	},
+	"Storm B":
+	{
+		"cyan": 78.515,
+		"magenta": 61.328,
+		"yellow": 50,
+		"black": 35.546
+	},
+	"Slate B":
+	{
+		"cyan": 67.186,
+		"magenta": 52.355,
+		"yellow": 44.663,
+		"black": 17.541
+	},
+	"Gun Metal B":
+	{
+		"cyan": 57.918,
+		"magenta": 47.446,
+		"yellow": 46.933,
+		"black": 13.687
+	},
+	"Steel B copy":
+	{
+		"cyan": 52.999,
+		"magenta": 49,
+		"yellow": 43,
+		"black": 10
+	},
+	"Foliage B":
+	{
+		"cyan": 60.723,
+		"magenta": 41.855,
+		"yellow": 44.126,
+		"black": 9.286
+	},
+	"Cobalt B":
+	{
+		"cyan": 100,
+		"magenta": 98.626,
+		"yellow": 17.767,
+		"black": 5.581
+	},
+	"Azure B":
+	{
+		"cyan": 100,
+		"magenta": 44.999,
+		"yellow": 0,
+		"black": 28.999
+	},
+	"Peacock B":
+	{
+		"cyan": 96.932,
+		"magenta": 44.077,
+		"yellow": 57.46,
+		"black": 27.078
+	},
+	"Tropical Green B":
+	{
+		"cyan": 97.476,
+		"magenta": 26.486,
+		"yellow": 54.433,
+		"black": 6.842
+	},
+	"Turquoise B":
+	{
+		"cyan": 64.831,
+		"magenta": 0,
+		"yellow": 32.208,
+		"black": 0
+	},
+	"Aqua B":
+	{
+		"cyan": 66.03,
+		"magenta": 0,
+		"yellow": 21.423,
+		"black": 0
+	},
+	"Ice Blue B":
+	{
+		"cyan": 33,
+		"magenta": 10.999,
+		"yellow": 10.999,
+		"black": 9
+	},
+	"Desert B":
+	{
+		"cyan": 26.77,
+		"magenta": 21.603,
+		"yellow": 43.909,
+		"black": 0
+	},
+	"Khaki B":
+	{
+		"cyan": 29.877,
+		"magenta": 33.121,
+		"yellow": 43.387,
+		"black": 0.518
+	},
+	"Teak Brown B":
+	{
+		"cyan": 39.438,
+		"magenta": 48.02,
+		"yellow": 65.282,
+		"black": 13.214
+	},
+	"Oak Brown B":
+	{
+		"cyan": 45.435,
+		"magenta": 58.782,
+		"yellow": 75.057,
+		"black": 34.668
+	},
+	"Tree Bark B":
+	{
+		"cyan": 56.221,
+		"magenta": 57.793,
+		"yellow": 79.143,
+		"black": 51.497
+	},
+	"Sand B":
+	{
+		"cyan": 39.682,
+		"magenta": 34.406,
+		"yellow": 71.59,
+		"black": 6.134
+	},
+	"Coyote B":
+	{
+		"cyan": 45.77,
+		"magenta": 38.055,
+		"yellow": 90.24,
+		"black": 13.464
+	},
+	"Olive Drab B":
+	{
+		"cyan": 60.073,
+		"magenta": 42.697,
+		"yellow": 87.249,
+		"black": 28.442
+	},
+	"Kiwi B":
+	{
+		"cyan": 40.628,
+		"magenta": 0,
+		"yellow": 81.509,
+		"black": 0
+	},
+	"Forest Green B":
+	{
+		"cyan": 72.707,
+		"magenta": 50.804,
+		"yellow": 87.2,
+		"black": 59.761
+	},
+	"Mulch B":
+	{
+		"cyan": 63.897,
+		"magenta": 66.124,
+		"yellow": 63.466,
+		"black": 61.669
+	},
+	"Plum B":
+	{
+		"cyan": 37.999,
+		"magenta": 79,
+		"yellow": 7.999,
+		"black": 64.999
+	},
+	"Eggplant B":
+	{
+		"cyan": 33,
+		"magenta": 62.999,
+		"yellow": 27,
+		"black": 64.999
+	},
+	"Wine B":
+	{
+		"cyan": 47.614,
+		"magenta": 91.061,
+		"yellow": 49.655,
+		"black": 41.104
+	},
+	"Sangria B":
+	{
+		"cyan": 0,
+		"magenta": 98,
+		"yellow": 40,
+		"black": 62
+	},
+	"Violet B":
+	{
+		"cyan": 81.493,
+		"magenta": 100,
+		"yellow": 11.581,
+		"black": 1.724
+	},
+	"Amethyst Orchid B":
+	{
+		"cyan": 53.099,
+		"magenta": 68.337,
+		"yellow": 0,
+		"black": 0
+	},
+	"Dusty Rose B":
+	{
+		"cyan": 11.999,
+		"magenta": 50.999,
+		"yellow": 38.999,
+		"black": 28
+	},
+	"Hot Coral B":
+	{
+		"cyan": 0,
+		"magenta": 82.999,
+		"yellow": 66,
+		"black": 0
+	},
+	"Poppy B":
+	{
+		"cyan": 2.999,
+		"magenta": 91,
+		"yellow": 86,
+		"black": 0
+	},
+	"Autumn Glory B":
+	{
+		"cyan": 0,
+		"magenta": 53.579,
+		"yellow": 95.175,
+		"black": 0
 	},
 	"PerfCutContour":
 	{
@@ -4557,6 +4853,7 @@ var BOOMBAH_APPROVED_COLOR_VALUES =
 		"magenta": 0,
 		"yellow": 82,
 		"black": 65
-	}
+	},
+
 }
 
