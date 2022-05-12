@@ -43,13 +43,23 @@ Array.prototype.map = function(callback) {
         arr.push(callback(this[i], i, this));
     return arr;
 };
-Array.prototype.forEach = function(callback) {
-    for (var i = 0; i < this.length; i++)
+Array.prototype.forEach = function(callback,startPos,inc) {
+	if(!inc)inc=1;
+	if(!startPos)startPos=0;
+    for (var i = startPos; i < this.length; i+=inc)
         callback(this[i], i, this);
 };
 Array.prototype.backForEach = function(callback) {
     for (var i = this.length-1; i >= 0; i--)
         callback(this[i], i, this);
+};
+Array.prototype.filter = function(callback, context) {
+    arr = [];
+    for (var i = 0; i < this.length; i++) {
+        if (callback.call(context, this[i], i, this))
+            arr.push(this[i]);
+    }
+    return arr;
 };
 
 
@@ -647,7 +657,8 @@ function getUnique(arr)
 
 	for(var item in tempResult)
 	{
-		result.push(item);
+		if(!item.match(/extractDesign/i))
+			result.push(item);
 	}
 	return result;
 }
