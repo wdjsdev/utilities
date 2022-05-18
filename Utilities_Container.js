@@ -88,7 +88,8 @@ var DR_USERS =
 	"danny.cabrera",
 	"kelvin.ynoa",
 	"julio.lora",
-	"ismael.noesi"
+	"ismael.noesi",
+	"raymond.fernandez"
 ];
 
 
@@ -1228,6 +1229,20 @@ function arrayFromContainer(container,crit)
 	}
 	for(var x=0;x<items.length;x++)
 	{
+		result.push(items[x])
+	}
+	return result;
+}
+
+function afc(container, crit) {
+	var result = [];
+	var items;
+	if (!crit || crit === "any") {
+		items = container.pageItems;
+	} else {
+		items = container[crit];
+	}
+	for (var x = 0; x < items.length; x++) {
 		result.push(items[x])
 	}
 	return result;
@@ -2664,18 +2679,21 @@ function getCenterPoint(item)
 
 function setCenterPoint(item,coords,dim)
 {
+	var vb = getVisibleBounds(item);
+	var w = vb[2] - vb[0];
+	var h = vb[1] - vb[3];
 	if(dim === "h")
 	{
-		item.left = coords[0] - item.width/2;
+		item.left = coords[0] - w/2;
 	}
 	else if(dim === "v")
 	{
-		item.top = coords[1] + item.height/2;
+		item.top = coords[1] + h/2;
 	}
 	else
 	{
-		item.left = coords[0] - item.width/2;
-		item.top = coords[1] + item.height/2;	
+		item.left = coords[0] - w/2 - (vb[0] - item.left);
+		item.top = coords[1] + h/2 - (vb[1] - item.top);	
 	}
 	
 }
