@@ -89,7 +89,8 @@ var DR_USERS =
 	"kelvin.ynoa",
 	"julio.lora",
 	"ismael.noesi",
-	"raymond.fernandez"
+	"raymond.fernandez",
+	"isaac.martinez"
 ];
 
 

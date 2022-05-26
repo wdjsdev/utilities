@@ -392,6 +392,7 @@ function executeBatch(func,closeFilePref)
 		log.l("Processing file: " + batchFiles[x].name);
 		docRef = batchFiles[x];
 		docRef.activate();
+		app.executeMenuCommand("fitall")
 		func();
 		if(closeFilePref)
 		{
@@ -405,9 +406,10 @@ function executeBatch(func,closeFilePref)
 	{
 		for (var x = batchFiles.length - 1; x >= 0; x--)
 		{
-			batchFiles[x].activate();
-			docRef = app.activeDocument;
-			docRef.close(SaveOptions.DONOTSAVECHANGES);
+			batchFiles[x].close(SaveOptions.DONOTSAVECHANGES)
+			// batchFiles[x].activate();
+			// docRef = app.activeDocument;
+			// docRef.close(SaveOptions.DONOTSAVECHANGES);
 		}
 
 		for(var x = filesToClose.length - 1; x>=0; x--)		
