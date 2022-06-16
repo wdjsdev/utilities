@@ -61,6 +61,15 @@ Array.prototype.filter = function(callback, context) {
     }
     return arr;
 };
+Array.prototype.reverse = function()
+{
+	var arr = [];
+	for(var i=this.length-1;i>=0;i--)
+	{
+		arr.push(this[i]);
+	}
+	return arr;
+}
 
 
 
@@ -549,6 +558,15 @@ function printSpecialtyLog(file,msg)
 //
 
 
+
+
+function getArea(item)
+{
+	var b = getVisibleBounds(item);
+	var w = b[2] - b[0];
+	var h = b[1] - b[3];
+	return w*h;
+}
 
 
 //execute a generic shell script
@@ -3327,6 +3345,59 @@ var UNLOCK_GUIDES_ACTION_STRING = [
 	"}"
 ]
 
+var TURN_OFF_OVERPRINT_ACTION_STRING = 
+[
+	"/version 3",
+	"/name [ 18",
+	"	7475726e5f6f66665f6f7665727072696e74",
+	"]",
+	"/isOpen 1",
+	"/actionCount 1",
+	"/action-1 {",
+	"	/name [ 18",
+	"		7475726e5f6f66665f6f7665727072696e74",
+	"	]",
+	"	/keyIndex 0",
+	"	/colorIndex 0",
+	"	/isOpen 1",
+	"	/eventCount 2",
+	"	/event-1 {",
+	"		/useRulersIn1stQuadrant 0",
+	"		/internalName (adobe_attributePalette)",
+	"		/localizedName [ 17",
+	"			4174747269627574652053657474696e67",
+	"		]",
+	"		/isOpen 0",
+	"		/isOn 1",
+	"		/hasDialog 0",
+	"		/parameterCount 1",
+	"		/parameter-1 {",
+	"			/key 1718185068",
+	"			/showInPalette 4294967295",
+	"			/type (boolean)",
+	"			/value 1",
+	"		}",
+	"	}",
+	"	/event-2 {",
+	"		/useRulersIn1stQuadrant 0",
+	"		/internalName (adobe_attributePalette)",
+	"		/localizedName [ 17",
+	"			4174747269627574652053657474696e67",
+	"		]",
+	"		/isOpen 0",
+	"		/isOn 1",
+	"		/hasDialog 0",
+	"		/parameterCount 1",
+	"		/parameter-1 {",
+	"			/key 1718185068",
+	"			/showInPalette 4294967295",
+	"			/type (boolean)",
+	"			/value 0",
+	"		}",
+	"	}",
+	"}"
+]
+
 var GRAPHIC_STYLE_FROM_SELECTION_ACTION_STRING = 
 	[
 		"/version 3",
@@ -3826,7 +3897,7 @@ var BUILDER_COLOR_CODES = {
 	'DU': 'Dusty Rose B',
 	'EG': 'Eggplant B',
 	'FOL': 'Foliage B',
-	'FO': 'Forest Green B',
+	'FG': 'Forest Green B',
 	'F': 'Fuschia B',
 	'GM': 'Gun Metal B',
 	'HCR': 'Hot Coral B',
