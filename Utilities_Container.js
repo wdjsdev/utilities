@@ -1057,27 +1057,34 @@ function findSpecificGraphicStyle(doc,name)
 function findSpecificLayer(parent,layerName,crit)
 {
 	var result,layers;
+	var matchPat = new RegExp("/^" + layerName + "$/");
+	var iMatchPat = new RegExp("/^" + layerName + "$/i");
+	var anyMatchPat = new RegExp("/" + layerName + "/i");
 
-	if(parent.typename === "Layer" || parent.typename === "Document")
-	{
-		layers = parent.layers;	
-	}
-	else if(parent.typename === "Layers")
-	{
-		layers = parent;
-	}
+	crit = crit || "any";
 	
-	for(var x=0,len=layers.length;x<len && !result;x++)
+	if(!parent.typename.match(/layer|docum/i))
 	{
-		if(crit === "any" && layers[x].name.toLowerCase().indexOf(layerName.toLowerCase())>-1)
-		{
-			result = layers[x];
-		}
-		else if(layers[x].name.toLowerCase() === layerName.toLowerCase())
-		{
-			result = layers[x];
-		}
+		$.writeln("findSpecificLayer: invalid parent type: " + parent.typename + ".");
+		return
 	}
+
+	if (parent.typename.match(/^Layers$/i)) {
+		parent = parent.parent;
+	}
+
+	layers = afc(parent,"layers");
+
+	var testPat = crit.match(/^any$/i) ? anyMatchPat : crit.match(/^match$/i) ? matchPat : iMatchPat;
+	result = layers.filter(function (layer) {
+		return layer.name.match(anyMatchPat);
+	})
+
+	if (result && result.length > 0) {
+		result = result[0];
+	}
+
+
 	return result;
 }
 
@@ -2674,6 +2681,83 @@ function getVisibleBounds(object) {
         bounds = object.geometricBounds;
     }
     return bounds;
+}
+
+function getBoundsData(object) {
+	var bounds, clippedItem, sandboxItem, sandboxLayer;
+
+	var result = {l:0,t:0,r:0,b:0,w:0,h:0};
+	var curItem;
+	if (object.typename == "GroupItem") {
+		// if the object is clipped
+		if (object.clipped) {
+			// check all sub objects to find the clipping path
+			for (var i = 0; i < object.pageItems.length; i++) {
+				curItem = object.pageItems[i];
+				if (curItem.clipping) {
+					clippedItem = curItem;
+					break;
+				} else if (curItem.typename == "CompoundPathItem") {
+					if (!curItem.pathItems.length) {
+						// catch compound path items with no pathItems via william dowling @ github.com/wdjsdev
+						sandboxLayer = app.activeDocument.layers.add();
+						sandboxItem = curItem.duplicate(sandboxLayer);
+						app.activeDocument.selection = null;
+						sandboxItem.selected = true;
+						app.executeMenuCommand("noCompoundPath");
+						sandboxLayer.hasSelectedArtwork = true;
+						app.executeMenuCommand("group");
+						clippedItem = app.activeDocument.selection[0];
+						break;
+					} else if (curItem.pathItems[0].clipping) {
+						clippedItem = curItem;
+						break;
+					}
+				} else {
+					clippedItem = curItem;
+					break;
+				}
+			}
+			bounds = clippedItem.geometricBounds;
+			if (sandboxLayer) {
+				// eliminate the sandbox layer since it's no longer needed
+				sandboxLayer.remove();
+				sandboxLayer = undefined;
+			}
+		} else {
+			// if the object is not clipped
+			var subObjectBounds;
+			var allBoundPoints = [[], [], [], []];
+			// get the bounds of every object in the group
+			for (var i = 0; i < object.pageItems.length; i++) {
+				curItem = object.pageItems[i];
+				subObjectBounds = getVisibleBounds(curItem);
+				allBoundPoints[0].push(subObjectBounds[0]);
+				allBoundPoints[1].push(subObjectBounds[1]);
+				allBoundPoints[2].push(subObjectBounds[2]);
+				allBoundPoints[3].push(subObjectBounds[3]);
+			}
+			// determine the groups bounds from it sub object bound points
+			bounds = [
+				Math.min.apply(Math, allBoundPoints[0]),
+				Math.max.apply(Math, allBoundPoints[1]),
+				Math.max.apply(Math, allBoundPoints[2]),
+				Math.min.apply(Math, allBoundPoints[3]),
+			];
+		}
+	} else {
+		bounds = object.geometricBounds;
+	}
+
+	result.l = bounds[0];
+	result.t = bounds[1];
+	result.r = bounds[2];
+	result.b = bounds[3];
+	result.w = result.r - result.l;
+	result.h = result.t - result.b;
+	result.halfHeight = result.h / 2;
+	result.halfWidth = result.w / 2;
+	return result;
 }
 
 function getCenterPoint(item)
