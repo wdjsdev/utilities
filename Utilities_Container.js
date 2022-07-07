@@ -1209,11 +1209,6 @@ function findAllPageItems(parent,itemName,crit)
 			}
 		}
 	}
-
-	if(!result.length)
-	{
-		result = undefined;
-	}
 	
 	return result;
 }
