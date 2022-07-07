@@ -568,6 +568,12 @@ function getArea(item)
 	return w*h;
 }
 
+function getMaxDimension(item)
+{
+	var bounds = getBoundsData(item);
+	return bounds.w > bounds.h ? bounds.w : bounds.h;
+}
+
 
 //execute a generic shell script
 //just pass in the exact text of the shell script
@@ -610,6 +616,15 @@ function genericShellScript(scriptText)
 }
 
 
+function group(items,parent)
+{
+	var newGroup = parent.groupItems.add();
+	items.forEach(function(item)
+	{
+		item.moveToBeginning(newGroup);
+	})
+	return newGroup.pageItems.length ? newGroup : null;
+}
 
 
 
@@ -1057,9 +1072,9 @@ function findSpecificGraphicStyle(doc,name)
 function findSpecificLayer(parent,layerName,crit)
 {
 	var result,layers;
-	var matchPat = new RegExp("/^" + layerName + "$/");
-	var iMatchPat = new RegExp("/^" + layerName + "$/i");
-	var anyMatchPat = new RegExp("/" + layerName + "/i");
+	var matchPat = new RegExp("^" + layerName + "$");
+	var iMatchPat = new RegExp("^" + layerName + "$","i");
+	var anyMatchPat = new RegExp(layerName,"i");
 
 	crit = crit || "any";
 	
@@ -1082,6 +1097,10 @@ function findSpecificLayer(parent,layerName,crit)
 
 	if (result && result.length > 0) {
 		result = result[0];
+	}
+	else
+	{
+		result = undefined;
 	}
 
 
@@ -1941,11 +1960,12 @@ function vAlignTop(key,otherObjects)
 //align all ojects to the bottom of key
 function vAlignBottom(key,otherObjects)
 {
-	var kp = key.top - key.height;
+	var bounds = getBoundsData(key);
+	var kp = bounds.b;
 
 	for(var x=0;x<otherObjects.length;x++)
 	{
-		otherObjects[x].top = kp + otherObjects[x].height;
+		otherObjects[x].top = kp + getBoundsData(otherObjects[x]).h;
 	}
 }
 
