@@ -99,7 +99,8 @@ var DR_USERS =
 	"julio.lora",
 	"ismael.noesi",
 	"raymond.fernandez",
-	"isaac.martinez"
+	"isaac.martinez",
+	"joshua.chevalier"
 ];
 
 
@@ -240,7 +241,7 @@ var Stopwatch = function()
 
 	this.currentTasks = {};
 
-	this.logStart = function()
+	this.logStart = function()	
 	{
 		var curDate = new Date();
 		this.startTime = curDate.getTime();
@@ -570,8 +571,11 @@ function getArea(item)
 
 function getMaxDimension(item)
 {
-	var bounds = getBoundsData(item);
-	return bounds.w > bounds.h ? bounds.w : bounds.h;
+	// var bounds = getVisibleBounds(item);
+	// var bounds = item.visibleBounds;
+	var w = item.width;
+	var h = item.height;
+	return w > h ? w : h;
 }
 
 
@@ -618,8 +622,12 @@ function genericShellScript(scriptText)
 
 function group(items,parent)
 {
+	if(!items.length || !parent)
+	{
+		return;
+	}
 	var newGroup = parent.groupItems.add();
-	items.forEach(function(item)
+	items.backForEach(function(item)
 	{
 		item.moveToBeginning(newGroup);
 	})
@@ -1090,9 +1098,9 @@ function findSpecificLayer(parent,layerName,crit)
 
 	layers = afc(parent,"layers");
 
-	var testPat = crit.match(/^any$/i) ? anyMatchPat : crit.match(/^match$/i) ? matchPat : iMatchPat;
+	var testPat = crit.match(/^any$/i) ? anyMatchPat : (crit.match(/^match$/i) ? matchPat : iMatchPat);
 	result = layers.filter(function (layer) {
-		return layer.name.match(anyMatchPat);
+		return layer.name.match(testPat);
 	})
 
 	if (result && result.length > 0) {
@@ -2185,6 +2193,22 @@ var UI =
 
 }
 
+function uiConfirm(msg)
+{
+	var result;
+	var w = UI.window("Confirm",function()
+	{
+		w.close();
+	});
+	w.add("statictext",undefined,msg);
+	var btnGroup = UI.group(w);
+		var cancelButton = UI.button(btnGroup, "Nevermind...", function () { result = false; w.close(); });	
+		var submitButton = UI.button(btnGroup,"Duh!",function(){result = true;w.close();});
+		
+	w.show();
+	return result;
+}
+
 //standard prompt window
 function uiPrompt(msg,title)
 {
@@ -2698,20 +2722,23 @@ function getVisibleBounds(object) {
     return bounds;
 }
 
-function getBoundsData(object) {
+function getBoundsData(item) {
 	var bounds, clippedItem, sandboxItem, sandboxLayer;
 
-	var result = {l:0,t:0,r:0,b:0,w:0,h:0};
+	var result = { l: 0, t: 0, r: 0, b: 0, w: 0, h: 0 };
 	var curItem;
-	if (object.typename == "GroupItem") {
-		// if the object is clipped
-		if (object.clipped) {
-			// check all sub objects to find the clipping path
-			for (var i = 0; i < object.pageItems.length; i++) {
-				curItem = object.pageItems[i];
+	if (item.typename == "GroupItem") {
+		// if the item is clipped
+		if (item.clipped) {
+			// check all sub items to find the clipping path
+			afc(item, "pageItems").forEach(function(curItem)
+			{
+				if (clippedItem) {
+					return;
+				}
+
 				if (curItem.clipping) {
 					clippedItem = curItem;
-					break;
 				} else if (curItem.typename == "CompoundPathItem") {
 					if (!curItem.pathItems.length) {
 						// catch compound path items with no pathItems via william dowling @ github.com/wdjsdev
@@ -2723,36 +2750,34 @@ function getBoundsData(object) {
 						sandboxLayer.hasSelectedArtwork = true;
 						app.executeMenuCommand("group");
 						clippedItem = app.activeDocument.selection[0];
-						break;
 					} else if (curItem.pathItems[0].clipping) {
 						clippedItem = curItem;
-						break;
 					}
 				} else {
 					clippedItem = curItem;
-					break;
 				}
-			}
-			bounds = clippedItem.geometricBounds;
-			if (sandboxLayer) {
-				// eliminate the sandbox layer since it's no longer needed
-				sandboxLayer.remove();
-				sandboxLayer = undefined;
+
+			});
+
+			if(clippedItem)
+			{
+				bounds = clippedItem.geometricBounds;
 			}
 		} else {
-			// if the object is not clipped
-			var subObjectBounds;
+			// if the item is not clipped
+			var subItemBounds;
 			var allBoundPoints = [[], [], [], []];
-			// get the bounds of every object in the group
-			for (var i = 0; i < object.pageItems.length; i++) {
-				curItem = object.pageItems[i];
-				subObjectBounds = getVisibleBounds(curItem);
-				allBoundPoints[0].push(subObjectBounds[0]);
-				allBoundPoints[1].push(subObjectBounds[1]);
-				allBoundPoints[2].push(subObjectBounds[2]);
-				allBoundPoints[3].push(subObjectBounds[3]);
-			}
-			// determine the groups bounds from it sub object bound points
+			// get the bounds of every item in the group
+			afc(item, "pageItems").forEach(function(curItem)
+			{
+				subItemBounds = getVisibleBounds(curItem);
+				allBoundPoints[0].push(subItemBounds[0]);
+				allBoundPoints[1].push(subItemBounds[1]);
+				allBoundPoints[2].push(subItemBounds[2]);
+				allBoundPoints[3].push(subItemBounds[3]);
+			});
+
+			// determine the groups bounds from it sub item bound points
 			bounds = [
 				Math.min.apply(Math, allBoundPoints[0]),
 				Math.max.apply(Math, allBoundPoints[1]),
@@ -2761,7 +2786,12 @@ function getBoundsData(object) {
 			];
 		}
 	} else {
-		bounds = object.geometricBounds;
+		bounds = item.geometricBounds;
+	}
+
+	if (sandboxLayer) {
+		sandboxLayer.remove();
+		sandboxLayer = null;
 	}
 
 	result.l = bounds[0];
@@ -2772,6 +2802,8 @@ function getBoundsData(object) {
 	result.h = result.t - result.b;
 	result.halfHeight = result.h / 2;
 	result.halfWidth = result.w / 2;
+	result.hc = result.l + result.halfWidth;
+	result.vc = result.t - result.halfHeight;
 	return result;
 }
 
