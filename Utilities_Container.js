@@ -84,6 +84,27 @@ Array.prototype.reverse = function()
 ////////////////////////
 
 
+////////////////////////
+////////ATTENTION://////
+//
+//		obj prototypes
+//
+////////////////////////
+
+function objForEach(obj, func) {
+	for (var i in obj) {
+		func(obj[i]);
+	}
+}
+
+////////////////////////
+////////ATTENTION://////
+//
+//		obj prototypes
+//
+////////////////////////
+
+
 //list of dr users
 var DR_USERS = 
 [
@@ -1074,6 +1095,37 @@ function findSpecificGraphicStyle(doc,name)
 			result = doc.graphicStyles[x]
 		}
 	}
+	return result;
+}
+
+function findLayersByName(parent,name,crit)
+{
+	var result = [];
+
+	crit = crit || "any";
+
+	var regex;
+	if(crit === "any")
+	{
+		regex = new RegExp(name, "i");
+	}
+	else if(crit === "imatch")
+	{
+		regex = new RegExp("^"+name+"$", "i");
+	}
+	else if(crit === "match")
+	{
+		regex = new RegExp("^"+name+"$");
+	}
+	
+	afc(parent,"layers").forEach(function(lay)
+	{
+		if(regex.test(lay.name))
+		{
+			result.push(lay);
+		}
+	});
+
 	return result;
 }
 
@@ -3381,9 +3433,310 @@ function rotatePieces(rotationSets,parentLayer)
 //action string arrays
 //
 
+var PATHFINDER_ACTION_STRING = 
+[
+	"/version 3",
+	"/name [ 10",
+	"	7061746866696e646572",
+	"]",
+	"/isOpen 1",
+	"/actionCount 10",
+	"/action-1 {",
+	"	/name [ 5",
+	"		756e697465",
+	"	]",
+	"	/keyIndex 0",
+	"	/colorIndex 0",
+	"	/isOpen 0",
+	"	/eventCount 1",
+	"	/event-1 {",
+	"		/useRulersIn1stQuadrant 0",
+	"		/internalName (ai_plugin_pathfinder)",
+	"		/localizedName [ 10",
+	"			5061746866696e646572",
+	"		]",
+	"		/isOpen 0",
+	"		/isOn 1",
+	"		/hasDialog 0",
+	"		/parameterCount 1",
+	"		/parameter-1 {",
+	"			/key 1851878757",
+	"			/showInPalette 4294967295",
+	"			/type (enumerated)",
+	"			/name [ 3",
+	"				416464",
+	"			]",
+	"			/value 0",
+	"		}",
+	"	}",
+	"}",
+	"/action-2 {",
+	"	/name [ 11",
+	"		6d696e75735f66726f6e74",
+	"	]",
+	"	/keyIndex 0",
+	"	/colorIndex 0",
+	"	/isOpen 0",
+	"	/eventCount 1",
+	"	/event-1 {",
+	"		/useRulersIn1stQuadrant 0",
+	"		/internalName (ai_plugin_pathfinder)",
+	"		/localizedName [ 10",
+	"			5061746866696e646572",
+	"		]",
+	"		/isOpen 0",
+	"		/isOn 1",
+	"		/hasDialog 0",
+	"		/parameterCount 1",
+	"		/parameter-1 {",
+	"			/key 1851878757",
+	"			/showInPalette 4294967295",
+	"			/type (enumerated)",
+	"			/name [ 8",
+	"				5375627472616374",
+	"			]",
+	"			/value 3",
+	"		}",
+	"	}",
+	"}",
+	"/action-3 {",
+	"	/name [ 9",
+	"		696e74657273656374",
+	"	]",
+	"	/keyIndex 0",
+	"	/colorIndex 0",
+	"	/isOpen 0",
+	"	/eventCount 1",
+	"	/event-1 {",
+	"		/useRulersIn1stQuadrant 0",
+	"		/internalName (ai_plugin_pathfinder)",
+	"		/localizedName [ 10",
+	"			5061746866696e646572",
+	"		]",
+	"		/isOpen 0",
+	"		/isOn 1",
+	"		/hasDialog 0",
+	"		/parameterCount 1",
+	"		/parameter-1 {",
+	"			/key 1851878757",
+	"			/showInPalette 4294967295",
+	"			/type (enumerated)",
+	"			/name [ 9",
+	"				496e74657273656374",
+	"			]",
+	"			/value 1",
+	"		}",
+	"	}",
+	"}",
+	"/action-4 {",
+	"	/name [ 7",
+	"		6578636c756465",
+	"	]",
+	"	/keyIndex 0",
+	"	/colorIndex 0",
+	"	/isOpen 1",
+	"	/eventCount 1",
+	"	/event-1 {",
+	"		/useRulersIn1stQuadrant 0",
+	"		/internalName (ai_plugin_pathfinder)",
+	"		/localizedName [ 10",
+	"			5061746866696e646572",
+	"		]",
+	"		/isOpen 0",
+	"		/isOn 1",
+	"		/hasDialog 0",
+	"		/parameterCount 1",
+	"		/parameter-1 {",
+	"			/key 1851878757",
+	"			/showInPalette 4294967295",
+	"			/type (enumerated)",
+	"			/name [ 7",
+	"				4578636c756465",
+	"			]",
+	"			/value 2",
+	"		}",
+	"	}",
+	"}",
+	"/action-5 {",
+	"	/name [ 6",
+	"		646976696465",
+	"	]",
+	"	/keyIndex 0",
+	"	/colorIndex 0",
+	"	/isOpen 1",
+	"	/eventCount 1",
+	"	/event-1 {",
+	"		/useRulersIn1stQuadrant 0",
+	"		/internalName (ai_plugin_pathfinder)",
+	"		/localizedName [ 10",
+	"			5061746866696e646572",
+	"		]",
+	"		/isOpen 0",
+	"		/isOn 1",
+	"		/hasDialog 0",
+	"		/parameterCount 1",
+	"		/parameter-1 {",
+	"			/key 1851878757",
+	"			/showInPalette 4294967295",
+	"			/type (enumerated)",
+	"			/name [ 6",
+	"				446976696465",
+	"			]",
+	"			/value 5",
+	"		}",
+	"	}",
+	"}",
+	"/action-6 {",
+	"	/name [ 4",
+	"		7472696d",
+	"	]",
+	"	/keyIndex 0",
+	"	/colorIndex 0",
+	"	/isOpen 1",
+	"	/eventCount 1",
+	"	/event-1 {",
+	"		/useRulersIn1stQuadrant 0",
+	"		/internalName (ai_plugin_pathfinder)",
+	"		/localizedName [ 10",
+	"			5061746866696e646572",
+	"		]",
+	"		/isOpen 0",
+	"		/isOn 1",
+	"		/hasDialog 0",
+	"		/parameterCount 1",
+	"		/parameter-1 {",
+	"			/key 1851878757",
+	"			/showInPalette 4294967295",
+	"			/type (enumerated)",
+	"			/name [ 4",
+	"				5472696d",
+	"			]",
+	"			/value 7",
+	"		}",
+	"	}",
+	"}",
+	"/action-7 {",
+	"	/name [ 5",
+	"		6d65726765",
+	"	]",
+	"	/keyIndex 0",
+	"	/colorIndex 0",
+	"	/isOpen 1",
+	"	/eventCount 1",
+	"	/event-1 {",
+	"		/useRulersIn1stQuadrant 0",
+	"		/internalName (ai_plugin_pathfinder)",
+	"		/localizedName [ 10",
+	"			5061746866696e646572",
+	"		]",
+	"		/isOpen 0",
+	"		/isOn 1",
+	"		/hasDialog 0",
+	"		/parameterCount 1",
+	"		/parameter-1 {",
+	"			/key 1851878757",
+	"			/showInPalette 4294967295",
+	"			/type (enumerated)",
+	"			/name [ 5",
+	"				4d65726765",
+	"			]",
+	"			/value 8",
+	"		}",
+	"	}",
+	"}",
+	"/action-8 {",
+	"	/name [ 4",
+	"		63726f70",
+	"	]",
+	"	/keyIndex 0",
+	"	/colorIndex 0",
+	"	/isOpen 1",
+	"	/eventCount 1",
+	"	/event-1 {",
+	"		/useRulersIn1stQuadrant 0",
+	"		/internalName (ai_plugin_pathfinder)",
+	"		/localizedName [ 10",
+	"			5061746866696e646572",
+	"		]",
+	"		/isOpen 0",
+	"		/isOn 1",
+	"		/hasDialog 0",
+	"		/parameterCount 1",
+	"		/parameter-1 {",
+	"			/key 1851878757",
+	"			/showInPalette 4294967295",
+	"			/type (enumerated)",
+	"			/name [ 4",
+	"				43726f70",
+	"			]",
+	"			/value 9",
+	"		}",
+	"	}",
+	"}",
+	"/action-9 {",
+	"	/name [ 7",
+	"		6f75746c696e65",
+	"	]",
+	"	/keyIndex 0",
+	"	/colorIndex 0",
+	"	/isOpen 1",
+	"	/eventCount 1",
+	"	/event-1 {",
+	"		/useRulersIn1stQuadrant 0",
+	"		/internalName (ai_plugin_pathfinder)",
+	"		/localizedName [ 10",
+	"			5061746866696e646572",
+	"		]",
+	"		/isOpen 0",
+	"		/isOn 1",
+	"		/hasDialog 0",
+	"		/parameterCount 1",
+	"		/parameter-1 {",
+	"			/key 1851878757",
+	"			/showInPalette 4294967295",
+	"			/type (enumerated)",
+	"			/name [ 7",
+	"				4f75746c696e65",
+	"			]",
+	"			/value 6",
+	"		}",
+	"	}",
+	"}",
+	"/action-10 {",
+	"	/name [ 10",
+	"		6d696e75735f6261636b",
+	"	]",
+	"	/keyIndex 0",
+	"	/colorIndex 0",
+	"	/isOpen 1",
+	"	/eventCount 1",
+	"	/event-1 {",
+	"		/useRulersIn1stQuadrant 0",
+	"		/internalName (ai_plugin_pathfinder)",
+	"		/localizedName [ 10",
+	"			5061746866696e646572",
+	"		]",
+	"		/isOpen 0",
+	"		/isOn 1",
+	"		/hasDialog 0",
+	"		/parameterCount 1",
+	"		/parameter-1 {",
+	"			/key 1851878757",
+	"			/showInPalette 4294967295",
+	"			/type (enumerated)",
+	"			/name [ 10",
+	"				4d696e7573204261636b",
+	"			]",
+	"			/value 4",
+	"		}",
+	"	}",
+	"}"
+]
+
 //cleanup swatches action
-var CLEANUP_SWATCHES_ACTION_STRING =
-	["/version 3",
+var CLEANUP_SWATCHES_ACTION_STRING = 
+[
+	"/version 3",
 	"/name [ 16",
 	"	636c65616e75705f7377617463686573",
 	"]",
