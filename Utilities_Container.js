@@ -2490,6 +2490,24 @@ function uiPrompt(msg,title)
 
 
 
+	function findSwatch(name)
+	{
+		var regex = new RegExp("\\\[Swatch " + name +"\\\]","i");
+		var s = afc(app.activeDocument,"swatches").filter(function(s){
+				
+			return s.toString().match(regex);
+		});
+
+		if(s.length)
+		{
+			return s[0];
+		}
+		else
+		{
+			return undefined;
+		}
+	}
+
 /*
 	Component Name: make_new_spot_color
 	Author: William Dowling
@@ -2524,60 +2542,52 @@ function makeNewSpotColor(name,colorType,colorValue,tint)
 {
 	var doc = app.activeDocument;
 	var swatches = doc.swatches;
+	// try{return swatches[name];}catch(e){};
+	var existingSwatch = findSwatch(name);
+	if(existingSwatch && existingSwatch.toString().indexOf(name)>0)
+	{
+		return existingSwatch;
+	}
+
+
+	//attempts at identifying existing spot color without runtime errors
+	//normally if the spot color does not exist, trying to access it by name
+	//causes a runtime error. Try/catch can be used, but is not ideal.
+	//the below are attempts to avoid try/catch.. but they are erroring out 
+	//because this function isn't creating properly named swatches for some reason???
+	//
+	// var swatchArray = afc(doc,"swatches");
+	// var swatchNameMatches = swatchArray.filter(function (swatch) {try{return swatch.name == name;}catch(e){return false;} });
+	// if (swatchNameMatches.length) {
+	// 	//perhaps an alert here to see if the user wants to use or edit the existing swatch?
+	// 	//better to have another argument instead of an alert every time a swatch is found.
+	// 	return swatchNameMatches[0];
+	// }
 	
-	if(!colorType)
-	{
-		colorType = "CMYK"
+	colorType = colorType || "CMYK";
+	var defaultColorValue = colorType === "CMYK" ? {cyan:100,magenta:0,yellow:0,black:0} : {red:100,green:0,blue:0};
+	colorValue = colorValue || BOOMBAH_APPROVED_COLOR_VALUES[name] || defaultColorValue;
+	
+	var newSpot = doc.spots.add();
+	var newColor = (colorType === "CMYK") ? new CMYKColor() : new RGBColor();
+	
+	
+	for (var color in colorValue) {
+		newColor[color] = Math.round(colorValue[color]);
 	}
-	if(!colorValue)
-	{
-		try
-		{
-			colorValue = BOOMBAH_APPROVED_COLOR_VALUES[name];
-		}
-		catch(e)
-		{
-			colorValue =
-			{
-				"cyan": 12,
-				"magenta": 30,
-				"yellow": 84,
-				"black": 5
-			}
-		}
-	}
+	
+	
+	newSpot.name = name;
+	newSpot.colorType = ColorModel.SPOT;
+	newSpot.color = newColor;
+	
 
-	var newSpotSwatch;
-	try
-	{
-		newSpotSwatch = swatches[name];
-		if(tint)
-		{
-			newSpotSwatch.color.tint = tint;
-		}
-	}
-	catch(e)
-	{
-		var newColor = (colorType === "CMYK") ? new CMYKColor() : new RGBColor();
-		for(var color in colorValue)
-		{
-			newColor[color] = colorValue[color];
-		}
-
-		var newSpot = doc.spots.add();
-		newSpot.name = name;
-		newSpot.color = newColor;
-		newSpot.colorType = ColorModel.SPOT;
-
-		newSpotSwatch = new SpotColor();
-		newSpotSwatch.spot = newSpot;
-		newSpotSwatch = swatches[name];
-		if(tint)
-		{
-			newSpotSwatch.tint = tint;
-		}
-	}
-	return newSpotSwatch;
+	//make spot color
+	var newSpotColor = new SpotColor();
+	newSpotColor.spot = newSpot;
+	newSpotColor.tint = tint || 100;
+	
+	return swatches[name];
 }
 
 function mergeSwatches(oldSwatchName,newSwatchName)
