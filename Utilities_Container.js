@@ -657,6 +657,31 @@ function group(items,parent)
 
 
 
+//release all pageItems from this group to a designated parent
+//if no parent is specified, the item's parent is used
+//digs recursively to move all non-group items to the parent
+function ungroupAll(item, parent) {
+	parent = parent || item.parent;
+	item.locked = false;
+	parent.locked = false;
+	parent.typename == "Layer" ? parent.visible = true : parent.hidden = false;
+	afc(item, "pageItems").reverse().forEach(function (i) {
+		moveItemToParent(i);
+	});
+
+	function moveItemToParent(item)
+	{
+		if(item.typename == "GroupItem")
+		{
+			ungroupAll(item,parent);
+		}
+		else
+		{
+			item.moveToBeginning(parent);
+		}
+	}
+}
+
 function ungroup(group)
 {
 	group.layer.locked = false;
@@ -1084,6 +1109,33 @@ function resetGraphicStylesToParamBlocks(paramLayer)
 	return true;
 }
 
+function findCharacterStyle(name)
+{
+	return afc(app.activeDocument,"characterStyles").filter(function(cs)
+	{
+		return cs.name === name
+	})[0] || undefined;
+}
+
+function createCharacterStyle(name,attr,overwrite)
+{
+	var exCharStyle = findCharacterStyle(name);
+
+	if(exCharStyle && !overwrite)
+	{
+		return exCharStyle;
+	}
+
+	var newCharStyle = exCharStyle || app.activeDocument.characterStyles.add(name);
+
+	for(var prop in attr)
+	{
+		newCharStyle[prop] = attr[prop];
+	}
+
+	return newCharStyle;
+}
+
 
 function findSpecificGraphicStyle(doc,name)
 {
@@ -1315,37 +1367,43 @@ function findSpecificItem(parent,itemType,name)
 }
 
 
-function arrayFromContainer(container,crit)
-{
-	var result = [];
-	var items;
-	if(!crit || crit === "any")
-	{
-		items = container.pageItems;
-	}
-	else
-	{
-		items = container[crit];
-	}
-	for(var x=0;x<items.length;x++)
-	{
-		result.push(items[x])
-	}
-	return result;
-}
+
+
+
+
+//container: container object that holds the child items   
+//viable options: App, Layer, Doument, GroupItem, CompoundPathItem
+//crit: string representing the type of collection to arrayify
+//viable options:   "pageItems", "layers", "pathItems", "compoundPathItems", 
+//                  "groupItems", "swatches", "textFonts", "textFrames", "placedItems",
+//                  "rasterItems", "symbolItems", "pluginItems", "artboards", "selection"
+//					"characterStyles", "paragraphStyles", "brushes"
 
 function afc(container, crit) {
 	var result = [];
-	var items;
-	if (!crit || crit === "any") {
-		items = container.pageItems;
-	} else {
-		items = container[crit];
+	var ctn = container.typename;
+	if (!ctn.match(/app|adobe|document|layer|group|compound|text/i)) {
+		$.writeln("ERROR: afc(" + container.name + "," + crit + ");");
+		$.writeln("Can't make array from this container. Invalid container type: " + container.typename);
+		return [];
 	}
+	var defaultCrit = ctn.match(/swatchgroup/i) ? "swatches" : ctn.match(/compound/) ? "pathItems" : "pageItems";
+	crit = crit || defaultCrit;
+	if (!crit.match(/layers|swatches|items|frames|artboards|selection|documents|contents|styles|fonts|brushes/i)) {
+		$.writeln("ERROR: afc(" + container.name + "," + crit + ");");
+		$.writeln("Can't make array from this container. Invalid child item type: " + crit);
+		return [];
+	}
+
+	var items = container[crit];
 	for (var x = 0; x < items.length; x++) {
 		result.push(items[x])
 	}
 	return result;
+}
+//alternate more verbose function name for easier code reading maybe?
+function arrayFromContainer(container, crit) {
+	return afc(container, crit);
 }
 
 
@@ -1631,14 +1689,13 @@ function includeComponents(dev,prod,ignorePrompt)
 
 function getComponents(path)
 {
-	var result;
+	var result = [];
 	var compFolder,comps,thisComp;
 
 	compFolder = new Folder(path);
 
 	if(compFolder && compFolder.exists)
 	{
-		result = [];
 		comps = compFolder.getFiles();
 		var len = comps.length;
 		for(var c=0;c<len;c++)
@@ -1651,9 +1708,13 @@ function getComponents(path)
 	}
 	else
 	{
-		alert("No components folder at: " + path);
+		errorList.push("No components folder at: " + path);
 	}
 
+	if(!result.length)
+	{
+		errorList.push("No components found at: " + path);
+	}
 	return result;
 }
 
