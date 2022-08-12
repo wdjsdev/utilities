@@ -44,13 +44,15 @@ Array.prototype.map = function(callback) {
     return arr;
 };
 Array.prototype.forEach = function(callback,startPos,inc) {
-	if(!inc)inc=1;
-	if(!startPos)startPos=0;
+	inc = inc || 1;
+	startPos = startPos || 0;
     for (var i = startPos; i < this.length; i+=inc)
         callback(this[i], i, this);
 };
-Array.prototype.backForEach = function(callback) {
-    for (var i = this.length-1; i >= 0; i--)
+Array.prototype.backForEach = function(callback,startPos,inc) {
+	inc = inc || 1;
+	startPos = startPos || this.length-1;
+    for (var i = startPos; i >= 0; i--)
         callback(this[i], i, this);
 };
 Array.prototype.filter = function(callback, context) {
@@ -2846,87 +2848,27 @@ function getVisibleBounds(object) {
 }
 
 function getBoundsData(item) {
-	var bounds, clippedItem, sandboxItem, sandboxLayer;
+	var bounds = getVisibleBounds(item);
+	var result = {};
 
-	var result = { l: 0, t: 0, r: 0, b: 0, w: 0, h: 0 };
-	var curItem;
-	if (item.typename == "GroupItem") {
-		// if the item is clipped
-		if (item.clipped) {
-			// check all sub items to find the clipping path
-			afc(item, "pageItems").forEach(function(curItem)
-			{
-				if (clippedItem) {
-					return;
-				}
-
-				if (curItem.clipping) {
-					clippedItem = curItem;
-				} else if (curItem.typename == "CompoundPathItem") {
-					if (!curItem.pathItems.length) {
-						// catch compound path items with no pathItems via william dowling @ github.com/wdjsdev
-						sandboxLayer = app.activeDocument.layers.add();
-						sandboxItem = curItem.duplicate(sandboxLayer);
-						app.activeDocument.selection = null;
-						sandboxItem.selected = true;
-						app.executeMenuCommand("noCompoundPath");
-						sandboxLayer.hasSelectedArtwork = true;
-						app.executeMenuCommand("group");
-						clippedItem = app.activeDocument.selection[0];
-					} else if (curItem.pathItems[0].clipping) {
-						clippedItem = curItem;
-					}
-				} else {
-					clippedItem = curItem;
-				}
-
-			});
-
-			if(clippedItem)
-			{
-				bounds = clippedItem.geometricBounds;
-			}
-		} else {
-			// if the item is not clipped
-			var subItemBounds;
-			var allBoundPoints = [[], [], [], []];
-			// get the bounds of every item in the group
-			afc(item, "pageItems").forEach(function(curItem)
-			{
-				subItemBounds = getVisibleBounds(curItem);
-				allBoundPoints[0].push(subItemBounds[0]);
-				allBoundPoints[1].push(subItemBounds[1]);
-				allBoundPoints[2].push(subItemBounds[2]);
-				allBoundPoints[3].push(subItemBounds[3]);
-			});
-
-			// determine the groups bounds from it sub item bound points
-			bounds = [
-				Math.min.apply(Math, allBoundPoints[0]),
-				Math.max.apply(Math, allBoundPoints[1]),
-				Math.max.apply(Math, allBoundPoints[2]),
-				Math.min.apply(Math, allBoundPoints[3]),
-			];
-		}
-	} else {
-		bounds = item.geometricBounds;
-	}
-
-	if (sandboxLayer) {
-		sandboxLayer.remove();
-		sandboxLayer = null;
-	}
-
-	result.l = bounds[0];
-	result.t = bounds[1];
-	result.r = bounds[2];
-	result.b = bounds[3];
-	result.w = result.r - result.l;
-	result.h = result.t - result.b;
+	result.l = bounds[0]; //left
+	result.t = bounds[1]; //top
+	result.r = bounds[2]; //right
+	result.b = bounds[3]; //bottom
+	result.w = result.r - result.l; //width
+	result.h = result.t - result.b; //height
 	result.halfHeight = result.h / 2;
 	result.halfWidth = result.w / 2;
-	result.hc = result.l + result.halfWidth;
-	result.vc = result.t - result.halfHeight;
+	result.hc = result.l + result.halfWidth; //horizontal center
+	result.vc = result.t - result.halfHeight; //vertical center
+	result.maxDimLabel = result.w > result.h ? "width" : "height"; // larger dimension of width and height
+	result.maxDim = result.maxDimLabel.match(/w/i) ? result.w : result.h; // larger dimension of width and height
+
+	result.leftClipped = result.l - item.left; // how much is clipped off the left side of the item
+	result.topClipped = item.top - result.t; // how much is clipped off the top of the item
+	result.rightClipped = item.right - result.r; // how much is clipped off the right side of the item
+	result.bottomClipped = result.b - item.bottom; // how much is clipped off the bottom of the item
+
 	return result;
 }
 
