@@ -1,21 +1,21 @@
 //array.indexOf prototype
 //Network Storage. Production version
 var customizationPath;
-if($.os.match('Windows'))
+if ( $.os.match( 'Windows' ) )
 {
-	var user = $.getenv("USERNAME");
+	var user = $.getenv( "USERNAME" );
 	customizationPath = "//AD4/Customization/";
 	var homeFolderPath = "C:/Users/" + user + "/";
-	var homeFolder = Folder(homeFolderPath);
+	var homeFolder = Folder( homeFolderPath );
 	var os = "windows";
 }
 else
 {
 	// MAC
-	var user = $.getenv("USER")
+	var user = $.getenv( "USER" )
 	customizationPath = "/Volumes/Customization/";
 	var homeFolderPath = "/Volumes/Macintosh HD/Users/" + user + "/";
-	var homeFolder = new Folder(homeFolderPath);
+	var homeFolder = new Folder( homeFolderPath );
 	var os = "mac";
 	// if(!homeFolder.exists)
 	// {
@@ -33,42 +33,48 @@ else
 ////////////////////////
 
 //array.indexOf()
-Array.prototype.indexOf = function(a, b, c){
-	for (c = this.length, b = (c + ~~b) % c; b < c && (!(b in this) || this[b] !== a); b++);
+Array.prototype.indexOf = function ( a, b, c )
+{
+	for ( c = this.length, b = ( c + ~~b ) % c; b < c && ( !( b in this ) || this[ b ] !== a ); b++ );
 	return b ^ c ? b : -1;
 }
-Array.prototype.map = function(callback) {
-    arr = [];
-    for (var i = 0; i < this.length; i++)
-        arr.push(callback(this[i], i, this));
-    return arr;
+Array.prototype.map = function ( callback )
+{
+	arr = [];
+	for ( var i = 0; i < this.length; i++ )
+		arr.push( callback( this[ i ], i, this ) );
+	return arr;
 };
-Array.prototype.forEach = function(callback,startPos,inc) {
+Array.prototype.forEach = function ( callback, startPos, inc )
+{
 	inc = inc || 1;
 	startPos = startPos || 0;
-    for (var i = startPos; i < this.length; i+=inc)
-        callback(this[i], i, this);
+	for ( var i = startPos; i < this.length; i += inc )
+		callback( this[ i ], i, this );
 };
-Array.prototype.backForEach = function(callback,startPos,inc) {
+Array.prototype.backForEach = function ( callback, startPos, inc )
+{
 	inc = inc || 1;
-	startPos = startPos || this.length-1;
-    for (var i = startPos; i >= 0; i--)
-        callback(this[i], i, this);
+	startPos = startPos || this.length - 1;
+	for ( var i = startPos; i >= 0; i-- )
+		callback( this[ i ], i, this );
 };
-Array.prototype.filter = function(callback, context) {
-    arr = [];
-    for (var i = 0; i < this.length; i++) {
-        if (callback.call(context, this[i], i, this))
-            arr.push(this[i]);
-    }
-    return arr;
+Array.prototype.filter = function ( callback, context )
+{
+	arr = [];
+	for ( var i = 0; i < this.length; i++ )
+	{
+		if ( callback.call( context, this[ i ], i, this ) )
+			arr.push( this[ i ] );
+	}
+	return arr;
 };
-Array.prototype.reverse = function()
+Array.prototype.reverse = function ()
 {
 	var arr = [];
-	for(var i=this.length-1;i>=0;i--)
+	for ( var i = this.length - 1; i >= 0; i-- )
 	{
-		arr.push(this[i]);
+		arr.push( this[ i ] );
 	}
 	return arr;
 }
@@ -93,9 +99,11 @@ Array.prototype.reverse = function()
 //
 ////////////////////////
 
-function objForEach(obj, func) {
-	for (var i in obj) {
-		func(obj[i]);
+function objForEach ( obj, func )
+{
+	for ( var i in obj )
+	{
+		func( obj[ i ] );
 	}
 }
 
@@ -108,23 +116,23 @@ function objForEach(obj, func) {
 
 
 //list of dr users
-var DR_USERS = 
-[
-	"medelyn.tavarez",
-	"rafael.nolasco",
-	"nicolas.nicasio",
-	"arlan.grullon",
-	"deivison.urena",
-	"eliezer.lopez",
-	"maximo.montesino",
-	"danny.cabrera",
-	"kelvin.ynoa",
-	"julio.lora",
-	"ismael.noesi",
-	"raymond.fernandez",
-	"isaac.martinez",
-	"joshua.chevalier"
-];
+var DR_USERS =
+	[
+		"medelyn.tavarez",
+		"rafael.nolasco",
+		"nicolas.nicasio",
+		"arlan.grullon",
+		"deivison.urena",
+		"eliezer.lopez",
+		"maximo.montesino",
+		"danny.cabrera",
+		"kelvin.ynoa",
+		"julio.lora",
+		"ismael.noesi",
+		"raymond.fernandez",
+		"isaac.martinez",
+		"joshua.chevalier"
+	];
 
 
 
@@ -139,20 +147,20 @@ var DR_USERS =
 //then she has to manually move things from D over to C after
 //a script is finished. let's just change her home folder to the
 //D drive so she doesn't have to move everything after the script runs
-if(user === "thell")
+if ( user === "thell" )
 {
-	homeFolderPath = homeFolderPath.replace("C:","D:");
-	homeFolder = Folder(homeFolderPath);
+	homeFolderPath = homeFolderPath.replace( "C:", "D:" );
+	homeFolder = Folder( homeFolderPath );
 }
 
 
 
 //boolean to determine whether to use the CustomizationDR drive for testing.
 var spoofDRUser = false;
-if(DR_USERS.indexOf(user)>-1 || (spoofDRUser && user === "will.dowling"))
+if ( DR_USERS.indexOf( user ) > -1 || ( spoofDRUser && user === "will.dowling" ) )
 {
-	customizationPath = customizationPath.replace("Customization","CustomizationDR");
-}	
+	customizationPath = customizationPath.replace( "Customization", "CustomizationDR" );
+}
 
 
 
@@ -160,11 +168,11 @@ if(DR_USERS.indexOf(user)>-1 || (spoofDRUser && user === "will.dowling"))
 
 
 
-if(typeof scriptName === "undefined")
+if ( typeof scriptName === "undefined" )
 {
 	//no scriptName variable existed. create one.
 	var scriptName = $.fileName;
-	scriptName = scriptName.substring(scriptName.lastIndexOf("/")+1,scriptName.lastIndexOf("."));
+	scriptName = scriptName.substring( scriptName.lastIndexOf( "/" ) + 1, scriptName.lastIndexOf( "." ) );
 	scriptName = scriptName.toLowerCase();
 }
 
@@ -172,47 +180,47 @@ if(typeof scriptName === "undefined")
 
 
 var desktopPath = homeFolderPath + "Desktop/";
-var desktopFolder = new Folder(desktopPath);
+var desktopFolder = new Folder( desktopPath );
 
 var documentsPath = homeFolderPath + "Documents/";
-var documentsFolder = new Folder(documentsPath);
+var documentsFolder = new Folder( documentsPath );
 
-var customizationFolder = new Folder(customizationPath);
+var customizationFolder = new Folder( customizationPath );
 
 var libraryPath = customizationPath + "Library/";
-var libraryFolder = new Folder(libraryPath);
+var libraryFolder = new Folder( libraryPath );
 
 var graphicsPath = libraryPath + "Graphics/";
-var graphicsFolder = new Folder(graphicsPath);
+var graphicsFolder = new Folder( graphicsPath );
 
 var prepressPath = libraryPath + "cads/prepress/";
-var prepressFolder = new Folder(prepressPath);
+var prepressFolder = new Folder( prepressPath );
 
 var scriptsPath = libraryPath + "Scripts/";
-var scriptsFolder = new Folder(scriptsPath);
+var scriptsFolder = new Folder( scriptsPath );
 
 var resourcePath = scriptsPath + "Script_Resources/";
-var resourceFolder = new Folder(resourcePath);
+var resourceFolder = new Folder( resourcePath );
 
 var imagesPath = resourcePath + "Images/";
-var imagesFolder = new Folder(imagesPath);
+var imagesFolder = new Folder( imagesPath );
 
 var componentsPath = resourcePath + "components/";
-var componentsFolder = new Folder(componentsPath);
+var componentsFolder = new Folder( componentsPath );
 
 var dataPath = resourcePath + "Data/";
-var dataFolder = new Folder(dataPath);
+var dataFolder = new Folder( dataPath );
 
 var logsPath = dataPath + ".script_logs/";
-var logsFolder = new Folder(logsPath);
+var logsFolder = new Folder( logsPath );
 
 var centralLibraryPath = dataPath + "central_library.js";
-var centralLibraryFile = File(centralLibraryPath);
+var centralLibraryFile = File( centralLibraryPath );
 
 var btLibraryPath = dataPath + "build_template_library.js";
-var btLibraryFile = File(btLibraryPath);
+var btLibraryFile = File( btLibraryPath );
 
-var aaSpecialInstructionsFile = File(dataPath + "aa_special_instructions.js");
+var aaSpecialInstructionsFile = File( dataPath + "aa_special_instructions.js" );
 
 var userPathRegex = /(^\/Users\/[^\/]*\/)|(^.*~\/)/i;
 
@@ -225,12 +233,12 @@ var userPathRegex = /(^\/Users\/[^\/]*\/)|(^.*~\/)/i;
 //instead of having one central log file for each script.
 //
 //log files
-var centralLog = new File(dataPath + ".script_logs/central_log.txt");
-var importantLog = new File(dataPath + ".script_logs/important_log.txt");
-var centralErrorLog = new File(dataPath + ".script_logs/error_log.txt");
-var buildMockLog = new File(dataPath + ".script_logs/mockup_builder_log.txt");
-var missingTemplatesLog = new File(dataPath + ".script_logs/converted_templates_needed.txt");
-var changeCodeLog = new File(dataPath + ".script_logs/change_code_log.txt");
+var centralLog = new File( dataPath + ".script_logs/central_log.txt" );
+var importantLog = new File( dataPath + ".script_logs/important_log.txt" );
+var centralErrorLog = new File( dataPath + ".script_logs/error_log.txt" );
+var buildMockLog = new File( dataPath + ".script_logs/mockup_builder_log.txt" );
+var missingTemplatesLog = new File( dataPath + ".script_logs/converted_templates_needed.txt" );
+var changeCodeLog = new File( dataPath + ".script_logs/change_code_log.txt" );
 //
 //deprecated
 //
@@ -254,7 +262,7 @@ var NBD = netsuiteBuilderDataURL = "https://460511.extforms.netsuite.com/app/sit
 
 
 //stopwatch object for tracking task durations
-var Stopwatch = function()
+var Stopwatch = function ()
 {
 	this.startTime = 0;
 	this.endTime = 0;
@@ -264,34 +272,34 @@ var Stopwatch = function()
 
 	this.currentTasks = {};
 
-	this.logStart = function()	
+	this.logStart = function ()	
 	{
 		var curDate = new Date();
 		this.startTime = curDate.getTime();
 	}
-	this.logEnd = function()
+	this.logEnd = function ()
 	{
 		var curDate = new Date();
 		this.endTime = curDate.getTime();
 	}
-	this.beginTask = function(label)
+	this.beginTask = function ( label )
 	{
-		this.currentTasks[label] = {"label":label,"taskStart":new Date().getTime(),"taskEnd":undefined};
+		this.currentTasks[ label ] = { "label": label, "taskStart": new Date().getTime(), "taskEnd": undefined };
 	}
-	this.endTask = function(label)
+	this.endTask = function ( label )
 	{
-		this.currentTasks[label].taskEnd = new Date().getTime();
-		var stepDuration =  this.currentTasks[label].taskEnd - this.currentTasks[label].taskStart;
+		this.currentTasks[ label ].taskEnd = new Date().getTime();
+		var stepDuration = this.currentTasks[ label ].taskEnd - this.currentTasks[ label ].taskStart;
 		var msg = label + " step took " + stepDuration + " ms.";
-		log.l(msg);
+		log.l( msg );
 	}
-	this.getElapsed = function()
+	this.getElapsed = function ()
 	{
-		return "Elapsed Time: " + (new Date().getTime() - this.startTime);
+		return "Elapsed Time: " + ( new Date().getTime() - this.startTime );
 	}
-	this.calculate = function()
+	this.calculate = function ()
 	{
-		return (this.endTime - this.startTime);
+		return ( this.endTime - this.startTime );
 	}
 }
 var scriptTimer = new Stopwatch();
@@ -345,127 +353,127 @@ var endScriptMsg = [
 	""
 ];
 
-var beginScriptString = beginScriptMsg.join("\n")
-var endScriptString = endScriptMsg.join("\n");
+var beginScriptString = beginScriptMsg.join( "\n" )
+var endScriptString = endScriptMsg.join( "\n" );
 
-function initLog()
+function initLog ()
 {
-	livePrintLog(beginScriptString);
+	livePrintLog( beginScriptString );
 }
-function endLog()
+function endLog ()
 {
-	livePrintLog(endScriptString);
+	livePrintLog( endScriptString );
 }
 
-function livePrintLog(msg)
+function livePrintLog ( msg )
 {
 	var contents;
-	for(var l=0,len=logDest.length;l<len;l++)
+	for ( var l = 0, len = logDest.length; l < len; l++ )
 	{
-		logDest[l].open("a");
-		logDest[l].write(msg);
-		logDest[l].close();
+		logDest[ l ].open( "a" );
+		logDest[ l ].write( msg );
+		logDest[ l ].close();
 	}
 }
 
-function getLogDest(logName)
+function getLogDest ( logName )
 {
 	var userLogPath = logsPath + user + "/";
-	var userLogFolder = Folder(userLogPath);
-	if(!userLogFolder.exists)
+	var userLogFolder = Folder( userLogPath );
+	if ( !userLogFolder.exists )
 	{
 		userLogFolder.create();
 	}
 
 	var scriptLogFile;
-	if(logName)
+	if ( logName )
 	{
-		scriptLogFile = File(userLogPath + logName + ".txt");
+		scriptLogFile = File( userLogPath + logName + ".txt" );
 	}
 	else
 	{
-		scriptLogFile = File(userLogPath + scriptName + ".txt");
+		scriptLogFile = File( userLogPath + scriptName + ".txt" );
 	}
 	return scriptLogFile;
 }
 
-function logTime()
+function logTime ()
 {
 	var date = new Date();
-	var m = date.getMonth() +1;
-	if(m<10){m = "0" + m};
+	var m = date.getMonth() + 1;
+	if ( m < 10 ) { m = "0" + m };
 	var d = date.getDate();
-	if(d<10){d = "0" + d};
+	if ( d < 10 ) { d = "0" + d };
 	var h = date.getHours();
 	var min = date.getMinutes();
-	if(min<10){min = "0" + min};
+	if ( min < 10 ) { min = "0" + min };
 	var s = date.getSeconds();
-	if(s<10){s = "0" + s};
+	if ( s < 10 ) { s = "0" + s };
 	var y = date.getFullYear().toString();
-	y = y.substring(2,4);
+	y = y.substring( 2, 4 );
 	var time = m + "/" + d + "/" + y + "  " + h + ":" + min + ":" + s;
 
 	return time;
 }
 
-function getDate()
+function getDate ()
 {
 	var date = new Date();
 	//month
-	var m = date.getMonth() +1;
-	if(m<10){m = "0" + m};
+	var m = date.getMonth() + 1;
+	if ( m < 10 ) { m = "0" + m };
 	//day
 	var d = date.getDate();
-	if(d<10){d = "0" + d};
+	if ( d < 10 ) { d = "0" + d };
 	//year
 	var y = date.getFullYear().toString();
-	y = y.substring(2,4);
+	y = y.substring( 2, 4 );
 	var time = m + "." + d + "." + y;
 	return time;
 }
 
 var log =
 {
-	h : function(msg)
+	h: function ( msg )
 	{
 		var result = "\n";
-		msg = msg.split("::");
+		msg = msg.split( "::" );
 
-		
+
 		result += "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
-		result += msg.join("\n");
+		result += msg.join( "\n" );
 		result += "\n";
 		result += "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n\n";
 		scriptLog += result;
-		if(LIVE_LOGGING)
+		if ( LIVE_LOGGING )
 		{
-			livePrintLog(result);
+			livePrintLog( result );
 		}
-		if(DEV_LOGGING)
+		if ( DEV_LOGGING )
 		{
-			$.writeln(result);
+			$.writeln( result );
 		}
 	},
-	bp : function(msg)
+	bp: function ( msg )
 	{
 		var result = "";
 
-		msg = msg.split("::");
+		msg = msg.split( "::" );
 
-		result += "Beginning process: " + msg.join("\n");
+		result += "Beginning process: " + msg.join( "\n" );
 		result += "\n";
-	
+
 		scriptLog += result;
 	},
-	e : function(msg)
+	e: function ( msg )
 	{
 		var result = "\n";
 
-		msg = msg.split("::");
+		msg = msg.split( "::" );
 
 		result += "**ERROR**ERROR**ERROR**ERROR**ERROR**ERROR**ERROR**ERROR";
 		result += "\n[error]: ";
-		result += msg.join("\n[error]: ");
+		result += msg.join( "\n[error]: " );
 		result += "\n";
 		result += "**ERROR**ERROR**ERROR**ERROR**ERROR**ERROR**ERROR**ERROR";
 		result += "\n\n";
@@ -473,79 +481,79 @@ var log =
 		scriptLog += result;
 		errorLog += result;
 
-		if(LIVE_LOGGING)
+		if ( LIVE_LOGGING )
 		{
-			livePrintLog(result);
+			livePrintLog( result );
 		}
-		if(DEV_LOGGING)
+		if ( DEV_LOGGING )
 		{
-			$.writeln(result);
+			$.writeln( result );
 		}
 	},
-	l : function(msg)
+	l: function ( msg )
 	{
 		var result = "";
 
-		msg = msg.split("::");
+		msg = msg.split( "::" );
 
 		result += "[msg]: ";
-		result += msg.join("\n[msg]: ");
+		result += msg.join( "\n[msg]: " );
 		result += "\n";
 
 		scriptLog += result;
-		if(LIVE_LOGGING)
+		if ( LIVE_LOGGING )
 		{
-			livePrintLog(result)
+			livePrintLog( result )
 		}
-		if(DEV_LOGGING)
+		if ( DEV_LOGGING )
 		{
-			$.writeln(result);
+			$.writeln( result );
 		}
 	},
-	L : function(msg)
+	L: function ( msg )
 	{
 		var result = "";
 
-		msg = msg.split("::");
+		msg = msg.split( "::" );
 
 		result += "[msg]>>>: ";
-		result += msg.join("\n[msg]>>>: ");
+		result += msg.join( "\n[msg]>>>: " );
 		result += "\n";
 
 		scriptLog += result;
 	},
-	missingCT : function(msg)
+	missingCT: function ( msg )
 	{
 		var result = "";
 
-		msg = msg.split("::");
+		msg = msg.split( "::" );
 
-		result += msg.join("\n");
+		result += msg.join( "\n" );
 		result += "\n";
 		templatesNeeded += result;
 	}
 }
 
-function printLog()
+function printLog ()
 {
-	if(LIVE_LOGGING)
+	if ( LIVE_LOGGING )
 	{
 		return;
 	}
 	var curTime = logTime();
 
-	if(logDest.length > 0 && scriptLog !== "")
+	if ( logDest.length > 0 && scriptLog !== "" )
 	{
-		for(var x=0;x<logDest.length;x++)
+		for ( var x = 0; x < logDest.length; x++ )
 		{
-			var thisDest = logDest[x];
-			
+			var thisDest = logDest[ x ];
+
 
 			thisDest.open();
 			var contents = thisDest.read();
 			thisDest.close();
 
-			thisDest.open("w");
+			thisDest.open( "w" );
 
 			var newStr = "";
 			newStr += "\n\n\n\n";
@@ -557,22 +565,22 @@ function printLog()
 			newStr += "desktopPath = " + desktopPath + "\n";
 			newStr += scriptLog;
 			newStr += endScriptString;
-			var logString = contents + newStr ;
+			var logString = contents + newStr;
 
-			thisDest.write(logString);
+			thisDest.write( logString );
 			thisDest.close();
 		}
 	}
 }
 
-function printSpecialtyLog(file,msg)
+function printSpecialtyLog ( file, msg )
 {
-	file.open("r");
+	file.open( "r" );
 	var contents = file.read();
 	file.close();
 
-	file.open("w");
-	file.write(contents + "\n" + msg);
+	file.open( "w" );
+	file.write( contents + "\n" + msg );
 	file.close();
 }
 
@@ -584,15 +592,15 @@ function printSpecialtyLog(file,msg)
 
 
 
-function getArea(item)
+function getArea ( item )
 {
-	var b = getVisibleBounds(item);
-	var w = b[2] - b[0];
-	var h = b[1] - b[3];
-	return w*h;
+	var b = getVisibleBounds( item );
+	var w = b[ 2 ] - b[ 0 ];
+	var h = b[ 1 ] - b[ 3 ];
+	return w * h;
 }
 
-function getMaxDimension(item)
+function getMaxDimension ( item )
 {
 	// var bounds = getVisibleBounds(item);
 	// var bounds = item.visibleBounds;
@@ -606,25 +614,25 @@ function getMaxDimension(item)
 //just pass in the exact text of the shell script
 //no return values. just do a thing, like copy something..
 //remove something.. just don't expect anything back
-function genericShellScript(scriptText)
+function genericShellScript ( scriptText )
 {
 	var localScriptPath = documentsPath + "Adobe_Helpers/shell_scripts/";
-	var localScriptFolder = new Folder(localScriptPath);
-	if(!localScriptFolder.exists)
+	var localScriptFolder = new Folder( localScriptPath );
+	if ( !localScriptFolder.exists )
 	{
 		localScriptFolder.create();
 	}
 	var outputFilePath = localScriptPath + "generic_shell_script_output.txt";
-	outputFilePath = outputFilePath.replace(/\s/g,"\\\\ ");
+	outputFilePath = outputFilePath.replace( /\s/g, "\\\\ " );
 	// scriptText = "do shell script \"" + scriptText + " > " + outputFilePath + "\"";
 	scriptText = "do shell script \"" + scriptText + "\"";
 
-	
-	scriptFile = File(localScriptPath + "generic_shell_script.scpt");
-	writeScriptFile(scriptFile,scriptText);
-	executor = File(resourcePath + "generic_shell_script.app");
 
-	var executor = File(resourcePath + "generic_shell_script.app");
+	scriptFile = File( localScriptPath + "generic_shell_script.scpt" );
+	writeScriptFile( scriptFile, scriptText );
+	executor = File( resourcePath + "generic_shell_script.app" );
+
+	var executor = File( resourcePath + "generic_shell_script.app" );
 
 	executor.execute();
 
@@ -634,26 +642,26 @@ function genericShellScript(scriptText)
 	// outputFile.close();
 
 
-	function writeScriptFile(file,txt)
+	function writeScriptFile ( file, txt )
 	{
-		file.open("w");
-		file.write(txt);
+		file.open( "w" );
+		file.write( txt );
 		file.close();
 	}
 }
 
 
-function group(items,parent)
+function group ( items, parent )
 {
-	if(!items.length || !parent)
+	if ( !items.length || !parent )
 	{
 		return;
 	}
 	var newGroup = parent.groupItems.add();
-	items.backForEach(function(item)
+	items.backForEach( function ( item )
 	{
-		item.moveToBeginning(newGroup);
-	})
+		item.moveToBeginning( newGroup );
+	} )
 	return newGroup.pageItems.length ? newGroup : null;
 }
 
@@ -662,39 +670,41 @@ function group(items,parent)
 //release all pageItems from this group to a designated parent
 //if no parent is specified, the item's parent is used
 //digs recursively to move all non-group items to the parent
-function ungroupAll(item, parent) {
+function ungroupAll ( item, parent )
+{
 	parent = parent || item.parent;
 	item.locked = false;
 	parent.locked = false;
 	parent.typename == "Layer" ? parent.visible = true : parent.hidden = false;
-	afc(item, "pageItems").reverse().forEach(function (i) {
-		moveItemToParent(i);
-	});
-
-	function moveItemToParent(item)
+	afc( item, "pageItems" ).reverse().forEach( function ( i )
 	{
-		if(item.typename == "GroupItem")
+		moveItemToParent( i );
+	} );
+
+	function moveItemToParent ( item )
+	{
+		if ( item.typename == "GroupItem" )
 		{
-			ungroupAll(item,parent);
+			ungroupAll( item, parent );
 		}
 		else
 		{
-			item.moveToBeginning(parent);
+			item.moveToBeginning( parent );
 		}
 	}
 }
 
-function ungroup(group)
+function ungroup ( group )
 {
 	group.layer.locked = false;
 	group.layer.visible = true;
 	group.locked = false;
 	group.visible = true;
-	arrayFromContainer(group,"pageItems").forEach(function(curItem)
+	arrayFromContainer( group, "pageItems" ).forEach( function ( curItem )
 	{
-		curItem.moveToBeginning(group.parent);
-	})
-	
+		curItem.moveToBeginning( group.parent );
+	} )
+
 }
 
 
@@ -704,13 +714,15 @@ function ungroup(group)
 //string.toTitleCase() 
 //prototype function to convert entire string to titlecase
 var titleCaseDotRegEx = /((\w\S)|(\w\.))*/g;
-String.prototype.toTitleCaseAfterDots = function () {
-    return this.replace(titleCaseDotRegEx, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+String.prototype.toTitleCaseAfterDots = function ()
+{
+	return this.replace( titleCaseDotRegEx, function ( txt ) { return txt.charAt( 0 ).toUpperCase() + txt.substr( 1 ).toLowerCase(); } );
 };
 
 var titleCaseRegex = /\w\S*/g;
-String.prototype.toTitleCase = function () {
-    return this.replace(titleCaseRegex, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+String.prototype.toTitleCase = function ()
+{
+	return this.replace( titleCaseRegex, function ( txt ) { return txt.charAt( 0 ).toUpperCase() + txt.substr( 1 ).toLowerCase(); } );
 };
 
 
@@ -725,31 +737,31 @@ String.prototype.toTitleCase = function () {
 //which is almost never what we want. this function will
 //replace the relative file path with a hard coded path
 //to the home folder.
-function normalizeLocalFilePath(path)
+function normalizeLocalFilePath ( path )
 {
-	return path.replace(/(^.*users\/[^\/]*\/)|(^~\/)/i,homeFolderPath);
+	return path.replace( /(^.*users\/[^\/]*\/)|(^~\/)/i, homeFolderPath );
 }
 
 //get unique from array
 //pass in an array and this function
 //returns only the unique elements
-function getUnique(arr)
+function getUnique ( arr )
 {
 	var tempResult = {};
 	var result = [];
 
-	for(var x=0,len = arr.length;x<len;x++)
+	for ( var x = 0, len = arr.length; x < len; x++ )
 	{
-		if(!tempResult[arr[x]])
+		if ( !tempResult[ arr[ x ] ] )
 		{
-			tempResult[arr[x]] = 1;
+			tempResult[ arr[ x ] ] = 1;
 		}
 	}
 
-	for(var item in tempResult)
+	for ( var item in tempResult )
 	{
-		if(!item.match(/extractDesign/i))
-			result.push(item);
+		if ( !item.match( /extractDesign/i ) )
+			result.push( item );
 	}
 	return result;
 }
@@ -761,10 +773,10 @@ function getUnique(arr)
 
 */
 
-if(!this.JSON){this.JSON={}}(function(){function f(n){return n<10?"0"+n:n}if(typeof Date.prototype.toJSON!=="function"){Date.prototype.toJSON=function(key){return isFinite(this.valueOf())?this.getUTCFullYear()+"-"+f(this.getUTCMonth()+1)+"-"+f(this.getUTCDate())+"T"+f(this.getUTCHours())+":"+f(this.getUTCMinutes())+":"+f(this.getUTCSeconds())+"Z":null};String.prototype.toJSON=Number.prototype.toJSON=Boolean.prototype.toJSON=function(key){return this.valueOf()}}var cx=/[\u0000\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g,escapable=/[\\\"\x00-\x1f\x7f-\x9f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g,gap,indent,meta={"\b":"\\b","	":"\\t","\n":"\\n","\f":"\\f","\r":"\\r",'"':'\\"',"\\":"\\\\"},rep;function quote(string){escapable.lastIndex=0;return escapable.test(string)?'"'+string.replace(escapable,function(a){var c=meta[a];return typeof c==="string"?c:"\\u"+("0000"+a.charCodeAt(0).toString(16)).slice(-4)})+'"':'"'+string+'"'}function str(key,holder){var i,k,v,length,mind=gap,partial,value=holder[key];if(value&&typeof value==="object"&&typeof value.toJSON==="function"){value=value.toJSON(key)}if(typeof rep==="function"){value=rep.call(holder,key,value)}switch(typeof value){case"string":return quote(value);case"number":return isFinite(value)?String(value):"null";case"boolean":case"null":return String(value);case"object":if(!value){return"null"}gap+=indent;partial=[];if(Object.prototype.toString.apply(value)==="[object Array]"){length=value.length;for(i=0;i<length;i+=1){partial[i]=str(i,value)||"null"}v=partial.length===0?"[]":gap?"[\n"+gap+partial.join(",\n"+gap)+"\n"+mind+"]":"["+partial.join(",")+"]";gap=mind;return v}if(rep&&typeof rep==="object"){length=rep.length;for(i=0;i<length;i+=1){k=rep[i];if(typeof k==="string"){v=str(k,value);if(v){partial.push(quote(k)+(gap?": ":":")+v)}}}}else{for(k in value){if(Object.hasOwnProperty.call(value,k)){v=str(k,value);if(v){partial.push(quote(k)+(gap?": ":":")+v)}}}}v=partial.length===0?"{}":gap?"{\n"+gap+partial.join(",\n"+gap)+"\n"+mind+"}":"{"+partial.join(",")+"}";gap=mind;return v}return v}if(typeof JSON.stringify!=="function"){JSON.stringify=function(value,replacer,space){var i;gap="";indent="";if(typeof space==="number"){for(i=0;i<space;i+=1){indent+=" "}}else{if(typeof space==="string"){indent=space}}rep=replacer;if(replacer&&typeof replacer!=="function"&&(typeof replacer!=="object"||typeof replacer.length!=="number")){throw new Error("JSON.stringify")}return str("",{"":value})}}if(typeof JSON.parse!=="function"){JSON.parse=function(text,reviver){var j;function walk(holder,key){var k,v,value=holder[key];if(value&&typeof value==="object"){for(k in value){if(Object.hasOwnProperty.call(value,k)){v=walk(value,k);if(v!==undefined){value[k]=v}else{delete value[k]}}}}return reviver.call(holder,key,value)}text=String(text);cx.lastIndex=0;if(cx.test(text)){text=text.replace(cx,function(a){return"\\u"+("0000"+a.charCodeAt(0).toString(16)).slice(-4)})}if(/^[\],:{}\s]*$/.test(text.replace(/\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g,"@").replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g,"]").replace(/(?:^|:|,)(?:\s*\[)+/g,""))){j=eval("("+text+")");return typeof reviver==="function"?walk({"":j},""):j}throw new SyntaxError("JSON.parse")}}})();
+if ( !this.JSON ) { this.JSON = {} } ( function () { function f ( n ) { return n < 10 ? "0" + n : n } if ( typeof Date.prototype.toJSON !== "function" ) { Date.prototype.toJSON = function ( key ) { return isFinite( this.valueOf() ) ? this.getUTCFullYear() + "-" + f( this.getUTCMonth() + 1 ) + "-" + f( this.getUTCDate() ) + "T" + f( this.getUTCHours() ) + ":" + f( this.getUTCMinutes() ) + ":" + f( this.getUTCSeconds() ) + "Z" : null }; String.prototype.toJSON = Number.prototype.toJSON = Boolean.prototype.toJSON = function ( key ) { return this.valueOf() } } var cx = /[\u0000\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g, escapable = /[\\\"\x00-\x1f\x7f-\x9f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g, gap, indent, meta = { "\b": "\\b", "	": "\\t", "\n": "\\n", "\f": "\\f", "\r": "\\r", '"': '\\"', "\\": "\\\\" }, rep; function quote ( string ) { escapable.lastIndex = 0; return escapable.test( string ) ? '"' + string.replace( escapable, function ( a ) { var c = meta[ a ]; return typeof c === "string" ? c : "\\u" + ( "0000" + a.charCodeAt( 0 ).toString( 16 ) ).slice( -4 ) } ) + '"' : '"' + string + '"' } function str ( key, holder ) { var i, k, v, length, mind = gap, partial, value = holder[ key ]; if ( value && typeof value === "object" && typeof value.toJSON === "function" ) { value = value.toJSON( key ) } if ( typeof rep === "function" ) { value = rep.call( holder, key, value ) } switch ( typeof value ) { case "string": return quote( value ); case "number": return isFinite( value ) ? String( value ) : "null"; case "boolean": case "null": return String( value ); case "object": if ( !value ) { return "null" } gap += indent; partial = []; if ( Object.prototype.toString.apply( value ) === "[object Array]" ) { length = value.length; for ( i = 0; i < length; i += 1 ) { partial[ i ] = str( i, value ) || "null" } v = partial.length === 0 ? "[]" : gap ? "[\n" + gap + partial.join( ",\n" + gap ) + "\n" + mind + "]" : "[" + partial.join( "," ) + "]"; gap = mind; return v } if ( rep && typeof rep === "object" ) { length = rep.length; for ( i = 0; i < length; i += 1 ) { k = rep[ i ]; if ( typeof k === "string" ) { v = str( k, value ); if ( v ) { partial.push( quote( k ) + ( gap ? ": " : ":" ) + v ) } } } } else { for ( k in value ) { if ( Object.hasOwnProperty.call( value, k ) ) { v = str( k, value ); if ( v ) { partial.push( quote( k ) + ( gap ? ": " : ":" ) + v ) } } } } v = partial.length === 0 ? "{}" : gap ? "{\n" + gap + partial.join( ",\n" + gap ) + "\n" + mind + "}" : "{" + partial.join( "," ) + "}"; gap = mind; return v }return v } if ( typeof JSON.stringify !== "function" ) { JSON.stringify = function ( value, replacer, space ) { var i; gap = ""; indent = ""; if ( typeof space === "number" ) { for ( i = 0; i < space; i += 1 ) { indent += " " } } else { if ( typeof space === "string" ) { indent = space } } rep = replacer; if ( replacer && typeof replacer !== "function" && ( typeof replacer !== "object" || typeof replacer.length !== "number" ) ) { throw new Error( "JSON.stringify" ) } return str( "", { "": value } ) } } if ( typeof JSON.parse !== "function" ) { JSON.parse = function ( text, reviver ) { var j; function walk ( holder, key ) { var k, v, value = holder[ key ]; if ( value && typeof value === "object" ) { for ( k in value ) { if ( Object.hasOwnProperty.call( value, k ) ) { v = walk( value, k ); if ( v !== undefined ) { value[ k ] = v } else { delete value[ k ] } } } } return reviver.call( holder, key, value ) } text = String( text ); cx.lastIndex = 0; if ( cx.test( text ) ) { text = text.replace( cx, function ( a ) { return "\\u" + ( "0000" + a.charCodeAt( 0 ).toString( 16 ) ).slice( -4 ) } ) } if ( /^[\],:{}\s]*$/.test( text.replace( /\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g, "@" ).replace( /"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, "]" ).replace( /(?:^|:|,)(?:\s*\[)+/g, "" ) ) ) { j = eval( "(" + text + ")" ); return typeof reviver === "function" ? walk( { "": j }, "" ) : j } throw new SyntaxError( "JSON.parse" ) } } } )();
 
 
-function intersects(item,dest)
+function intersects ( item, dest )
 {
 	//item coordinates
 	var IL = item.left;
@@ -774,13 +786,13 @@ function intersects(item,dest)
 
 
 	//dest coordinates
-	if(dest.typename === "Artboard")
+	if ( dest.typename === "Artboard" )
 	{
 		var rect = dest.artboardRect;
-		var DL = rect[0];
-		var DT = rect[1];
-		var DR = rect[2];
-		var DB = rect[3];
+		var DL = rect[ 0 ];
+		var DT = rect[ 1 ];
+		var DR = rect[ 2 ];
+		var DB = rect[ 3 ];
 	}
 	else
 	{
@@ -792,11 +804,11 @@ function intersects(item,dest)
 
 	//check for anything that could make overlap false
 	//if any of these conditions are true, an intersection is impossible
-	return !(IL > DR || IR < DL || IT < DB || IB > DT );
+	return !( IL > DR || IR < DL || IT < DB || IB > DT );
 
 }
 
-function isContainedWithin(item,dest)
+function isContainedWithin ( item, dest )
 {
 	//item coordinates
 	var IL = item.left;
@@ -805,13 +817,13 @@ function isContainedWithin(item,dest)
 	var IB = item.top - item.height;
 
 	//dest coordinates
-	if(dest.typename === "Artboard")
+	if ( dest.typename === "Artboard" )
 	{
 		var rect = dest.artboardRect;
-		var DL = rect[0];
-		var DT = rect[1];
-		var DR = rect[2];
-		var DB = rect[3];
+		var DL = rect[ 0 ];
+		var DT = rect[ 1 ];
+		var DR = rect[ 2 ];
+		var DB = rect[ 3 ];
 	}
 	else
 	{
@@ -821,10 +833,10 @@ function isContainedWithin(item,dest)
 		var DB = dest.top - dest.height;
 	}
 
-	return (IL >= DL && IR <= DR && IT <= DT && IB >= DB);
+	return ( IL >= DL && IR <= DR && IT <= DT && IB >= DB );
 }
 
-function isContainedWithinBuffer(item,dest,buffer)
+function isContainedWithinBuffer ( item, dest, buffer )
 {
 	//item coordinates
 	var IL = item.left;
@@ -833,13 +845,13 @@ function isContainedWithinBuffer(item,dest,buffer)
 	var IB = item.top - item.height;
 
 	//dest coordinates
-	if(dest.typename === "Artboard")
+	if ( dest.typename === "Artboard" )
 	{
 		var rect = dest.artboardRect;
-		var DL = rect[0];
-		var DT = rect[1];
-		var DR = rect[2];
-		var DB = rect[3];
+		var DL = rect[ 0 ];
+		var DT = rect[ 1 ];
+		var DR = rect[ 2 ];
+		var DB = rect[ 3 ];
 	}
 	else
 	{
@@ -849,23 +861,76 @@ function isContainedWithinBuffer(item,dest,buffer)
 		var DB = dest.top - dest.height;
 	}
 
-	if(!buffer)buffer = 0;
+	if ( !buffer ) buffer = 0;
 
-	return (IL >= DL - buffer && IR <= DR + buffer && IT <= DT + buffer && IB >= DB - buffer);
+	return ( IL >= DL - buffer && IR <= DR + buffer && IT <= DT + buffer && IB >= DB - buffer );
 }
 
-function findParentArtboard(item,artboards)
+function findParentArtboard ( item, artboards )
 {
 	var result;
-	for(var x=0,len = artboards.length;x<len;x++)
+	for ( var x = 0, len = artboards.length; x < len; x++ )
 	{
-		if(isContainedWithin(item,artboards[x]))
+		if ( isContainedWithin( item, artboards[ x ] ) )
 		{
 			result = x;
 		}
 	}
 	return result;
 }
+
+
+function zoomOutToRevealAllArtwork ()
+{
+	var doc = app.activeDocument;
+	var layers = doc.layers;
+	var bounds = [];
+
+	//get an array of the layers in the document
+	//and execute the dig() function on each one.
+	afc( doc, "layers" ).forEach( function ( layer ) { dig( layer ) } );
+
+	//separate the bounds into individual arrays
+	var leftBounds = bounds.map( function ( bound ) { return bound[ 0 ] } );
+	var topBounds = bounds.map( function ( bound ) { return bound[ 1 ] } );
+	var rightBounds = bounds.map( function ( bound ) { return bound[ 2 ] } );
+	var bottomBounds = bounds.map( function ( bound ) { return bound[ 3 ] } );
+
+
+	var allArtBounds = [
+		Math.min.apply( null, leftBounds ),
+		Math.max.apply( null, topBounds ),
+		Math.max.apply( null, rightBounds ),
+		Math.min.apply( null, bottomBounds )
+	];
+
+	var artboard = doc.artboards.add( allArtBounds );
+	app.executeMenuCommand( "fitall" );
+	artboard.remove();
+
+	//dig recursively through layers and add the bounds
+	//of each visible art item to the bounds array
+	function dig ( layer )
+	{
+		if ( !layer.visible ) return;
+		//copy all the bounds of the art items in this layer
+		afc( layer, "pageItems" ).forEach( function ( item )
+		{
+			if ( !item.hidden && !item.guides )
+			{
+				bounds.push( item.visibleBounds );
+			}
+		} );
+
+		//dig through any sublayers
+		afc( layer, "layers" ).forEach( function ( subLayer )
+		{
+			dig( subLayer );
+		} );
+	}
+}
+
+
 
 /*
 	Component Name: print_bounds
@@ -881,63 +946,63 @@ function findParentArtboard(item,artboards)
 
 */
 
-function printBounds()
+function printBounds ()
 {
 	var result = [];
-	if(!app.documents.length)
+	if ( !app.documents.length )
 	{
-		alert("OPEN A DOCUMENT!");
+		alert( "OPEN A DOCUMENT!" );
 		return;
 	}
 	var docRef = app.activeDocument;
 	var sel = docRef.selection;
 	var buffer = 3;
-	if(sel.length === 1)
+	if ( sel.length === 1 )
 	{
-		sel = docRef.selection[0];
-		result = [sel.left,sel.top,sel.left + sel.width,sel.top - sel.height];
+		sel = docRef.selection[ 0 ];
+		result = [ sel.left, sel.top, sel.left + sel.width, sel.top - sel.height ];
 	}
-	else if(sel.length > 1)
+	else if ( sel.length > 1 )
 	{
-		var l,t,r,b;
-		for(var x=0,len=sel.length;x<len;x++)
+		var l, t, r, b;
+		for ( var x = 0, len = sel.length; x < len; x++ )
 		{
-			if(x>0)
+			if ( x > 0 )
 			{
-				if (sel[x].left < l)
-					l = sel[x].left;
-				if(sel[x].top > t)
-					t = sel[x].top;
-				if(sel[x].left + sel[x].width > r)
-					r = sel[x].left + sel[x].width;
-				if(sel[x].top - sel[x].height < b)
-					b = sel[x].top - sel[x].height;
+				if ( sel[ x ].left < l )
+					l = sel[ x ].left;
+				if ( sel[ x ].top > t )
+					t = sel[ x ].top;
+				if ( sel[ x ].left + sel[ x ].width > r )
+					r = sel[ x ].left + sel[ x ].width;
+				if ( sel[ x ].top - sel[ x ].height < b )
+					b = sel[ x ].top - sel[ x ].height;
 			}
 			else
 			{
-				l = sel[x].left;
-				t = sel[x].top;
-				r = sel[x].left + sel[x].width;
-				b = sel[x].top - sel[x].height;
+				l = sel[ x ].left;
+				t = sel[ x ].top;
+				r = sel[ x ].left + sel[ x ].width;
+				b = sel[ x ].top - sel[ x ].height;
 			}
 
 		}
-		result = [l,t,r,b];
+		result = [ l, t, r, b ];
 	}
 	else
 	{
-		alert("MAKE A SELECTION!!");
+		alert( "MAKE A SELECTION!!" );
 	}
 
-	if(result)
+	if ( result )
 	{
-		result[0] -= buffer;
-		result[1] += buffer;
-		result[2] += buffer;
-		result[3] -= buffer;
+		result[ 0 ] -= buffer;
+		result[ 1 ] += buffer;
+		result[ 2 ] += buffer;
+		result[ 3 ] -= buffer;
 	}
 
-	$.writeln("[" + result + "];")
+	$.writeln( "[" + result + "];" )
 }
 
 // function getCode(layer)
@@ -948,87 +1013,81 @@ function printBounds()
 // 	return layName.match(pat)[1];
 // }
 
-function getRandom(min,max)
+function getRandom ( min, max )
 {
-	return Math.floor(Math.random() * (max - min + 1) + min);
+	return Math.floor( Math.random() * ( max - min + 1 ) + min );
 }
 
-function findChildByName(parent,name,type)
+function findChildByName ( parent, type, name )
 {
-	var item;
-	for(var x=0,len=parent.pageItems.length;x<len;x++)
-	{
-		item = parent.pageItems[x];
-		if(item.name.toLowerCase() === name.toLowerCase())
-		{
-			if(!type || (type && item.typename === type))
-			{
-				return item;
-			}
-		}
-	}
+	var result;
+	var nameRegex = new RegExp( name, "i" );
+	var children = afc( parent, type ).filter( function ( child ) { return child.toString().match( nameRegex ) } );
+
+	result = children[ 0 ] || null;
+	return result;
 }
 
 //display a dialog with a listbox populated
 //with an array of items. Return the selected
 //items as an array
-function chooseFromListbox(items,msg,size)
+function chooseFromListbox ( items, msg, size )
 {
-	if(!size)
+	if ( !size )
 	{
-		size = [50,50,200,200];
+		size = [ 50, 50, 200, 200 ];
 	}
 	var result = [];
-	var cfl = new Window("dialog","Choose the desired item(s)");
-		var topTxt = UI.static(cfl,msg);
-		var topTxt2 = UI.static(cfl,"Use Control/Command to select multiple items.");
-		var lbGroup = UI.group(cfl);
-			var lb = UI.listbox(lbGroup,size,items,{multiselect:true});
+	var cfl = new Window( "dialog", "Choose the desired item(s)" );
+	var topTxt = UI.static( cfl, msg );
+	var topTxt2 = UI.static( cfl, "Use Control/Command to select multiple items." );
+	var lbGroup = UI.group( cfl );
+	var lb = UI.listbox( lbGroup, size, items, { multiselect: true } );
 
-		var btnGroup = UI.group(cfl);
-			var cancel = UI.button(btnGroup,"Cancel",function()
-			{
-				result = undefined;
-				cfl.close();
-			})
-			var allBtn = UI.button(btnGroup,"Choose All",function()
-			{
-				for(var x=0,len=lb.items.length;x<len;x++)
-				{
-					result.push(lb.items[x].text)
-				}
-				cfl.close();
-			})
-			var submit = UI.button(btnGroup,"Submit",function()
-			{
-				if(lb.selection && lb.selection.length)
-				{
-					result = lb.selection.map(function(a){return a.text});
-				}
-				else
-				{
-					alert("Please make a selection.");
-					return;
-				}
-				cfl.close();
-			})
+	var btnGroup = UI.group( cfl );
+	var cancel = UI.button( btnGroup, "Cancel", function ()
+	{
+		result = undefined;
+		cfl.close();
+	} )
+	var allBtn = UI.button( btnGroup, "Choose All", function ()
+	{
+		for ( var x = 0, len = lb.items.length; x < len; x++ )
+		{
+			result.push( lb.items[ x ].text )
+		}
+		cfl.close();
+	} )
+	var submit = UI.button( btnGroup, "Submit", function ()
+	{
+		if ( lb.selection && lb.selection.length )
+		{
+			result = lb.selection.map( function ( a ) { return a.text } );
+		}
+		else
+		{
+			alert( "Please make a selection." );
+			return;
+		}
+		cfl.close();
+	} )
 
 	cfl.show();
 	return result;
 }
 
 
-function graphicStyleFromItem(item,name)
+function graphicStyleFromItem ( item, name )
 {
 	app.activeDocument.selection = null;
 	item.selected = true;
-	createAction("graphic_style_from_selection",GRAPHIC_STYLE_FROM_SELECTION_ACTION_STRING);
+	createAction( "graphic_style_from_selection", GRAPHIC_STYLE_FROM_SELECTION_ACTION_STRING );
 
-	app.doScript("graphic_style_from_selection","graphic_style_from_selection");
-	app.activeDocument.graphicStyles[app.activeDocument.graphicStyles.length-1].name = name;
+	app.doScript( "graphic_style_from_selection", "graphic_style_from_selection" );
+	app.activeDocument.graphicStyles[ app.activeDocument.graphicStyles.length - 1 ].name = name;
 	app.redraw();
 
-	removeAction("graphic_style_from_selection");
+	removeAction( "graphic_style_from_selection" );
 }
 
 /*
@@ -1050,15 +1109,15 @@ function graphicStyleFromItem(item,name)
 		success boolean
 
 */
-function resetGraphicStylesToParamBlocks(paramLayer)
+function resetGraphicStylesToParamBlocks ( paramLayer )
 {
 	var doc = app.activeDocument;
 
 	//check to make sure there's a valid param layer before
 	//removing the existing graphic styles
-	if(!paramLayer || paramLayer.pageItems.length === 0)
+	if ( !paramLayer || paramLayer.pageItems.length === 0 )
 	{
-		log.e("paramLayer was undefined.");
+		log.e( "paramLayer was undefined." );
 		return false;
 	}
 
@@ -1074,143 +1133,159 @@ function resetGraphicStylesToParamBlocks(paramLayer)
 	// }
 
 	//load the "create graphic style" action
-	createAction("graphic_style_from_selection",GRAPHIC_STYLE_FROM_SELECTION_ACTION_STRING);
+	createAction( "graphic_style_from_selection", GRAPHIC_STYLE_FROM_SELECTION_ACTION_STRING );
 
 
 	//loop the paramLayer pageItems 
-	var curBlock,curName,gs;
-	for(var x = paramLayer.pageItems.length - 1; x>=0; x--)
+	var curBlock, curName, gs;
+	for ( var x = paramLayer.pageItems.length - 1; x >= 0; x-- )
 	{
 		doc.selection = null;
-		curBlock = paramLayer.pageItems[x];
-		curName = curBlock.name.replace("paramcolor-","");
+		curBlock = paramLayer.pageItems[ x ];
+		curName = curBlock.name.replace( "paramcolor-", "" );
 
-		if(curBlock.name.indexOf("param") === -1)
+		if ( curBlock.name.indexOf( "param" ) === -1 )
 		{
 			curBlock.remove();
 			continue;
 		}
 
-		
-		gs = findSpecificGraphicStyle(doc,curName);
-		if(gs)
+
+		gs = findSpecificGraphicStyle( doc, curName );
+		if ( gs )
 		{
 			gs.remove();
 		}
-		
+
 		curBlock.selected = true;
 
 
 
-		app.doScript("graphic_style_from_selection","graphic_style_from_selection");
-		doc.graphicStyles[doc.graphicStyles.length-1].name = curName;
+		app.doScript( "graphic_style_from_selection", "graphic_style_from_selection" );
+		doc.graphicStyles[ doc.graphicStyles.length - 1 ].name = curName;
 		app.redraw();
 	}
 
-	removeAction("graphic_style_from_selection");
+	removeAction( "graphic_style_from_selection" );
 	return true;
 }
 
-function findCharacterStyle(name)
+function findCharacterStyle ( name )
 {
-	return afc(app.activeDocument,"characterStyles").filter(function(cs)
+	return afc( app.activeDocument, "characterStyles" ).filter( function ( cs )
 	{
 		return cs.name === name
-	})[0] || undefined;
+	} )[ 0 ] || undefined;
 }
 
-function createCharacterStyle(name,attr,overwrite)
+function createCharacterStyle ( name, attr, overwrite )
 {
-	var exCharStyle = findCharacterStyle(name);
+	var exCharStyle = findCharacterStyle( name );
 
-	if(exCharStyle && !overwrite)
+	if ( exCharStyle && !overwrite )
 	{
 		return exCharStyle;
 	}
 
-	var newCharStyle = exCharStyle || app.activeDocument.characterStyles.add(name);
+	var newCharStyle = exCharStyle || app.activeDocument.characterStyles.add( name );
 
-	for(var prop in attr)
+	for ( var prop in attr )
 	{
-		newCharStyle[prop] = attr[prop];
+		newCharStyle[ prop ] = attr[ prop ];
 	}
 
 	return newCharStyle;
 }
 
 
-function findSpecificGraphicStyle(doc,name)
+function findSpecificGraphicStyle ( doc, name )
 {
 	var result;
-	for(var x=0;x<doc.graphicStyles.length && !result;x++)
+	for ( var x = 0; x < doc.graphicStyles.length && !result; x++ )
 	{
-		if(doc.graphicStyles[x].name === name)
+		if ( doc.graphicStyles[ x ].name === name )
 		{
-			result = doc.graphicStyles[x]
+			result = doc.graphicStyles[ x ]
 		}
 	}
 	return result;
 }
 
-function findLayersByName(parent,name,crit)
+function findSpecificSwatch ( doc, name )
+{
+	var result;
+	for ( var x = 0; x < doc.swatches.length && !result; x++ )
+	{
+		if ( doc.swatches[ x ].toString === "[Swatch " + name + "]" )
+		{
+			result = doc.swatches[ x ];
+		}
+	}
+	return result;
+}
+
+function findLayersByName ( parent, name, crit )
 {
 	var result = [];
 
 	crit = crit || "any";
 
 	var regex;
-	if(crit === "any")
+	if ( crit === "any" )
 	{
-		regex = new RegExp(name, "i");
+		regex = new RegExp( name, "i" );
 	}
-	else if(crit === "imatch")
+	else if ( crit === "imatch" )
 	{
-		regex = new RegExp("^"+name+"$", "i");
+		regex = new RegExp( "^" + name + "$", "i" );
 	}
-	else if(crit === "match")
+	else if ( crit === "match" )
 	{
-		regex = new RegExp("^"+name+"$");
+		regex = new RegExp( "^" + name + "$" );
 	}
-	
-	afc(parent,"layers").forEach(function(lay)
+
+	afc( parent, "layers" ).forEach( function ( lay )
 	{
-		if(regex.test(lay.name))
+		if ( regex.test( lay.name ) )
 		{
-			result.push(lay);
+			result.push( lay );
 		}
-	});
+	} );
 
 	return result;
 }
 
-function findSpecificLayer(parent,layerName,crit)
+function findSpecificLayer ( parent, layerName, crit )
 {
-	var result,layers;
-	var matchPat = new RegExp("^" + layerName + "$");
-	var iMatchPat = new RegExp("^" + layerName + "$","i");
-	var anyMatchPat = new RegExp(layerName,"i");
+	var result, layers;
+	var matchPat = new RegExp( "^" + layerName + "$" );
+	var iMatchPat = new RegExp( "^" + layerName + "$", "i" );
+	var anyMatchPat = new RegExp( layerName, "i" );
 
 	crit = crit || "any";
-	
-	if(!parent.typename.match(/layer|docum/i))
+
+	if ( !parent.typename.match( /layer|docum/i ) )
 	{
-		$.writeln("findSpecificLayer: invalid parent type: " + parent.typename + ".");
+		$.writeln( "findSpecificLayer: invalid parent type: " + parent.typename + "." );
 		return
 	}
 
-	if (parent.typename.match(/^Layers$/i)) {
+	if ( parent.typename.match( /^Layers$/i ) )
+	{
 		parent = parent.parent;
 	}
 
-	layers = afc(parent,"layers");
+	layers = afc( parent, "layers" );
 
-	var testPat = crit.match(/^any$/i) ? anyMatchPat : (crit.match(/^match$/i) ? matchPat : iMatchPat);
-	result = layers.filter(function (layer) {
-		return layer.name.match(testPat);
-	})
+	var testPat = crit.match( /^any$/i ) ? anyMatchPat : ( crit.match( /^match$/i ) ? matchPat : iMatchPat );
+	result = layers.filter( function ( layer )
+	{
+		return layer.name.match( testPat );
+	} )
 
-	if (result && result.length > 0) {
-		result = result[0];
+	if ( result && result.length > 0 )
+	{
+		result = result[ 0 ];
 	}
 	else
 	{
@@ -1224,63 +1299,63 @@ function findSpecificLayer(parent,layerName,crit)
 //parent = container object
 //itemName = string
 //[crit] = string representing criteria for a match
-	//"match" means the entire name must match exactly
-	//"imatch" means name must match, but case doesn't matter
-	//"any" means itemName must exist somewhere
+//"match" means the entire name must match exactly
+//"imatch" means name must match, but case doesn't matter
+//"any" means itemName must exist somewhere
 //return a single object or undefined
-function findSpecificPageItem(parent,itemName,crit)
+function findSpecificPageItem ( parent, itemName, crit )
 {
-	if(!parent)
+	if ( !parent )
 	{
-		log.e("undefined parent");
+		log.e( "undefined parent" );
 	}
-	else if(!parent.pageItems)
+	else if ( !parent.pageItems )
 	{
-		log.e("parent has no pageItems");
+		log.e( "parent has no pageItems" );
 	}
-	var result = [],curItem;
-	if(parent.pageItems.length)
+	var result = [], curItem;
+	if ( parent.pageItems.length )
 	{
-		for(var x=0,len=parent.pageItems.length;x<len;x++)
+		for ( var x = 0, len = parent.pageItems.length; x < len; x++ )
 		{
-			curItem = parent.pageItems[x];
-			if(crit)
+			curItem = parent.pageItems[ x ];
+			if ( crit )
 			{
-				if(crit === "match" && curItem.name === itemName)
+				if ( crit === "match" && curItem.name === itemName )
 				{
-					result.push(curItem);
+					result.push( curItem );
 				}
-				else if(crit === "imatch" && curItem.name.toLowerCase() === itemName.toLowerCase())
+				else if ( crit === "imatch" && curItem.name.toLowerCase() === itemName.toLowerCase() )
 				{
-					result.push(curItem);
+					result.push( curItem );
 				}
-				else if(crit === "any" && curItem.name.toLowerCase().indexOf(itemName.toLowerCase())>-1)
+				else if ( crit === "any" && curItem.name.toLowerCase().indexOf( itemName.toLowerCase() ) > -1 )
 				{
-					result.push(curItem);
+					result.push( curItem );
 				}
 			}
-			else if(curItem.name.indexOf(itemName)>-1)
+			else if ( curItem.name.indexOf( itemName ) > -1 )
 			{
-				result.push(curItem);
+				result.push( curItem );
 
 			}
 		}
 	}
 
-	if(result.length)
+	if ( result.length )
 	{
 		// if(result.length > 1)
 		// {
 		// 	var msg = parent + " has multiple items matching the name " + itemName;
 		// 	result = chooseFromListbox(result,msg);
 		// }
-		result = result[0];
+		result = result[ 0 ];
 	}
 	else
 	{
 		result = undefined;
 	}
-	
+
 	return result;
 }
 
@@ -1289,41 +1364,41 @@ function findSpecificPageItem(parent,itemName,crit)
 //parent = container object
 //itemName = string
 //[crit] = string representing criteria for a match
-	//"match" means the entire name must match exactly
-	//"imatch" means name must match, but case doesn't matter
-	//"any" means itemName must exist somewhere
+//"match" means the entire name must match exactly
+//"imatch" means name must match, but case doesn't matter
+//"any" means itemName must exist somewhere
 //return an array of objects that matched the criteria
-function findAllPageItems(parent,itemName,crit)
+function findAllPageItems ( parent, itemName, crit )
 {
-	var result = [],curItem;
-	if(parent.pageItems.length)
+	var result = [], curItem;
+	if ( parent.pageItems.length )
 	{
-		for(var x=0,len=parent.pageItems.length;x<len;x++)
+		for ( var x = 0, len = parent.pageItems.length; x < len; x++ )
 		{
-			curItem = parent.pageItems[x];
-			if(crit)
+			curItem = parent.pageItems[ x ];
+			if ( crit )
 			{
-				if(crit === "match" && curItem.name === itemName)
+				if ( crit === "match" && curItem.name === itemName )
 				{
-					result.push(curItem);
+					result.push( curItem );
 				}
-				else if(crit === "imatch" && curItem.name.toLowerCase() === itemName.toLowerCase())
+				else if ( crit === "imatch" && curItem.name.toLowerCase() === itemName.toLowerCase() )
 				{
-					result.push(curItem);
+					result.push( curItem );
 				}
-				else if(crit === "any" && curItem.name.toLowerCase().indexOf(itemName.toLowerCase())>-1)
+				else if ( crit === "any" && curItem.name.toLowerCase().indexOf( itemName.toLowerCase() ) > -1 )
 				{
-					result.push(curItem);
+					result.push( curItem );
 				}
 			}
-			else if(curItem.name.indexOf(itemName)>-1)
+			else if ( curItem.name.indexOf( itemName ) > -1 )
 			{
-				result.push(curItem);
+				result.push( curItem );
 
 			}
 		}
 	}
-	
+
 	return result;
 }
 
@@ -1331,36 +1406,36 @@ function findAllPageItems(parent,itemName,crit)
 
 //dig through the parent object recursively to find
 //something of a specified type and name
-function findSpecificItem(parent,itemType,name)
+function findSpecificItem ( parent, itemType, name )
 {
-	
+
 	var resultItem;
-	for(var i=0,len=parent.pageItems.length;i<len && !resultItem;i++)
+	for ( var i = 0, len = parent.pageItems.length; i < len && !resultItem; i++ )
 	{
-		dig(parent.pageItems[i])
+		dig( parent.pageItems[ i ] )
 	}
 
 	return resultItem;
 
-	function dig(item)
+	function dig ( item )
 	{
-		if(item.name === name)
+		if ( item.name === name )
 		{
 			resultItem = item;
 			return;
 		}
-		if(item.typename === "GroupItem")
+		if ( item.typename === "GroupItem" )
 		{
-			for(var t=0,len=item.pageItems.length;t<len && !resultItem;t++)
+			for ( var t = 0, len = item.pageItems.length; t < len && !resultItem; t++ )
 			{
-				if (item.pageItems[t].name === name)
+				if ( item.pageItems[ t ].name === name )
 				{
 
-					resultItem = item.pageItems[t];
+					resultItem = item.pageItems[ t ];
 				}
 				else
 				{
-					dig(item.pageItems[t]);
+					dig( item.pageItems[ t ] );
 				}
 			}
 		}
@@ -1381,31 +1456,36 @@ function findSpecificItem(parent,itemType,name)
 //                  "rasterItems", "symbolItems", "pluginItems", "artboards", "selection"
 //					"characterStyles", "paragraphStyles", "brushes"
 
-function afc(container, crit) {
+function afc ( container, crit )
+{
 	var result = [];
 	var ctn = container.typename;
-	if (!ctn.match(/app|adobe|document|layer|group|compound|text/i)) {
-		$.writeln("ERROR: afc(" + container.name + "," + crit + ");");
-		$.writeln("Can't make array from this container. Invalid container type: " + container.typename);
+	if ( !ctn.match( /app|adobe|document|layer|group|compound|text/i ) )
+	{
+		$.writeln( "ERROR: afc(" + container.name + "," + crit + ");" );
+		$.writeln( "Can't make array from this container. Invalid container type: " + container.typename );
 		return [];
 	}
-	var defaultCrit = ctn.match(/swatchgroup/i) ? "swatches" : ctn.match(/compound/) ? "pathItems" : "pageItems";
+	var defaultCrit = ctn.match( /swatchgroup/i ) ? "swatches" : ctn.match( /compound/ ) ? "pathItems" : "pageItems";
 	crit = crit || defaultCrit;
-	if (!crit.match(/layers|swatches|items|frames|artboards|selection|documents|contents|styles|fonts|brushes/i)) {
-		$.writeln("ERROR: afc(" + container.name + "," + crit + ");");
-		$.writeln("Can't make array from this container. Invalid child item type: " + crit);
+	if ( !crit.match( /layers|swatches|items|frames|artboards|selection|documents|contents|styles|fonts|brushes/i ) )
+	{
+		$.writeln( "ERROR: afc(" + container.name + "," + crit + ");" );
+		$.writeln( "Can't make array from this container. Invalid child item type: " + crit );
 		return [];
 	}
 
-	var items = container[crit];
-	for (var x = 0; x < items.length; x++) {
-		result.push(items[x])
+	var items = container[ crit ];
+	for ( var x = 0; x < items.length; x++ )
+	{
+		result.push( items[ x ] )
 	}
 	return result;
 }
 //alternate more verbose function name for easier code reading maybe?
-function arrayFromContainer(container, crit) {
-	return afc(container, crit);
+function arrayFromContainer ( container, crit )
+{
+	return afc( container, crit );
 }
 
 
@@ -1414,52 +1494,52 @@ function arrayFromContainer(container, crit) {
 
 //loop all the parent layers in the document
 //and hide any prepress layers
-function hidePPLay()
+function hidePPLay ()
 {
 	var doc = app.activeDocument;
 	var layers = doc.layers;
 	var ppLay;
-	for(var p=0,len=layers.length;p<len;p++)
+	for ( var p = 0, len = layers.length; p < len; p++ )
 	{
-		ppLay = getPPLay(layers[p]);
-		if(ppLay)
+		ppLay = getPPLay( layers[ p ] );
+		if ( ppLay )
 		{
-			for(var s=0,sLen=ppLay.layers.length;s<sLen;s++)
+			for ( var s = 0, sLen = ppLay.layers.length; s < sLen; s++ )
 			{
-				ppLay.layers[s].visible = true;
-				ppLay.layers[s].locked = false;
+				ppLay.layers[ s ].visible = true;
+				ppLay.layers[ s ].locked = false;
 			}
 			ppLay.visible = false;
 		}
 	}
 }
 
-function getPPLay(parent)
+function getPPLay ( parent )
 {
 	var result, len, lay, subLay, subLayLen;
 	var pat = /^[a-z]*[-_].*/i;
 
-	if(parent.typename === "String")
+	if ( parent.typename === "String" )
 	{
-		parent = app.activeDocument.layers[parent];
+		parent = app.activeDocument.layers[ parent ];
 	}
 
-	if(parent.typename === "Layers")
+	if ( parent.typename === "Layers" )
 	{
 		//parent = activeDocument.layers
 		//search the entire document for a garment layer
 		//then try to find a prepress layer within that garment layer
 		len = parent.length;
-		for(var x=0;x<len && !result;x++)
+		for ( var x = 0; x < len && !result; x++ )
 		{
-			lay = parent[x];
-			if(pat.test(lay.name))
+			lay = parent[ x ];
+			if ( pat.test( lay.name ) )
 			{
 				subLayLen = lay.layers.length;
-				for(var y=0;y<subLayLen && !result;y++)
+				for ( var y = 0; y < subLayLen && !result; y++ )
 				{
-					subLay = lay.layers[y];
-					if(subLay.name === "Prepress" && subLay.layers.length > 0 && subLay.layers[0].pageItems.length > 0)
+					subLay = lay.layers[ y ];
+					if ( subLay.name === "Prepress" && subLay.layers.length > 0 && subLay.layers[ 0 ].pageItems.length > 0 )
 					{
 						result = subLay;
 					}
@@ -1467,20 +1547,20 @@ function getPPLay(parent)
 			}
 		}
 	}
-	else if(parent.typename === "Layer")
+	else if ( parent.typename === "Layer" )
 	{
 		//parent = specific document layer
 		//search a specific layer for a prepress layer
 		//this condition requires a specific garment
 		//layer to be passed as an argument
-		
-		if(pat.test(parent.name))
+
+		if ( pat.test( parent.name ) )
 		{
 			len = parent.layers.length;
-			for(var x=0;x<len && !result;x++)
+			for ( var x = 0; x < len && !result; x++ )
 			{
-				subLay = parent.layers[x];
-				if(subLay.name === "Prepress" && subLay.layers.length)
+				subLay = parent.layers[ x ];
+				if ( subLay.name === "Prepress" && subLay.layers.length )
 				{
 					result = subLay;
 				}
@@ -1494,9 +1574,9 @@ function getPPLay(parent)
 
 //for every layer in the active document
 //look for a prepress layer, 
-function touchEveryPrepressItem(func)
+function touchEveryPrepressItem ( func )
 {
-	if(!app.documents.length)return false;
+	if ( !app.documents.length ) return false;
 
 	var doc = app.activeDocument;
 	var layers = doc.layers;
@@ -1506,19 +1586,19 @@ function touchEveryPrepressItem(func)
 	var curLay;
 	var curPpLay;
 	var curPpItem
-	for(var x=0;x<layers.length;x++)
+	for ( var x = 0; x < layers.length; x++ )
 	{
-		curLay = layers[x];
-		ppLay = findSpecificLayer(curLay,"Prepress","imatch");
-		if(!ppLay)continue;
+		curLay = layers[ x ];
+		ppLay = findSpecificLayer( curLay, "Prepress", "imatch" );
+		if ( !ppLay ) continue;
 
-		for(var y=0;y<ppLay.layers.length;y++)
+		for ( var y = 0; y < ppLay.layers.length; y++ )
 		{
-			curPpLay = ppLay.layers[y];
-			for(var z=0;z<curPpLay.pageItems.length;z++)
+			curPpLay = ppLay.layers[ y ];
+			for ( var z = 0; z < curPpLay.pageItems.length; z++ )
 			{
-				curPpItem = curPpLay.pageItems[z];
-				func(curPpItem);
+				curPpItem = curPpLay.pageItems[ z ];
+				func( curPpItem );
 			}
 		}
 	}
@@ -1531,30 +1611,30 @@ function touchEveryPrepressItem(func)
 
 
 
-function coord(ppLay)
+function coord ( ppLay )
 {
 	var coords = {};
-	var curSize,thisPiece,pieceName;
+	var curSize, thisPiece, pieceName;
 	var ppLen = ppLay.layers.length;
 	var subLen;
 	var curBounds;
 
-	if(ppLen > 0 && ppLay.layers[0].pageItems.length > 0)
+	if ( ppLen > 0 && ppLay.layers[ 0 ].pageItems.length > 0 )
 	{
-		for(var a=0;a<ppLay.layers.length;a++)
+		for ( var a = 0; a < ppLay.layers.length; a++ )
 		{
-			curSize = ppLay.layers[a].name;
-			coords[curSize] = {};
-			subLen = ppLay.layers[a].groupItems.length;
-			for(var b=0;b<subLen;b++)
+			curSize = ppLay.layers[ a ].name;
+			coords[ curSize ] = {};
+			subLen = ppLay.layers[ a ].groupItems.length;
+			for ( var b = 0; b < subLen; b++ )
 			{
-				thisPiece = ppLay.layers[a].groupItems[b];
-				curBounds = getVisibleBounds(thisPiece);
+				thisPiece = ppLay.layers[ a ].groupItems[ b ];
+				curBounds = getVisibleBounds( thisPiece );
 				pieceName = thisPiece.name;
-				coords[curSize][pieceName] = [];
-				coords[curSize][pieceName][0] = (Math.floor(curBounds[0] *1000)/1000);
-				coords[curSize][pieceName][1] = (Math.floor(curBounds[1] *1000)/1000);
-			} 	
+				coords[ curSize ][ pieceName ] = [];
+				coords[ curSize ][ pieceName ][ 0 ] = ( Math.floor( curBounds[ 0 ] * 1000 ) / 1000 );
+				coords[ curSize ][ pieceName ][ 1 ] = ( Math.floor( curBounds[ 1 ] * 1000 ) / 1000 );
+			}
 		}
 		return coords;
 	}
@@ -1564,31 +1644,31 @@ function coord(ppLay)
 	}
 }
 
-function getCode(layName)
+function getCode ( layName )
 {
 	var pat = /(.*)([-_][a-z\d]{3,}([-_][a-z])?)/i;
 	// var underscorePat = /([fpb][dsm])[_]/i;
 	var underscorePat = /([a-z]*)[_]/i;
-	var result = layName.match(pat)[1];
-	while(result.match(underscorePat))
+	var result = layName.match( pat )[ 1 ];
+	while ( result.match( underscorePat ) )
 	{
-		result = result.replace(underscorePat,result.match(underscorePat)[1] + "-");
+		result = result.replace( underscorePat, result.match( underscorePat )[ 1 ] + "-" );
 	}
 	return result;
 }
 
-function getStyleNum(layName)
+function getStyleNum ( layName )
 {
 	var pat = /(.*)[-_]([a-z\d]{3,}([-_][a-z])?)/i;
-	return layName.match(pat)[2];
+	return layName.match( pat )[ 2 ];
 }
 
 
 //sendErrors Function Description
 //Display any errors to the user in a preformatted list
-function sendErrors(errorList)
+function sendErrors ( errorList )
 {
-	alert("The Following Errors Occurred:\n" + errorList.join("\n"));
+	alert( "The Following Errors Occurred:\n" + errorList.join( "\n" ) );
 }
 
 
@@ -1597,9 +1677,9 @@ function sendErrors(errorList)
 //these will be instances where the user should be warned or alerted
 //in some way, but they are not necessarily errors
 //this could also be used for apologies. =)
-function sendScriptMessages(messageList)
+function sendScriptMessages ( messageList )
 {
-	alert("The script sent the following messages:\n" + messageList.join("\n"));
+	alert( "The script sent the following messages:\n" + messageList.join( "\n" ) );
 }
 
 
@@ -1629,57 +1709,57 @@ function sendScriptMessages(messageList)
 		an array of file objects that contain the extension ".js"
 
 */
-function includeComponents(dev,prod,ignorePrompt)
+function includeComponents ( dev, prod, ignorePrompt )
 {
 	var result;
-	var compFolder,comps,thisComp;
+	var compFolder, comps, thisComp;
 
-	if(user.toLowerCase() === "will.dowling")
+	if ( user.toLowerCase() === "will.dowling" )
 	{
-		if(ignorePrompt)
+		if ( ignorePrompt )
 		{
-			compFolder = new Folder(dev);	
+			compFolder = new Folder( dev );
 		}
 		else
 		{
-			var w = new Window("dialog", "Which components?");
-				var btnGroup = w.add("group");
-					btnGroup.orientation = "column";
-					var devBtn = btnGroup.add("button",undefined,"Development");
-						devBtn.onClick = function()
-						{
-							compFolder = new Folder(dev);
-							w.close();
-						}
-					var prodBtn = btnGroup.add("button", undefined, "Production");
-						prodBtn.onClick = function()
-						{
-							compFolder = new Folder(prod);
-							w.close();
-						}
-					var cancel = btnGroup.add("button", undefined, "Cancel");
-						cancel.onClick = function()
-						{
-							w.close();
-						}
+			var w = new Window( "dialog", "Which components?" );
+			var btnGroup = w.add( "group" );
+			btnGroup.orientation = "column";
+			var devBtn = btnGroup.add( "button", undefined, "Development" );
+			devBtn.onClick = function ()
+			{
+				compFolder = new Folder( dev );
+				w.close();
+			}
+			var prodBtn = btnGroup.add( "button", undefined, "Production" );
+			prodBtn.onClick = function ()
+			{
+				compFolder = new Folder( prod );
+				w.close();
+			}
+			var cancel = btnGroup.add( "button", undefined, "Cancel" );
+			cancel.onClick = function ()
+			{
+				w.close();
+			}
 			w.show();
 		}
 	}
 	else
 	{
-		compFolder = new Folder(prod);
+		compFolder = new Folder( prod );
 	}
 
-	if(compFolder)
+	if ( compFolder )
 	{
 		result = [];
 		comps = compFolder.getFiles();
 		var len = comps.length;
-		for(var c=0;c<len;c++)
+		for ( var c = 0; c < len; c++ )
 		{
-			if(comps[c].name.indexOf("js")>-1)
+			if ( comps[ c ].name.indexOf( "js" ) > -1 )
 			{
-				result.push(comps[c]);
+				result.push( comps[ c ] );
 			}
 		}
 	}
@@ -1689,33 +1769,33 @@ function includeComponents(dev,prod,ignorePrompt)
 
 
 
-function getComponents(path)
+function getComponents ( path )
 {
 	var result = [];
-	var compFolder,comps,thisComp;
+	var compFolder, comps, thisComp;
 
-	compFolder = new Folder(path);
+	compFolder = new Folder( path );
 
-	if(compFolder && compFolder.exists)
+	if ( compFolder && compFolder.exists )
 	{
 		comps = compFolder.getFiles();
 		var len = comps.length;
-		for(var c=0;c<len;c++)
+		for ( var c = 0; c < len; c++ )
 		{
-			if(comps[c].name.indexOf("js")>-1)
+			if ( comps[ c ].name.indexOf( "js" ) > -1 )
 			{
-				result.push(comps[c]);
+				result.push( comps[ c ] );
 			}
 		}
 	}
 	else
 	{
-		errorList.push("No components folder at: " + path);
+		errorList.push( "No components folder at: " + path );
 	}
 
-	if(!result.length)
+	if ( !result.length )
 	{
-		errorList.push("No components found at: " + path);
+		errorList.push( "No components found at: " + path );
 	}
 	return result;
 }
@@ -1724,19 +1804,19 @@ function getComponents(path)
 //generic function to check for proper .ai[t] extension
 //to be used with Folder.getFiles(isAiFile) method and
 //Folder.openDlg("Title",isAiFile) method.
-function isAiFile(file)
+function isAiFile ( file )
 {
 	var aiPat = /.ai[t]?$/i;
-	return aiPat.test(file.name);
+	return aiPat.test( file.name );
 }
 
 //generic function to check for proper .ai[t] extension
 //to be used with Folder.getFiles(isAiFile) method and
 //Folder.openDlg("Title",isAiFile) method.
-function isAiFileOrFolder(file)
+function isAiFileOrFolder ( file )
 {
 	var aiPat = /.ai[t]?$/i;
-	return (file instanceof Folder || aiPat.test(file.name));
+	return ( file instanceof Folder || aiPat.test( file.name ) );
 }
 
 
@@ -1752,44 +1832,44 @@ function isAiFileOrFolder(file)
 		success boolean
 
 */
-function unlockDoc(doc)
+function unlockDoc ( doc )
 {
 	doc.activate();
-	log.h("unlockDoc(" + doc.name + ")");
+	log.h( "unlockDoc(" + doc.name + ")" );
 	var result = true;
 
 	var layers = doc.layers;
 	var layLen = layers.length;
-	for(var ll=0;ll<layLen;ll++)
+	for ( var ll = 0; ll < layLen; ll++ )
 	{
 		try
 		{
-			layers[ll].locked = false;
-			layers[ll].visible = true;
-			log.l("layer " + layers[ll].name + " successfully revealed.");
+			layers[ ll ].locked = false;
+			layers[ ll ].visible = true;
+			log.l( "layer " + layers[ ll ].name + " successfully revealed." );
 		}
-		catch(e)
+		catch ( e )
 		{
-			errorList.push("Failed to unlock or un-hide the layer: \"" + 
-				layers[ll].name + "\", which was layer # " + (ll + 1) + " of " + doc.name);
-			
-			log.e("Failed to unlock or un-hide the layer: \"" + 
-				layers[ll].name + "\", which was layer # " + (ll + 1) + " of " + doc.name + 
-				"::System error message was: " + e);
-			
+			errorList.push( "Failed to unlock or un-hide the layer: \"" +
+				layers[ ll ].name + "\", which was layer # " + ( ll + 1 ) + " of " + doc.name );
+
+			log.e( "Failed to unlock or un-hide the layer: \"" +
+				layers[ ll ].name + "\", which was layer # " + ( ll + 1 ) + " of " + doc.name +
+				"::System error message was: " + e );
+
 			result = false;
 		}
 	}
 	try
 	{
-		app.executeMenuCommand("unlockAll");
-		app.executeMenuCommand("showAll");
-		log.l("Successfully executed 'unlockAll' and 'showAll' menu commands.");
+		app.executeMenuCommand( "unlockAll" );
+		app.executeMenuCommand( "showAll" );
+		log.l( "Successfully executed 'unlockAll' and 'showAll' menu commands." );
 	}
-	catch(e)
+	catch ( e )
 	{
-		errorList.push("Failed while executing menu commands to unlock and unhide all sublayers and objects.");
-		log.e("Failed while executing menu commands to unlock and unhide all sublayers and objects.::System error message was: " + e);
+		errorList.push( "Failed while executing menu commands to unlock and unhide all sublayers and objects." );
+		log.e( "Failed while executing menu commands to unlock and unhide all sublayers and objects.::System error message was: " + e );
 		result = false;
 	}
 	doc.selection = null;
@@ -1814,9 +1894,9 @@ function unlockDoc(doc)
 
 */
 
-function properTemplateSetup(doc)
+function properTemplateSetup ( doc )
 {
-	log.h("properTemplateSetup(" + doc.name + ")");
+	log.h( "properTemplateSetup(" + doc.name + ")" );
 	var result = true;
 
 	doc.activate();
@@ -1825,57 +1905,57 @@ function properTemplateSetup(doc)
 	var layLen = layers.length;
 	// var garPat = /^[a-z]{2}[-_]/i;
 	var garPat = /^[a-z]*[-_]/i;
-	var thisLay,thisSubLay,layInfo;
-	var templateLayers = 
+	var thisLay, thisSubLay, layInfo;
+	var templateLayers =
 	{
 		"Artwork Layer":
 		{
-			"locked":false,
-			"visible":true
+			"locked": false,
+			"visible": true
 		},
 		"Mockup":
 		{
-			"locked":false,
-			"visible":true
+			"locked": false,
+			"visible": true
 		},
 		"Prepress":
 		{
-			"locked":false,
-			"visible":false
+			"locked": false,
+			"visible": false
 		},
 		"Information":
 		{
-			"locked":true,
-			"visible":true
+			"locked": true,
+			"visible": true
 		},
 		"USA Collars":
 		{
-			"locked":true,
-			"visible":false
+			"locked": true,
+			"visible": false
 		}
 
 	}
 
-	for(var x=layLen-1;x>=0;x--)
+	for ( var x = layLen - 1; x >= 0; x-- )
 	{
-		thisLay = layers[x];
-		if(garPat.test(thisLay.name))
+		thisLay = layers[ x ];
+		if ( garPat.test( thisLay.name ) )
 		{
-			log.l("Looping sub layers for layer: " + thisLay.name);
-			for(var lay in templateLayers)
+			log.l( "Looping sub layers for layer: " + thisLay.name );
+			for ( var lay in templateLayers )
 			{
 				try
 				{
-					log.l("Attempting to process the layer: " + lay);
-					thisSubLay = thisLay.layers[lay];
-					layInfo = templateLayers[lay];
+					log.l( "Attempting to process the layer: " + lay );
+					thisSubLay = thisLay.layers[ lay ];
+					layInfo = templateLayers[ lay ];
 					thisSubLay.locked = layInfo.locked;
 					thisSubLay.visible = layInfo.visible;
-					log.l("Successfully set " + lay + " to ");
+					log.l( "Successfully set " + lay + " to " );
 				}
-				catch(e)
+				catch ( e )
 				{
-					log.l("Failed to process " + lay);
+					log.l( "Failed to process " + lay );
 				}
 			}
 		}
@@ -1883,20 +1963,20 @@ function properTemplateSetup(doc)
 		{
 			try
 			{
-				thisLay.zOrder(ZOrderMethod.SENDTOBACK);
+				thisLay.zOrder( ZOrderMethod.SENDTOBACK );
 				thisLay.locked = true;
 				thisLay.visible = true;
-				
-				log.l("Sent " + thisLay.name + " to back.");	
+
+				log.l( "Sent " + thisLay.name + " to back." );
 			}
-			catch(e)
+			catch ( e )
 			{
-				log.e("Failed to process " + thisLay.name + "::System error message: " + e);
+				log.e( "Failed to process " + thisLay.name + "::System error message: " + e );
 			}
 		}
 	}
 
-	log.l("properTemplateSetup result = " + result);
+	log.l( "properTemplateSetup result = " + result );
 	return result;
 }
 
@@ -1916,68 +1996,68 @@ function properTemplateSetup(doc)
 
 */
 
-function isTemplate(parent)
+function isTemplate ( parent )
 {
-	log.h("Checking to see whether " + parent + " is a proper converted template.");
+	log.h( "Checking to see whether " + parent + " is a proper converted template." );
 
 	var result = true,
-	art,
-	info,
-	mock,
-	prepress,
-	searchLayer;
+		art,
+		info,
+		mock,
+		prepress,
+		searchLayer;
 
-	if(parent.typename === "Document")
+	if ( parent.typename === "Document" )
 	{
-		searchLayer = parent.layers[0];
+		searchLayer = parent.layers[ 0 ];
 	}
-	else if (parent.typename === "Layer")
+	else if ( parent.typename === "Layer" )
 	{
 		searchLayer = parent;
 	}
-	
+
 	//Try/Catch Description:
 	//set variables for known template layers
 	//if they don't exist, it's not a template
 	try
 	{
-		art = searchLayer.layers["Artwork Layer"];
-		info = searchLayer.layers["Information"];
-		mock = searchLayer.layers["Mockup"];
-		prepress = searchLayer.layers["Prepress"];
-		log.l(parent + " is a proper template. returning true");
+		art = searchLayer.layers[ "Artwork Layer" ];
+		info = searchLayer.layers[ "Information" ];
+		mock = searchLayer.layers[ "Mockup" ];
+		prepress = searchLayer.layers[ "Prepress" ];
+		log.l( parent + " is a proper template. returning true" );
 	}
-	catch(e)
+	catch ( e )
 	{
 		//this doc is not a converted template.
 		//setting srcIsTemplate to false
 		result = false;
 
-		if(e.toString().indexOf("MRAP")>-1)
+		if ( e.toString().indexOf( "MRAP" ) > -1 )
 		{
-			log.l("MRAP error occurred.")
-			errorList.push("Failed to determine whether this file was a proper converted template because of an MRAP error.");
-			errorList.push("Please restart Illustrator and try again.");
+			log.l( "MRAP error occurred." )
+			errorList.push( "Failed to determine whether this file was a proper converted template because of an MRAP error." );
+			errorList.push( "Please restart Illustrator and try again." );
 		}
 		else
 		{
-			log.l(parent + " is NOT a template.::Results of isTemplate function are as follows:");
+			log.l( parent + " is NOT a template.::Results of isTemplate function are as follows:" );
 		}
 
-		log.l("art = " + art);
-		log.l("info = " + info);
-		log.l("mock = " + mock);
-		log.l("prepress = " + prepress + "\n\n");
+		log.l( "art = " + art );
+		log.l( "info = " + info );
+		log.l( "mock = " + mock );
+		log.l( "prepress = " + prepress + "\n\n" );
 	}
-	
+
 	return result
 }
 
-function writeDatabase(dbPath,contents)
+function writeDatabase ( dbPath, contents )
 {
-	var dbFile = File(dbPath)
-	dbFile.open("w");
-	dbFile.write(contents);
+	var dbFile = File( dbPath )
+	dbFile.open( "w" );
+	dbFile.write( contents );
 	dbFile.close();
 }
 
@@ -1995,31 +2075,31 @@ function writeDatabase(dbPath,contents)
 
 */
 
-function writeReadMe(dest,msg)
+function writeReadMe ( dest, msg )
 {
 	var result = true;
-	if(!dest.exists)
+	if ( !dest.exists )
 	{
 		try
 		{
 			dest.create();
 		}
-		catch(e)
+		catch ( e )
 		{
-			errorList.push("Failed to create destination folder at the following location:\n" + dest.fullName);
+			errorList.push( "Failed to create destination folder at the following location:\n" + dest.fullName );
 			return false;
 		}
 	}
 
-	var readMeFile = new File(dest.fullName + "/READ_ME.txt");
+	var readMeFile = new File( dest.fullName + "/READ_ME.txt" );
 	//get any existing contents of the file to avoid overwriting
 	readMeFile.open();
 	var contents = readMeFile.read();
 	readMeFile.close();
 
 	//write the new read me message
-	readMeFile.open("w");
-	readMeFile.write(contents + logTime() + ": " + msg + "\n\n");
+	readMeFile.open( "w" );
+	readMeFile.write( contents + logTime() + ": " + msg + "\n\n" );
 	readMeFile.close();
 
 }
@@ -2042,78 +2122,78 @@ function writeReadMe(dest,msg)
 
 
 //align all elements of the array to the key object's center point
-function alignObjectsToCenter(key,otherObjects)
+function alignObjectsToCenter ( key, otherObjects )
 {
-	var kp = [key.left + key.width/2, key.top - key.height/2];
+	var kp = [ key.left + key.width / 2, key.top - key.height / 2 ];
 
-	for(var x=0;x<otherObjects.length;x++)
+	for ( var x = 0; x < otherObjects.length; x++ )
 	{
-		otherObjects[x].left = kp[0] - otherObjects[x].width/2;
-		otherObjects[x].top = kp[1] + otherObjects[x].height/2;
+		otherObjects[ x ].left = kp[ 0 ] - otherObjects[ x ].width / 2;
+		otherObjects[ x ].top = kp[ 1 ] + otherObjects[ x ].height / 2;
 	}
 }
 
 //align all objects' vertical centers to the vertical center of key
-function vAlignCenter(key,otherObjects)
+function vAlignCenter ( key, otherObjects )
 {
-	var kp = key.top - key.height/2;
+	var kp = key.top - key.height / 2;
 
-	for(var x=0;x<otherObjects.length;x++)
+	for ( var x = 0; x < otherObjects.length; x++ )
 	{
-		otherObjects[x].top = kp + otherObjects[x].height/2;
+		otherObjects[ x ].top = kp + otherObjects[ x ].height / 2;
 	}
 }
 
 //align all objects to the top of key
-function vAlignTop(key,otherObjects)
+function vAlignTop ( key, otherObjects )
 {
 	var kp = key.top;
 
-	for(var x=0;x<otherObjects.length;x++)
+	for ( var x = 0; x < otherObjects.length; x++ )
 	{
-		otherObjects[x].top = kp;
+		otherObjects[ x ].top = kp;
 	}
 }
 
 //align all ojects to the bottom of key
-function vAlignBottom(key,otherObjects)
+function vAlignBottom ( key, otherObjects )
 {
-	var bounds = getBoundsData(key);
+	var bounds = getBoundsData( key );
 	var kp = bounds.b;
 
-	for(var x=0;x<otherObjects.length;x++)
+	for ( var x = 0; x < otherObjects.length; x++ )
 	{
-		otherObjects[x].top = kp + getBoundsData(otherObjects[x]).h;
+		otherObjects[ x ].top = kp + getBoundsData( otherObjects[ x ] ).h;
 	}
 }
 
 //align all objects' center points to center point of key
-function hAlignCenter(key,otherObjects)
+function hAlignCenter ( key, otherObjects )
 {
-	var kp = key.left + key.width/2;
-	for(var x=0;x<otherObjects.length;x++)
+	var kp = key.left + key.width / 2;
+	for ( var x = 0; x < otherObjects.length; x++ )
 	{
-		otherObjects[x].left = kp - otherObjects[x].width/2;
+		otherObjects[ x ].left = kp - otherObjects[ x ].width / 2;
 	}
 }
 
 //align all objects to the left edge of key
-function hAlignLeft(key,otherObjects)
+function hAlignLeft ( key, otherObjects )
 {
 	var kp = key.left;
-	for(var x=0;x<otherObjects.length;x++)
+	for ( var x = 0; x < otherObjects.length; x++ )
 	{
-		otherObjects[x].left = kp;
+		otherObjects[ x ].left = kp;
 	}
 }
 
 // align all objects to the right edge of key
-function hAlignRight(key,otherObjects)
+function hAlignRight ( key, otherObjects )
 {
 	var kp = key.left + key.width;
-	for(var x=0;x<otherObjects.length;x++)
+	for ( var x = 0; x < otherObjects.length; x++ )
 	{
-		otherObjects[x].left = kp - otherObjects[x].width;
+		otherObjects[ x ].left = kp - otherObjects[ x ].width;
 	}
 }
 
@@ -2121,7 +2201,7 @@ function hAlignRight(key,otherObjects)
 
 //send customized emails
 
-function sendCustomEmail(emailAddress,subject,msg)
+function sendCustomEmail ( emailAddress, subject, msg )
 {
 	var scriptText = [
 		'set recipientName to "John Doe"',
@@ -2142,13 +2222,13 @@ function sendCustomEmail(emailAddress,subject,msg)
 	];
 
 	//write local temporary .scpt file
-	var tempScript = File(homeFolderPath + "/send_email.scpt");
-	tempScript.open("w");
-	tempScript.write(scriptText.join("\n"));
+	var tempScript = File( homeFolderPath + "/send_email.scpt" );
+	tempScript.open( "w" );
+	tempScript.write( scriptText.join( "\n" ) );
 	tempScript.close();
 
 	//run the executor script
-	var executor = File(resourcePath + "send_email.app");
+	var executor = File( resourcePath + "send_email.app" );
 	executor.execute();
 }
 
@@ -2157,66 +2237,66 @@ function sendCustomEmail(emailAddress,subject,msg)
 /******UI Components***/
 /**********************/
 
-var STANDARD_LISTBOX_DIMENSIONS = [50,50,200,200]
-var UI = 
+var STANDARD_LISTBOX_DIMENSIONS = [ 50, 50, 200, 200 ]
+var UI =
 {
-	"window":function(title,func)
+	"window": function ( title, func )
 	{
-		var w = new Window("dialog",title);
+		var w = new Window( "dialog", title );
 
-		w.addEventListener("keydown",function(k)
+		w.addEventListener( "keydown", function ( k )
 		{
-			if(k.keyName == "Enter")
+			if ( k.keyName == "Enter" )
 			{
 				func();
 			}
-		});
+		} );
 
 		return w;
 	},
-	"static":function(parent,txt,len)
+	"static": function ( parent, txt, len )
 	{
-		var result = parent.add("statictext", undefined, txt);
-		if(len)
+		var result = parent.add( "statictext", undefined, txt );
+		if ( len )
 		{
 			result.characters = len;
 		}
 		return result;
 	},
 
-	"edit":function(parent,txt,len,func)
+	"edit": function ( parent, txt, len, func )
 	{
-		var result = parent.add("edittext", undefined, txt);
-		if(len)
+		var result = parent.add( "edittext", undefined, txt );
+		if ( len )
 		{
 			result.characters = len;
 		}
 		return result;
 	},
 
-	"group":function(parent)
+	"group": function ( parent )
 	{
-		return parent.add("group");
+		return parent.add( "group" );
 	},
-	"panel":function(parent,title)
+	"panel": function ( parent, title )
 	{
-		return parent.add("panel",title);
+		return parent.add( "panel", title );
 	},
 
-	"checkbox":function(parent,txt,len)
+	"checkbox": function ( parent, txt, len )
 	{
-		var result = parent.add("checkbox", undefined, txt);
-		if(len)
+		var result = parent.add( "checkbox", undefined, txt );
+		if ( len )
 		{
 			result.characters = len;
 		}
 		return result;
 	},
 
-	"button":function(parent,txt,func,opt)
+	"button": function ( parent, txt, func, opt )
 	{
-		var result = parent.add("button", undefined, txt, opt);
-		if(func)
+		var result = parent.add( "button", undefined, txt, opt );
+		if ( func )
 		{
 			result.onClick = func;
 		}
@@ -2227,134 +2307,134 @@ var UI =
 	//to the image file
 	//example:
 	//var img = "/Volumes/Customization/Library/Scripts/Script Resources/Images/all.jpg";
-	"iconButton":function(parent,img,func)
+	"iconButton": function ( parent, img, func )
 	{
-		var result = parent.add("iconButton", undefined, img);
-		if(func)
+		var result = parent.add( "iconButton", undefined, img );
+		if ( func )
 		{
 			result.onClick = func;
 		}
 		return result;
 	},
 
-	"image":function(parent,img,func)
+	"image": function ( parent, img, func )
 	{
-		var result = parent.add("image", undefined, File(img));
-		if(func)
+		var result = parent.add( "image", undefined, File( img ) );
+		if ( func )
 		{
 			result.onClick = func;
 		}
 		return result;
 	},
 
-	"listbox":function(parent,dimensions,children,resourceString)
+	"listbox": function ( parent, dimensions, children, resourceString )
 	{
-		if(!dimensions)
+		if ( !dimensions )
 		{
 			dimensions = STANDARD_LISTBOX_DIMENSIONS;
 		}
-		var result = parent.add("listbox",dimensions,[],resourceString);
-		if(children)
+		var result = parent.add( "listbox", dimensions, [], resourceString );
+		if ( children )
 		{
-			for(var x=0,len=children.length;x<len;x++)
+			for ( var x = 0, len = children.length; x < len; x++ )
 			{
-				result.add("item",children[x]);
+				result.add( "item", children[ x ] );
 			}
 		};
 		return result;
 	},
 
-	"radio":function(parent,txt,len)
+	"radio": function ( parent, txt, len )
 	{
-		var result = parent.add("radiobutton",undefined,txt);
-		if(len)
+		var result = parent.add( "radiobutton", undefined, txt );
+		if ( len )
 		{
-			result.characters = len;	
+			result.characters = len;
 		}
 		return result;
 	},
-	
-	"dropdown":function(parent,children)
+
+	"dropdown": function ( parent, children )
 	{
-		var result = parent.add("dropdownlist",undefined,children);
+		var result = parent.add( "dropdownlist", undefined, children );
 		result.selection = 0;
 		return result;
 	},
 
-	"closeButtonGroup":function(parent,submitFunction,cancelFunction)
+	"closeButtonGroup": function ( parent, submitFunction, cancelFunction )
 	{
-		var result = parent.add("group");
-			result.orientation = "row";
-			var cancel = result.cancelButton = this.button(result,"Cancel",cancelFunction);
-			var submit = result.submitButton = this.button(result,"Submit",submitFunction);
+		var result = parent.add( "group" );
+		result.orientation = "row";
+		var cancel = result.cancelButton = this.button( result, "Cancel", cancelFunction );
+		var submit = result.submitButton = this.button( result, "Submit", submitFunction );
 		return result;
 	},
 
-	"hseparator":function(parent,width)
+	"hseparator": function ( parent, width )
 	{
-		var result = parent.add("panel");
-			result.preferredSize = [width,50];
-			result.minimumSize.height = result.maximumSize.height = 3;
+		var result = parent.add( "panel" );
+		result.preferredSize = [ width, 50 ];
+		result.minimumSize.height = result.maximumSize.height = 3;
 		return result
 	},
 
-	"vseparator":function(parent,width)
+	"vseparator": function ( parent, width )
 	{
-		var result = parent.add("panel");
-			result.preferredSize = [width,50];
-			result.minimumSize.width = result.maximumSize.width = 3;
+		var result = parent.add( "panel" );
+		result.preferredSize = [ width, 50 ];
+		result.minimumSize.width = result.maximumSize.width = 3;
 		return result
 	}
 
 }
 
-function uiConfirm(msg)
+function uiConfirm ( msg )
 {
 	var result;
-	var w = UI.window("Confirm",function()
+	var w = UI.window( "Confirm", function ()
 	{
 		w.close();
-	});
-	w.add("statictext",undefined,msg);
-	var btnGroup = UI.group(w);
-		var cancelButton = UI.button(btnGroup, "Nevermind...", function () { result = false; w.close(); });	
-		var submitButton = UI.button(btnGroup,"Duh!",function(){result = true;w.close();});
-		
+	} );
+	w.add( "statictext", undefined, msg );
+	var btnGroup = UI.group( w );
+	var cancelButton = UI.button( btnGroup, "Nevermind...", function () { result = false; w.close(); } );
+	var submitButton = UI.button( btnGroup, "Duh!", function () { result = true; w.close(); } );
+
 	w.show();
 	return result;
 }
 
 //standard prompt window
-function uiPrompt(msg,title)
+function uiPrompt ( msg, title )
 {
 	var result;
-	if(!title){title = ""};
-	var w = new Window("dialog",title);
-		w.orientation = "column";
-		var topMsg = UI.static(w,msg);
-		var input = UI.edit(w,"");
-			input.characters = 20;
-			input.active = true;
-		var btnGroup = UI.group(w);
-			var cancel = UI.button(btnGroup,"Cancel",function()
-			{
-				w.close();
-			});
-			var submit = UI.button(btnGroup,"Submit",submitFunction);
-
-
-	w.addEventListener("keydown",function(k)
+	if ( !title ) { title = "" };
+	var w = new Window( "dialog", title );
+	w.orientation = "column";
+	var topMsg = UI.static( w, msg );
+	var input = UI.edit( w, "" );
+	input.characters = 20;
+	input.active = true;
+	var btnGroup = UI.group( w );
+	var cancel = UI.button( btnGroup, "Cancel", function ()
 	{
-		if(k.keyName == "Enter")
+		w.close();
+	} );
+	var submit = UI.button( btnGroup, "Submit", submitFunction );
+
+
+	w.addEventListener( "keydown", function ( k )
+	{
+		if ( k.keyName == "Enter" )
 		{
 			submitFunction();
 		}
-	});
+	} );
 
 
 	w.show();
 
-	function submitFunction()
+	function submitFunction ()
 	{
 		result = input.text;
 		w.close();
@@ -2374,202 +2454,203 @@ function uiPrompt(msg,title)
 ////////////////////////
 
 
-	/*
-		Component Name: make_static_text
-		Author: William Dowling
-		Creation Date: 08 November, 2017
-		Description: 
-			Create a static text object for the given parent
-		Arguments
-			parent object (coulg be a group, or window, or tab, etc.)
-			string of text to be used
-			[character length]-optional
-		Return value
-			the newly created text object
+/*
+	Component Name: make_static_text
+	Author: William Dowling
+	Creation Date: 08 November, 2017
+	Description: 
+		Create a static text object for the given parent
+	Arguments
+		parent object (coulg be a group, or window, or tab, etc.)
+		string of text to be used
+		[character length]-optional
+	Return value
+		the newly created text object
 
-	*/
+*/
 
-	function UI_staticText(parent,txt,len)
+function UI_staticText ( parent, txt, len )
+{
+	var result = parent.add( "statictext", undefined, txt );
+	if ( len )
 	{
-		var result = parent.add("statictext", undefined, txt);
-		if(len)
-		{
-			result.characters = len;
-		}
-		return result;
+		result.characters = len;
 	}
+	return result;
+}
 
 
 
-	/*
-		Component Name: make_group
-		Author: William Dowling
-		Creation Date: 17 November, 2017
-		Description: 
-			make a group object in the given parent element
-		Arguments
-			parent object
-		Return value
-			group object
+/*
+	Component Name: make_group
+	Author: William Dowling
+	Creation Date: 17 November, 2017
+	Description: 
+		make a group object in the given parent element
+	Arguments
+		parent object
+	Return value
+		group object
 
-	*/
+*/
 
-	function UI_group(parent)
+function UI_group ( parent )
+{
+	return parent.add( "group" );
+}
+
+
+
+/*
+	Component Name: make_checkbox
+	Author: William Dowling
+	Creation Date: 28 November, 2017
+	Description: 
+		Create a checkbox object for the given parent
+	Arguments
+		parent object (coulg be a group, or window, or tab, etc.)
+		string of text to be used
+		[character length]-optional
+	Return value
+		the newly created checkbox object
+
+*/
+
+function UI_checkbox ( parent, txt, len )
+{
+	var result = parent.add( "checkbox", undefined, txt );
+	if ( len )
 	{
-		return parent.add("group");
+		result.characters = len;
 	}
+	return result;
+}
 
 
 
-	/*
-		Component Name: make_checkbox
-		Author: William Dowling
-		Creation Date: 28 November, 2017
-		Description: 
-			Create a checkbox object for the given parent
-		Arguments
-			parent object (coulg be a group, or window, or tab, etc.)
-			string of text to be used
-			[character length]-optional
-		Return value
-			the newly created checkbox object
+/*
+	Component Name: make_button
+	Author: William Dowling
+	Creation Date: 08 November, 2017
+	Description: 
+		create a new button for the given parent object
+	Arguments
+		parent object
+		string of text to display on button		
+	Return value
+		button object
 
-	*/
+*/
 
-	function UI_checkbox(parent,txt,len)
+function UI_button ( parent, txt, func )
+{
+	var result = parent.add( "button", undefined, txt );
+	if ( func )
 	{
-		var result = parent.add("checkbox", undefined, txt);
-		if(len)
-		{
-			result.characters = len;
-		}
-		return result;
+		result.onClick = func;
 	}
+	return result;
+}
 
 
 
-	/*
-		Component Name: make_button
-		Author: William Dowling
-		Creation Date: 08 November, 2017
-		Description: 
-			create a new button for the given parent object
-		Arguments
-			parent object
-			string of text to display on button		
-		Return value
-			button object
+/*
+	Component Name: make_edit_text
+	Author: William Dowling
+	Creation Date: 28 November, 2017
+	Description: 
+		Create an edit text object for the given parent
+	Arguments
+		parent object (coulg be a group, or window, or tab, etc.)
+		string of text to be used
+		[character length]-optional
+	Return value
+		the newly created text object
 
-	*/
+*/
 
-	function UI_button(parent,txt,func)
+function UI_editText ( parent, txt, len )
+{
+	var result = parent.add( "edittext", undefined, txt );
+	if ( len )
 	{
-		var result = parent.add("button", undefined, txt);
-		if(func)
-		{
-			result.onClick = func;
-		}
-		return result;
+		result.characters = len;
 	}
+	return result;
+}
 
 
 
-	/*
-		Component Name: make_edit_text
-		Author: William Dowling
-		Creation Date: 28 November, 2017
-		Description: 
-			Create an edit text object for the given parent
-		Arguments
-			parent object (coulg be a group, or window, or tab, etc.)
-			string of text to be used
-			[character length]-optional
-		Return value
-			the newly created text object
+/*
+	Component Name: make_listbox
+	Author: William Dowling
+	Creation Date: 08 November, 2017
+	Description: 
+		createa a listbox element in the given parent
+	Arguments
+		parent object
+		dimensions array
+	Return value
+		listbox object
 
-	*/
+*/
 
-	function UI_editText(parent,txt,len)
+function UI_listbox ( parent, dim )
+{
+	var result = parent.add( "listbox", dim, [] );
+	result.onChange = function ()
 	{
-		var result = parent.add("edittext", undefined, txt);
-		if(len)
+		if ( result.selection )
 		{
-			result.characters = len;
-		}
-		return result;
-	}
-
-
-
-	/*
-		Component Name: make_listbox
-		Author: William Dowling
-		Creation Date: 08 November, 2017
-		Description: 
-			createa a listbox element in the given parent
-		Arguments
-			parent object
-			dimensions array
-		Return value
-			listbox object
-
-	*/
-
-	function UI_listbox(parent,dim)
-	{
-		var result = parent.add("listbox",dim,[]);
-		result.onChange = function()
-		{
-			if(result.selection)
-			{
-				displayData(parent,result.selection.text);
-			}
-		}
-		return result;
-	}
-
-
-
-	/*
-		Component Name: make_tab
-		Author: William Dowling
-		Creation Date: 09 November, 2017
-		Description: 
-			Create a new tab in the given parent element
-		Arguments
-			parent object
-			string representing the name of the tab
-		Return value
-			tab object
-
-	*/
-
-	function UI_tab(parent,txt,name)
-	{
-		var myTab = parent.add("tab", undefined, txt);
-		myTab.name = name;
-		return myTab;
-	}
-
-
-
-	function findSwatch(name)
-	{
-		var regex = new RegExp("\\\[Swatch " + name +"\\\]","i");
-		var s = afc(app.activeDocument,"swatches").filter(function(s){
-				
-			return s.toString().match(regex);
-		});
-
-		if(s.length)
-		{
-			return s[0];
-		}
-		else
-		{
-			return undefined;
+			displayData( parent, result.selection.text );
 		}
 	}
+	return result;
+}
+
+
+
+/*
+	Component Name: make_tab
+	Author: William Dowling
+	Creation Date: 09 November, 2017
+	Description: 
+		Create a new tab in the given parent element
+	Arguments
+		parent object
+		string representing the name of the tab
+	Return value
+		tab object
+
+*/
+
+function UI_tab ( parent, txt, name )
+{
+	var myTab = parent.add( "tab", undefined, txt );
+	myTab.name = name;
+	return myTab;
+}
+
+
+
+function findSwatch ( name )
+{
+	var regex = new RegExp( "\\\[Swatch " + name + "\\\]", "i" );
+	var s = afc( app.activeDocument, "swatches" ).filter( function ( s )
+	{
+
+		return s.toString().match( regex );
+	} );
+
+	if ( s.length )
+	{
+		return s[ 0 ];
+	}
+	else
+	{
+		return undefined;
+	}
+}
 
 /*
 	Component Name: make_new_spot_color
@@ -2626,66 +2707,53 @@ function uiPrompt(msg,title)
 // 	// 	//better to have another argument instead of an alert every time a swatch is found.
 // 	// 	return swatchNameMatches[0];
 // 	// }
-	
+
 // 	colorType = colorType || "CMYK";
 // 	var defaultColorValue = colorType === "CMYK" ? {cyan:100,magenta:0,yellow:0,black:0} : {red:100,green:0,blue:0};
 // 	colorValue = colorValue || BOOMBAH_APPROVED_COLOR_VALUES[name] || defaultColorValue;
-	
+
 // 	var newSpot = doc.spots.add();
 // 	var newColor = (colorType === "CMYK") ? new CMYKColor() : new RGBColor();
-	
-	
+
+
 // 	for (var color in colorValue) {
 // 		newColor[color] = Math.round(colorValue[color]);
 // 	}
-	
-	
+
+
 // 	newSpot.name = name;
 // 	newSpot.colorType = ColorModel.SPOT;
 // 	newSpot.color = newColor;
-	
+
 
 // 	//make spot color
 // 	var newSpotColor = new SpotColor();
 // 	newSpotColor.spot = newSpot;
 // 	newSpotColor.tint = tint || 100;
-	
+
 // 	return swatches[name];
 // }
 
-function makeNewSpotColor(name, colorType, colorValue, tint) {
+function makeNewSpotColor ( name, colorType, colorValue, tint )
+{
 	var doc = app.activeDocument;
 	var swatches = doc.swatches;
 
-	if (!colorType) {
+	if ( !colorType )
+	{
 		colorType = "CMYK"
 	}
-	if (!colorValue) {
-		try {
-			colorValue = BOOMBAH_APPROVED_COLOR_VALUES[name];
-		}
-		catch (e) {
-			colorValue =
-			{
-				"cyan": 12,
-				"magenta": 30,
-				"yellow": 84,
-				"black": 5
-			}
-		}
-	}
 
-	var newSpotSwatch;
-	try {
-		newSpotSwatch = swatches[name];
-		if (tint) {
-			newSpotSwatch.color.tint = tint;
-		}
-	}
-	catch (e) {
-		var newColor = (colorType === "CMYK") ? new CMYKColor() : new RGBColor();
-		for (var color in colorValue) {
-			newColor[color] = colorValue[color];
+	colorValue = colorValue || BOOMBAH_APPROVED_COLOR_VALUES[ name ] || { "cyan": 12, "magenta": 30, "yellow": 84, "black": 5 };
+	tint = tint || 100;
+
+	var newSpotSwatch = findChildByName( doc, "swatches", name );
+	if ( !newSpotSwatch )
+	{
+		var newColor = ( colorType === "CMYK" ) ? new CMYKColor() : new RGBColor();
+		for ( var color in colorValue )
+		{
+			newColor[ color ] = colorValue[ color ];
 		}
 
 		var newSpot = doc.spots.add();
@@ -2695,40 +2763,38 @@ function makeNewSpotColor(name, colorType, colorValue, tint) {
 
 		newSpotSwatch = new SpotColor();
 		newSpotSwatch.spot = newSpot;
-		newSpotSwatch = swatches[name];
-		if (tint) {
-			newSpotSwatch.tint = tint;
-		}
+		newSpotSwatch = swatches[ name ];
+		newSpotSwatch.tint = tint;
 	}
 	return newSpotSwatch;
 }
 
-function mergeSwatches(oldSwatchName,newSwatchName)
+function mergeSwatches ( oldSwatchName, newSwatchName )
 {
 	var doc = app.activeDocument;
-	var renameSuccess = false;	
+	var renameSuccess = false;
 	var swatchGroup;
 	var overlappingSwatches = false;
 
 
 	//make sure this isn't an rgb document
 	//if it is.. convert it to cmyk
-	if(app.activeDocument.documentColorSpace === DocumentColorSpace.RGB)
+	if ( app.activeDocument.documentColorSpace === DocumentColorSpace.RGB )
 	{
-		app.executeMenuCommand("doc-color-cmyk");
+		app.executeMenuCommand( "doc-color-cmyk" );
 	}
 
 
-	var swatch = makeNewSpotColor(oldSwatchName);
+	var swatch = makeNewSpotColor( oldSwatchName );
 	try
 	{
 		swatch.name = newSwatchName;
 		renameSuccess = true;
 	}
-	catch(e)
+	catch ( e )
 	{
 		var counter = 2;
-		while(!renameSuccess && counter < 22)
+		while ( !renameSuccess && counter < 22 )
 		{
 			try
 			{
@@ -2737,42 +2803,42 @@ function mergeSwatches(oldSwatchName,newSwatchName)
 				overlappingSwatches = true;
 				counter++;
 			}
-			catch(e)
+			catch ( e )
 			{
 				counter++;
 			}
 		}
 	}
 
-	if(overlappingSwatches)
+	if ( overlappingSwatches )
 	{
-		for(var x=0,len=doc.swatchGroups.length;x<len;x++)
+		for ( var x = 0, len = doc.swatchGroups.length; x < len; x++ )
 		{
-			if(doc.swatchGroups[x].name === newSwatchName)
+			if ( doc.swatchGroups[ x ].name === newSwatchName )
 			{
-				swatchGroup = doc.swatchGroups[x];
+				swatchGroup = doc.swatchGroups[ x ];
 				break;
 			}
 		}
 
-		if(!swatchGroup)
+		if ( !swatchGroup )
 		{
 			swatchGroup = doc.swatchGroups.add();
 			swatchGroup.name = newSwatchName;
 		}
 
-		swatchGroup.addSwatch(doc.swatches[newSwatchName]);
-		swatchGroup.addSwatch(swatch);
+		swatchGroup.addSwatch( doc.swatches[ newSwatchName ] );
+		swatchGroup.addSwatch( swatch );
 	}
 
 
 	var newColorValues;
-	newColorValues = BOOMBAH_APPROVED_COLOR_VALUES[newSwatchName];
+	newColorValues = BOOMBAH_APPROVED_COLOR_VALUES[ newSwatchName ];
 
-	if(!newColorValues)
+	if ( !newColorValues )
 	{
-		errorList.push("Failed to find color values in the database for " + newSwatchName);
-		errorList.push("Please recolor the " + newSwatchName + " swatch manually.");
+		errorList.push( "Failed to find color values in the database for " + newSwatchName );
+		errorList.push( "Please recolor the " + newSwatchName + " swatch manually." );
 		newColorValues = {
 			"cyan": 100,
 			"magenta": 100,
@@ -2782,9 +2848,9 @@ function mergeSwatches(oldSwatchName,newSwatchName)
 	}
 
 
-	for(var color in swatch.color.spot.color)
+	for ( var color in swatch.color.spot.color )
 	{
-		swatch.color.spot.color[color] = newColorValues[color];
+		swatch.color.spot.color[ color ] = newColorValues[ color ];
 	}
 }
 
@@ -2793,33 +2859,33 @@ function mergeSwatches(oldSwatchName,newSwatchName)
 //this function returns an object that includes
 //the 'overhang' of a clip mask. the part of the 
 //clipped image that is not visible 
-function getClippedAmount(group)
+function getClippedAmount ( group )
 {
-	var result = {left:0,top:0};
+	var result = { left: 0, top: 0 };
 	var mask;
 	var clippedArt = [];
-	for(var x=0,len=group.pageItems.length;x<len;x++)
+	for ( var x = 0, len = group.pageItems.length; x < len; x++ )
 	{
-		if(group.pageItems[x].clipped)
+		if ( group.pageItems[ x ].clipped )
 		{
-			mask = group.pageItems[x];
+			mask = group.pageItems[ x ];
 		}
 		else
 		{
-			clippedArt.push(group.pageItems[x]);
+			clippedArt.push( group.pageItems[ x ] );
 		}
 	}
 
-	if(clippedArt.length)
+	if ( clippedArt.length )
 	{
 		var tmpGroup = group.parent.groupItems.add();
-		for(var x=0,len = clippedArt.length;x<len;x++)
+		for ( var x = 0, len = clippedArt.length; x < len; x++ )
 		{
-			tmpGroup.push(clippedart[x]);
+			tmpGroup.push( clippedart[ x ] );
 		}
 	}
 
-	if(mask)
+	if ( mask )
 	{
 		result.left = tmpGroup.left - mask.left;
 		result.top = tmpGroup.top - mask.top;
@@ -2831,165 +2897,180 @@ function getClippedAmount(group)
 
 //stolen from Josh B Duncan.
 //https://github.com/joshbduncan/adobe-scripts/blob/main/MatchObjects.jsx
-function getVisibleBounds(object) {
-    var bounds, clippedItem, sandboxItem, sandboxLayer;
-    var curItem;
-    if (object.typename == "GroupItem") {
-        // if the object is clipped
-        if (object.clipped) {
-            // check all sub objects to find the clipping path
-            for (var i = 0; i < object.pageItems.length; i++) {
-                curItem = object.pageItems[i];
-                if (curItem.clipping) {
-                    clippedItem = curItem;
-                    break;
-                } else if (curItem.typename == "CompoundPathItem") {
-                    if (!curItem.pathItems.length) {
-                        // catch compound path items with no pathItems via william dowling @ github.com/wdjsdev
-                        sandboxLayer = app.activeDocument.layers.add();
-                        sandboxItem = curItem.duplicate(sandboxLayer);
-                        app.activeDocument.selection = null;
-                        sandboxItem.selected = true;
-                        app.executeMenuCommand("noCompoundPath");
-                        sandboxLayer.hasSelectedArtwork = true;
-                        app.executeMenuCommand("group");
-                        clippedItem = app.activeDocument.selection[0];
-                        break;
-                    } else if (curItem.pathItems[0].clipping) {
-                        clippedItem = curItem;
-                        break;
-                    }
-                } else {
-                    clippedItem = curItem;
-                    break;
-                }
-            }
-            bounds = clippedItem.geometricBounds;
-            if (sandboxLayer) {
-                // eliminate the sandbox layer since it's no longer needed
-                sandboxLayer.remove();
-                sandboxLayer = undefined;
-            }
-        } else {
-            // if the object is not clipped
-            var subObjectBounds;
-            var allBoundPoints = [[], [], [], []];
-            // get the bounds of every object in the group
-            for (var i = 0; i < object.pageItems.length; i++) {
-                curItem = object.pageItems[i];
-                subObjectBounds = getVisibleBounds(curItem);
-                allBoundPoints[0].push(subObjectBounds[0]);
-                allBoundPoints[1].push(subObjectBounds[1]);
-                allBoundPoints[2].push(subObjectBounds[2]);
-                allBoundPoints[3].push(subObjectBounds[3]);
-            }
-            // determine the groups bounds from it sub object bound points
-            bounds = [
-                Math.min.apply(Math, allBoundPoints[0]),
-                Math.max.apply(Math, allBoundPoints[1]),
-                Math.max.apply(Math, allBoundPoints[2]),
-                Math.min.apply(Math, allBoundPoints[3]),
-            ];
-        }
-    } else {
-        bounds = object.geometricBounds;
-    }
-    return bounds;
+function getVisibleBounds ( object )
+{
+	var bounds, clippedItem, sandboxItem, sandboxLayer;
+	var curItem;
+	if ( object.typename == "GroupItem" )
+	{
+		// if the object is clipped
+		if ( object.clipped )
+		{
+			// check all sub objects to find the clipping path
+			for ( var i = 0; i < object.pageItems.length; i++ )
+			{
+				curItem = object.pageItems[ i ];
+				if ( curItem.clipping )
+				{
+					clippedItem = curItem;
+					break;
+				} else if ( curItem.typename == "CompoundPathItem" )
+				{
+					if ( !curItem.pathItems.length )
+					{
+						// catch compound path items with no pathItems via william dowling @ github.com/wdjsdev
+						sandboxLayer = app.activeDocument.layers.add();
+						sandboxItem = curItem.duplicate( sandboxLayer );
+						app.activeDocument.selection = null;
+						sandboxItem.selected = true;
+						app.executeMenuCommand( "noCompoundPath" );
+						sandboxLayer.hasSelectedArtwork = true;
+						app.executeMenuCommand( "group" );
+						clippedItem = app.activeDocument.selection[ 0 ];
+						break;
+					} else if ( curItem.pathItems[ 0 ].clipping )
+					{
+						clippedItem = curItem;
+						break;
+					}
+				} else
+				{
+					clippedItem = curItem;
+					break;
+				}
+			}
+			bounds = clippedItem.geometricBounds;
+			if ( sandboxLayer )
+			{
+				// eliminate the sandbox layer since it's no longer needed
+				sandboxLayer.remove();
+				sandboxLayer = undefined;
+			}
+		} else
+		{
+			// if the object is not clipped
+			var subObjectBounds;
+			var allBoundPoints = [ [], [], [], [] ];
+			// get the bounds of every object in the group
+			for ( var i = 0; i < object.pageItems.length; i++ )
+			{
+				curItem = object.pageItems[ i ];
+				subObjectBounds = getVisibleBounds( curItem );
+				allBoundPoints[ 0 ].push( subObjectBounds[ 0 ] );
+				allBoundPoints[ 1 ].push( subObjectBounds[ 1 ] );
+				allBoundPoints[ 2 ].push( subObjectBounds[ 2 ] );
+				allBoundPoints[ 3 ].push( subObjectBounds[ 3 ] );
+			}
+			// determine the groups bounds from it sub object bound points
+			bounds = [
+				Math.min.apply( Math, allBoundPoints[ 0 ] ),
+				Math.max.apply( Math, allBoundPoints[ 1 ] ),
+				Math.max.apply( Math, allBoundPoints[ 2 ] ),
+				Math.min.apply( Math, allBoundPoints[ 3 ] ),
+			];
+		}
+	} else
+	{
+		bounds = object.geometricBounds;
+	}
+	return bounds;
 }
 
-function getBoundsData(item) {
-	var bounds = getVisibleBounds(item);
+function getBoundsData ( item )
+{
+	var bounds = getVisibleBounds( item );
 	var result = {};
 
-	result.l = bounds[0]; //left
-	result.t = bounds[1]; //top
-	result.r = bounds[2]; //right
-	result.b = bounds[3]; //bottom
-	result.w = result.r - result.l; //width
-	result.h = result.t - result.b; //height
-	result.halfHeight = result.h / 2;
-	result.halfWidth = result.w / 2;
-	result.hc = result.l + result.halfWidth; //horizontal center
-	result.vc = result.t - result.halfHeight; //vertical center
-	result.maxDimLabel = result.w > result.h ? "width" : "height"; // larger dimension of width and height
-	result.maxDim = result.maxDimLabel.match(/w/i) ? result.w : result.h; // larger dimension of width and height
+	result.l = result.left = bounds[ 0 ]; //left
+	result.t = result.top = bounds[ 1 ]; //top
+	result.r = result.right = bounds[ 2 ]; //right
+	result.b = result.bottom = bounds[ 3 ]; //bottom
+	result.w = result.width = result.r - result.l; //width
+	result.h = result.height = result.t - result.b; //height
+	result.hh = result.halfHeight = result.h / 2; //half of item height
+	result.hw = result.halfWidth = result.w / 2; //half of item width
+	result.hc = result.horizontalCenter = result.l + result.halfWidth; //horizontal center
+	result.vc = result.verticalCenter = result.t - result.halfHeight; //vertical center
+	result.maxDimProp = result.w > result.h ? "width" : "height"; // larger dimension of width and height
+	result.maxDim = result.maxDimProp.match( /w/i ) ? result.w : result.h; // larger dimension of width and height
 
-	result.leftClipped = result.l - item.left; // how much is clipped off the left side of the item
-	result.topClipped = item.top - result.t; // how much is clipped off the top of the item
-	result.rightClipped = item.right - result.r; // how much is clipped off the right side of the item
-	result.bottomClipped = result.b - item.bottom; // how much is clipped off the bottom of the item
+	result.clip = result.clippedArtwork = {}; //measurements of amount of artwork clipped/invisible
+	result.clip.leftClipped = result.clip.l = result.l - item.left; // how much is clipped off the left side of the item
+	result.clip.topClipped = result.clip.t = item.top - result.t; // how much is clipped off the top of the item
+	result.clip.rightClipped = result.clip.r = item.right - result.r; // how much is clipped off the right side of the item
+	result.clip.bottomClipped = result.clip.b = result.b - item.bottom; // how much is clipped off the bottom of the item
 
 	return result;
 }
 
-function getCenterPoint(item)
+function getCenterPoint ( item )
 {
 	try
 	{
-		for(var x=0,len=item.pageItems.length;x<len;x++)
+		for ( var x = 0, len = item.pageItems.length; x < len; x++ )
 		{
-			if(item.pageItems[x].clipped)
+			if ( item.pageItems[ x ].clipped )
 			{
-				item = item.pageItems[x];
+				item = item.pageItems[ x ];
 				break;
 			}
 		}
 	}
-	catch(e)
+	catch ( e )
 	{
 		//item had no child items. just return the dimensions of the item
 	}
-	return [item.left + item.width/2,item.top - item.height/2];
+	return [ item.left + item.width / 2, item.top - item.height / 2 ];
 }
 
-function setCenterPoint(item,coords,dim)
+function setCenterPoint ( item, coords, dim )
 {
-	var vb = getVisibleBounds(item);
-	var w = vb[2] - vb[0];
-	var h = vb[1] - vb[3];
-	if(dim === "h")
+	var vb = getVisibleBounds( item );
+	var w = vb[ 2 ] - vb[ 0 ];
+	var h = vb[ 1 ] - vb[ 3 ];
+	if ( dim === "h" )
 	{
-		item.left = coords[0] - w/2;
+		item.left = coords[ 0 ] - w / 2;
 	}
-	else if(dim === "v")
+	else if ( dim === "v" )
 	{
-		item.top = coords[1] + h/2;
+		item.top = coords[ 1 ] + h / 2;
 	}
 	else
 	{
-		item.left = coords[0] - w/2 - (vb[0] - item.left);
-		item.top = coords[1] + h/2 - (vb[1] - item.top);	
+		item.left = coords[ 0 ] - w / 2 - ( vb[ 0 ] - item.left );
+		item.top = coords[ 1 ] + h / 2 - ( vb[ 1 ] - item.top );
 	}
-	
+
 }
 
 
 
-function asciiToHex(str)
+function asciiToHex ( str )
 {
 	var arr1 = [];
-	for (var n = 0, l = str.length; n < l; n++)
+	for ( var n = 0, l = str.length; n < l; n++ )
 	{
-		var hex = Number(str.charCodeAt(n)).toString(16);
-		arr1.push(hex);
+		var hex = Number( str.charCodeAt( n ) ).toString( 16 );
+		arr1.push( hex );
 	}
-	return arr1.join('');
+	return arr1.join( '' );
 }
 
 
 
-function getLibraryEntry(lib,key)
+function getLibraryEntry ( lib, key )
 {
 	var result;
-	if(result = lib[key])
+	if ( result = lib[ key ] )
 	{
 		return result;
 	}
-	else if(result = lib[key.replace("_","-")])
+	else if ( result = lib[ key.replace( "_", "-" ) ] )
 	{
 		return result;
 	}
-	else if(result = lib[key.replace("-","_")])
+	else if ( result = lib[ key.replace( "-", "_" ) ] )
 	{
 		return result;
 	}
@@ -2999,15 +3080,15 @@ function getLibraryEntry(lib,key)
 	}
 }
 
-function releaseCompoundPaths(items)
+function releaseCompoundPaths ( items )
 {
 	app.activeDocument.selection = null;
-	for(var x=0,len=items.length;x<len;x++)
+	for ( var x = 0, len = items.length; x < len; x++ )
 	{
-		items[x].selected = true;
+		items[ x ].selected = true;
 	}
 
-	app.executeMenuCommand("noCompoundPath");
+	app.executeMenuCommand( "noCompoundPath" );
 }
 
 
@@ -3015,63 +3096,63 @@ function releaseCompoundPaths(items)
 //pass in the regex and the string to search and
 //it will return the index of the regex just like
 //if you used String.indexOf("test");
-function regexIndexOf(regex,string)
+function regexIndexOf ( regex, string )
 {
 	var ph = "_placeholder_";
 	var tmpStr = string;
-	tmpStr = tmpStr.replace(regex,ph);
-	return tmpStr.indexOf(ph);
+	tmpStr = tmpStr.replace( regex, ph );
+	return tmpStr.indexOf( ph );
 }
 
 //trim off all leading and trailing spaces for a 
 //given string. this is single line only.. multi line
 //strings will probably cause unpredictable behavior.
-function trimSpaces(str)
+function trimSpaces ( str )
 {
-	str = str.replace(/^\s*/,"");
-	str = str.replace(/\s*$/,"");
+	str = str.replace( /^\s*/, "" );
+	str = str.replace( /\s*$/, "" );
 	return str;
 }
 
 //receive an array of strings and then trim the leading/trailing
 //spaces of each element and then return a cleaned up array.
-function trimSpacesArray(arr)
+function trimSpacesArray ( arr )
 {
 	var result = [];
-	for(var x=0,len=arr.length;x<len;x++)
+	for ( var x = 0, len = arr.length; x < len; x++ )
 	{
-		result.push(trimSpaces(arr[x]));
+		result.push( trimSpaces( arr[ x ] ) );
 	}
 	return result;
 }
 
 //create and load a new action
-function createAction(name,actionString)
+function createAction ( name, actionString )
 {
-	var dest = new Folder(documentsPath);
-	var actionFile = new File(decodeURI(dest + "/" + name + ".aia" ));
+	var dest = new Folder( documentsPath );
+	var actionFile = new File( decodeURI( dest + "/" + name + ".aia" ) );
 
-	actionFile.open("w");
-	actionFile.write(actionString.join("\n"));
+	actionFile.open( "w" );
+	actionFile.write( actionString.join( "\n" ) );
 	actionFile.close();
-	
+
 	//load the action
-	app.loadAction(actionFile);
+	app.loadAction( actionFile );
 }
 
 
 //remove all instances of an action with a given name
-function removeAction(actionName)
+function removeAction ( actionName )
 {
 	var localValid = true;
 
-	while(localValid)
+	while ( localValid )
 	{
 		try
 		{
-			app.unloadAction(actionName,"");
+			app.unloadAction( actionName, "" );
 		}
-		catch(e)
+		catch ( e )
 		{
 			localValid = false;
 		}
@@ -3079,10 +3160,10 @@ function removeAction(actionName)
 }
 
 //curl data from a specified url and return the data as an anonymous object
-function curlData(url,arg)
+function curlData ( url, arg )
 {
-	log.h("Beginning execution of curlData(" + url + arg + ")");
-	var result,status,dataFileContents;
+	log.h( "Beginning execution of curlData(" + url + arg + ")" );
+	var result, status, dataFileContents;
 	var htmlRegex = /<html>/gmi;
 
 	// url = url+arg;
@@ -3090,18 +3171,18 @@ function curlData(url,arg)
 
 	//variables for the local data stuff
 	var curlDataPath = documentsPath + "curlData/"
-	var curlDataFolder = new Folder(curlDataPath);
-	if(!curlDataFolder.exists)
+	var curlDataFolder = new Folder( curlDataPath );
+	if ( !curlDataFolder.exists )
 	{
 		curlDataFolder.create();
 	}
-	var localDataFile = File(curlDataPath + "curlData.txt");
+	var localDataFile = File( curlDataPath + "curlData.txt" );
 
 
 	//clear out the local data file..
 	//make sure we always start with an empty string
-	localDataFile.open("w");
-	localDataFile.write("");
+	localDataFile.open( "w" );
+	localDataFile.write( "" );
 	localDataFile.close();
 	status = "empty";
 
@@ -3113,23 +3194,23 @@ function curlData(url,arg)
 
 
 
-	url = url+arg;
+	url = url + arg;
 
 
 	//variables for the local data stuff
 	var curlDataPath = documentsPath + "curlData/"
-	var curlDataFolder = new Folder(curlDataPath);
-	if(!curlDataFolder.exists)
+	var curlDataFolder = new Folder( curlDataPath );
+	if ( !curlDataFolder.exists )
 	{
 		curlDataFolder.create();
 	}
-	var localDataFile = File(curlDataPath + "curlData.txt");
+	var localDataFile = File( curlDataPath + "curlData.txt" );
 
 
 	//clear out the local data file..
 	//make sure we always start with an empty string
-	localDataFile.open("w");
-	localDataFile.write("");
+	localDataFile.open( "w" );
+	localDataFile.write( "" );
 	localDataFile.close();
 	status = "empty";
 
@@ -3141,13 +3222,13 @@ function curlData(url,arg)
 
 
 
-	if($.os.match("Windows"))
+	if ( $.os.match( "Windows" ) )
 	{
 		//write the bat file that will be
 		//used to execute the vbs script
 
 		writeVbsFile();
-		
+
 		//define the executor script
 		//cscript.exe runs the .vbs file as though the CL is being used
 		scriptText = "cscript.exe \"";
@@ -3162,10 +3243,10 @@ function curlData(url,arg)
 		scriptText += curlDataPath + "curlData.txt";
 
 
-		$.writeln(scriptText);
-		
-		scriptFile = File(curlDataPath + "batFile.bat");
-		writeScriptFile(scriptFile,scriptText)
+		$.writeln( scriptText );
+
+		scriptFile = File( curlDataPath + "batFile.bat" );
+		writeScriptFile( scriptFile, scriptText )
 
 		executor = scriptFile;
 	}
@@ -3176,12 +3257,12 @@ function curlData(url,arg)
 			"\"curl \\\"" + url,
 			"\\\" > \\\"",
 			curlDataPath + "curlData.txt" + "\\\"\""
-		].join("");
+		].join( "" );
 
-		scriptFile = File(curlDataPath + "curl_from_illustrator.scpt");
-		writeScriptFile(scriptFile,scriptText);
-		executor = File(resourcePath + "curl_from_illustrator.app");
-		killExecutor = File(resourcePath + "kill_curl_from_illustrator.app");
+		scriptFile = File( curlDataPath + "curl_from_illustrator.scpt" );
+		writeScriptFile( scriptFile, scriptText );
+		executor = File( resourcePath + "curl_from_illustrator.app" );
+		killExecutor = File( resourcePath + "kill_curl_from_illustrator.app" );
 	}
 
 
@@ -3200,52 +3281,52 @@ function curlData(url,arg)
 	{
 		//go get the data
 		executor.execute();
-		$.sleep(executorDelay);
+		$.sleep( executorDelay );
 
 
 		//check the data
-		for(var a=0;a<numberOfChecks && status !== "valid";a++)
+		for ( var a = 0; a < numberOfChecks && status !== "valid"; a++ )
 		{
 			checkData()
-			$.sleep(checkDelay);
+			$.sleep( checkDelay );
 		}
 
 	}
-	while(status !== "valid" && status !== "html" && currentExecutorCalls < maxExecutorCalls);
+	while ( status !== "valid" && status !== "html" && currentExecutorCalls < maxExecutorCalls );
 
 
 	//validate
-	if(status === "html" || (status === "empty" && parseFailResults.length))
+	if ( status === "html" || ( status === "empty" && parseFailResults.length ) )
 	{
-		errorList.push("Netsuite returned invalid data for " + arg);
-		log.e("curl command failed. status = " + status + "::parseFailResults = " + parseFailResults);
+		errorList.push( "Netsuite returned invalid data for " + arg );
+		log.e( "curl command failed. status = " + status + "::parseFailResults = " + parseFailResults );
 	}
-	else if(status === "valid")
+	else if ( status === "valid" )
 	{
-		log.l("Valid data.");
+		log.l( "Valid data." );
 		return result;
 	}
-	
 
 
-	function readDataFile()
+
+	function readDataFile ()
 	{
 		var file = localDataFile;
-		file.open("r");
+		file.open( "r" );
 		var contents = file.read();
 		file.close();
 
 		return contents;
 	}
 
-	function writeScriptFile(file,txt)
+	function writeScriptFile ( file, txt )
 	{
-		file.open("w");
-		file.write(txt);
+		file.open( "w" );
+		file.write( txt );
 		file.close();
 	}
 
-	function writeVbsFile()
+	function writeVbsFile ()
 	{
 		//go to the network and copy the contents of the
 		//socket_xhttpRequest.vbs file
@@ -3255,28 +3336,28 @@ function curlData(url,arg)
 		//access because another person is already executing the file?
 
 		//central file
-		var srcFile = File(dataPath + "socket_xhttpRequest.vbs");
+		var srcFile = File( dataPath + "socket_xhttpRequest.vbs" );
 
 		//local file
-		var destFile = File(curlDataPath + "socket_xhttpRequest.vbs");
+		var destFile = File( curlDataPath + "socket_xhttpRequest.vbs" );
 
 		//read the source file's contents
-		srcFile.open("r");
+		srcFile.open( "r" );
 		var srcContents = srcFile.read();
 		srcFile.close();
 
 		//write the contents to the local file
-		writeDatabase(destFile,srcContents);
+		writeDatabase( destFile, srcContents );
 	}
 
-	function checkData()
+	function checkData ()
 	{
 		var contents = readDataFile();
-		if(contents === "")
+		if ( contents === "" )
 		{
 			status = "empty";
 		}
-		else if(contents.match(htmlRegex))
+		else if ( contents.match( htmlRegex ) )
 		{
 			status = "html";
 		}
@@ -3284,17 +3365,17 @@ function curlData(url,arg)
 		{
 			try
 			{
-				result = JSON.parse(contents);
+				result = JSON.parse( contents );
 				status = "valid";
 			}
-			catch(e)
+			catch ( e )
 			{
 				status = "parseFail";
 				parseFailResults++;
 			}
 		}
 	}
-	
+
 
 
 }
@@ -3311,65 +3392,65 @@ function curlData(url,arg)
 //into an edit text box.
 //validate and parse the data
 //return JSON object.
-function curlWorkaround(url)
+function curlWorkaround ( url )
 {
 	var result;
 
-	var w_dataInput = new Window("dialog","Enter the order data:");
+	var w_dataInput = new Window( "dialog", "Enter the order data:" );
 
-		//labels n such
-		var labelGroup = UI.group(w_dataInput);
-			labelGroup.orientation = "column";
-			var topMsg = UI.static(labelGroup,"Copy this URL into your browser:");
-			var urlDisplay = UI.edit(labelGroup,url);
+	//labels n such
+	var labelGroup = UI.group( w_dataInput );
+	labelGroup.orientation = "column";
+	var topMsg = UI.static( labelGroup, "Copy this URL into your browser:" );
+	var urlDisplay = UI.edit( labelGroup, url );
 
-		//h separator
-		UI.hseparator(w_dataInput,400)
-		//input group
-		var inputGroup = UI.group(w_dataInput);
-			var inputMsg = UI.static(inputGroup,"Paste the contents of the browser window here:")
-			var input = UI.edit(inputGroup,"",40);
-				input.active = true;
+	//h separator
+	UI.hseparator( w_dataInput, 400 )
+	//input group
+	var inputGroup = UI.group( w_dataInput );
+	var inputMsg = UI.static( inputGroup, "Paste the contents of the browser window here:" )
+	var input = UI.edit( inputGroup, "", 40 );
+	input.active = true;
 
-		//buttons
-		var btnGroup = UI.group(w_dataInput);
-			var cancel = UI.button(btnGroup,"Cancel",function()
+	//buttons
+	var btnGroup = UI.group( w_dataInput );
+	var cancel = UI.button( btnGroup, "Cancel", function ()
+	{
+		result = undefined;
+		w_dataInput.close();
+	} );
+	var submit = UI.button( btnGroup, "Submit", function ()
+	{
+		if ( input.text !== "" )
+		{
+			result = JSON.parse( input.text );
+			if ( !result )
 			{
-				result = undefined;
+				alert( "Failed to parse the data.. Please try again." );
+			}
+			else
+			{
 				w_dataInput.close();
-			});
-			var submit = UI.button(btnGroup,"Submit",function()
-			{
-				if(input.text !== "")
-				{
-					result = JSON.parse(input.text);
-					if(!result)
-					{
-						alert("Failed to parse the data.. Please try again.");
-					}
-					else
-					{
-						w_dataInput.close();
-					}
-				}
-				else
-				{
-					alert("Please paste the data into the box and try again.");
-					return;
-				}
-			})
+			}
+		}
+		else
+		{
+			alert( "Please paste the data into the box and try again." );
+			return;
+		}
+	} )
 
 	w_dataInput.show();
 
 	return result;
 }
 
-function updateSwatchColor(swatch,name,colors)
+function updateSwatchColor ( swatch, name, colors )
 {
 	swatch.name = name;
-	for(var color in swatch.color.spot.color)
+	for ( var color in swatch.color.spot.color )
 	{
-		swatch.color.spot.color[color] = colors[color];
+		swatch.color.spot.color[ color ] = colors[ color ];
 	}
 }
 
@@ -3378,27 +3459,27 @@ function updateSwatchColor(swatch,name,colors)
 //that should activate the parent layer so that a new
 //item is placed inside of it instead of whatever layer
 //was last selected by the user
-function activateLayer(layer)
+function activateLayer ( layer )
 {
 	var result = false;
-	var itemLocked = false,itemHidden = false;
+	var itemLocked = false, itemHidden = false;
 	var items = layer.pageItems;
-	if(items.length)
+	if ( items.length )
 	{
-		if(items[0].locked)
+		if ( items[ 0 ].locked )
 		{
 			itemLocked = true;
-			items[0].locked = false;
+			items[ 0 ].locked = false;
 		}
-		if(items[0].hidden)
+		if ( items[ 0 ].hidden )
 		{
 			itemHidden = true;
-			items[0].hidden = false;
+			items[ 0 ].hidden = false;
 		}
-		items[0].selected = true;
+		items[ 0 ].selected = true;
 		app.activeDocument.selection = null;
-		items[0].locked = itemLocked;
-		items[0].hidden = itemHidden;
+		items[ 0 ].locked = itemLocked;
+		items[ 0 ].hidden = itemHidden;
 		result = true;
 	}
 	else
@@ -3416,47 +3497,47 @@ function activateLayer(layer)
 //that rectangle object. if it's not selected,
 //then guides are locked and we should toggle
 //the setting
-function unlockGuides()
+function unlockGuides ()
 {
 	var doc = app.activeDocument;
 	var layers = doc.layers;
 	var activatedLayer;
 
-	for(var x=0, len = layers[0].layers.length;x<len && !activatedLayer;x++)
+	for ( var x = 0, len = layers[ 0 ].layers.length; x < len && !activatedLayer; x++ )
 	{
-		if(activateLayer(layers[0].layers[x]))
+		if ( activateLayer( layers[ 0 ].layers[ x ] ) )
 		{
-			activatedLayer = layers[0].layers[x];
+			activatedLayer = layers[ 0 ].layers[ x ];
 		}
 	}
-	if(activatedLayer)
+	if ( activatedLayer )
 	{
-		if(activatedLayer.locked)
+		if ( activatedLayer.locked )
 		{
 			activatedLayer.locked = false;
 		}
-		if(!activatedLayer.visible)
+		if ( !activatedLayer.visible )
 		{
 			activatedLayer.visible = true;
 		}
-		var rect = doc.pathItems.rectangle(-100,0,50,50);
+		var rect = doc.pathItems.rectangle( -100, 0, 50, 50 );
 		rect.guides = true;
 
 		rect.selected = true;
 
-		if(!rect.selected)
+		if ( !rect.selected )
 		{
-			log.l("unlocking the guides.");
-			app.executeMenuCommand("lockguide");
+			log.l( "unlocking the guides." );
+			app.executeMenuCommand( "lockguide" );
 		}
 		rect.remove();
 	}
-	
 
 
-	
 
-	
+
+
+
 }
 
 //this function is for the add artwork and rebuild template scripts
@@ -3466,29 +3547,29 @@ function unlockGuides()
 //rotationSets will look like this:
 // 		[{"angle":-90,"pieces":["front","back"]},{"angle":90,"pieces":["Right Sleeve", "Left Sleeve"]}]
 //parentLayer is the prepressLayer to rotate.
-function rotatePieces(rotationSets,parentLayer)
+function rotatePieces ( rotationSets, parentLayer )
 {
-	rotationSets.forEach(function(set)
+	rotationSets.forEach( function ( set )
 	{
 		var pieces = set.pieces;
 		var angle = set.angle;
-		arrayFromContainer(parentLayer,"layers").forEach(function(sizeLay)
+		arrayFromContainer( parentLayer, "layers" ).forEach( function ( sizeLay )
 		{
-			arrayFromContainer(sizeLay,"pageItems").forEach(function(piece)
+			arrayFromContainer( sizeLay, "pageItems" ).forEach( function ( piece )
 			{
-				var splitName = piece.name.split(" ");
-				if(splitName.length < 2 || !piece.name)
+				var splitName = piece.name.split( " " );
+				if ( splitName.length < 2 || !piece.name )
 					return;
-				var pieceName = splitName.splice(1, splitName.length).join(" ");
-				if(pieceName && pieces.indexOf(pieceName) !== -1)
+				var pieceName = splitName.splice( 1, splitName.length ).join( " " );
+				if ( pieceName && pieces.indexOf( pieceName ) !== -1 )
 				{
-					piece.rotate(angle);
+					piece.rotate( angle );
 				}
-			});
-		});
-	})
-	
-	
+			} );
+		} );
+	} )
+
+
 }
 
 
@@ -3496,365 +3577,365 @@ function rotatePieces(rotationSets,parentLayer)
 //action string arrays
 //
 
-var PATHFINDER_ACTION_STRING = 
-[
-	"/version 3",
-	"/name [ 10",
-	"	7061746866696e646572",
-	"]",
-	"/isOpen 1",
-	"/actionCount 10",
-	"/action-1 {",
-	"	/name [ 5",
-	"		756e697465",
-	"	]",
-	"	/keyIndex 0",
-	"	/colorIndex 0",
-	"	/isOpen 0",
-	"	/eventCount 1",
-	"	/event-1 {",
-	"		/useRulersIn1stQuadrant 0",
-	"		/internalName (ai_plugin_pathfinder)",
-	"		/localizedName [ 10",
-	"			5061746866696e646572",
-	"		]",
-	"		/isOpen 0",
-	"		/isOn 1",
-	"		/hasDialog 0",
-	"		/parameterCount 1",
-	"		/parameter-1 {",
-	"			/key 1851878757",
-	"			/showInPalette 4294967295",
-	"			/type (enumerated)",
-	"			/name [ 3",
-	"				416464",
-	"			]",
-	"			/value 0",
-	"		}",
-	"	}",
-	"}",
-	"/action-2 {",
-	"	/name [ 11",
-	"		6d696e75735f66726f6e74",
-	"	]",
-	"	/keyIndex 0",
-	"	/colorIndex 0",
-	"	/isOpen 0",
-	"	/eventCount 1",
-	"	/event-1 {",
-	"		/useRulersIn1stQuadrant 0",
-	"		/internalName (ai_plugin_pathfinder)",
-	"		/localizedName [ 10",
-	"			5061746866696e646572",
-	"		]",
-	"		/isOpen 0",
-	"		/isOn 1",
-	"		/hasDialog 0",
-	"		/parameterCount 1",
-	"		/parameter-1 {",
-	"			/key 1851878757",
-	"			/showInPalette 4294967295",
-	"			/type (enumerated)",
-	"			/name [ 8",
-	"				5375627472616374",
-	"			]",
-	"			/value 3",
-	"		}",
-	"	}",
-	"}",
-	"/action-3 {",
-	"	/name [ 9",
-	"		696e74657273656374",
-	"	]",
-	"	/keyIndex 0",
-	"	/colorIndex 0",
-	"	/isOpen 0",
-	"	/eventCount 1",
-	"	/event-1 {",
-	"		/useRulersIn1stQuadrant 0",
-	"		/internalName (ai_plugin_pathfinder)",
-	"		/localizedName [ 10",
-	"			5061746866696e646572",
-	"		]",
-	"		/isOpen 0",
-	"		/isOn 1",
-	"		/hasDialog 0",
-	"		/parameterCount 1",
-	"		/parameter-1 {",
-	"			/key 1851878757",
-	"			/showInPalette 4294967295",
-	"			/type (enumerated)",
-	"			/name [ 9",
-	"				496e74657273656374",
-	"			]",
-	"			/value 1",
-	"		}",
-	"	}",
-	"}",
-	"/action-4 {",
-	"	/name [ 7",
-	"		6578636c756465",
-	"	]",
-	"	/keyIndex 0",
-	"	/colorIndex 0",
-	"	/isOpen 1",
-	"	/eventCount 1",
-	"	/event-1 {",
-	"		/useRulersIn1stQuadrant 0",
-	"		/internalName (ai_plugin_pathfinder)",
-	"		/localizedName [ 10",
-	"			5061746866696e646572",
-	"		]",
-	"		/isOpen 0",
-	"		/isOn 1",
-	"		/hasDialog 0",
-	"		/parameterCount 1",
-	"		/parameter-1 {",
-	"			/key 1851878757",
-	"			/showInPalette 4294967295",
-	"			/type (enumerated)",
-	"			/name [ 7",
-	"				4578636c756465",
-	"			]",
-	"			/value 2",
-	"		}",
-	"	}",
-	"}",
-	"/action-5 {",
-	"	/name [ 6",
-	"		646976696465",
-	"	]",
-	"	/keyIndex 0",
-	"	/colorIndex 0",
-	"	/isOpen 1",
-	"	/eventCount 1",
-	"	/event-1 {",
-	"		/useRulersIn1stQuadrant 0",
-	"		/internalName (ai_plugin_pathfinder)",
-	"		/localizedName [ 10",
-	"			5061746866696e646572",
-	"		]",
-	"		/isOpen 0",
-	"		/isOn 1",
-	"		/hasDialog 0",
-	"		/parameterCount 1",
-	"		/parameter-1 {",
-	"			/key 1851878757",
-	"			/showInPalette 4294967295",
-	"			/type (enumerated)",
-	"			/name [ 6",
-	"				446976696465",
-	"			]",
-	"			/value 5",
-	"		}",
-	"	}",
-	"}",
-	"/action-6 {",
-	"	/name [ 4",
-	"		7472696d",
-	"	]",
-	"	/keyIndex 0",
-	"	/colorIndex 0",
-	"	/isOpen 1",
-	"	/eventCount 1",
-	"	/event-1 {",
-	"		/useRulersIn1stQuadrant 0",
-	"		/internalName (ai_plugin_pathfinder)",
-	"		/localizedName [ 10",
-	"			5061746866696e646572",
-	"		]",
-	"		/isOpen 0",
-	"		/isOn 1",
-	"		/hasDialog 0",
-	"		/parameterCount 1",
-	"		/parameter-1 {",
-	"			/key 1851878757",
-	"			/showInPalette 4294967295",
-	"			/type (enumerated)",
-	"			/name [ 4",
-	"				5472696d",
-	"			]",
-	"			/value 7",
-	"		}",
-	"	}",
-	"}",
-	"/action-7 {",
-	"	/name [ 5",
-	"		6d65726765",
-	"	]",
-	"	/keyIndex 0",
-	"	/colorIndex 0",
-	"	/isOpen 1",
-	"	/eventCount 1",
-	"	/event-1 {",
-	"		/useRulersIn1stQuadrant 0",
-	"		/internalName (ai_plugin_pathfinder)",
-	"		/localizedName [ 10",
-	"			5061746866696e646572",
-	"		]",
-	"		/isOpen 0",
-	"		/isOn 1",
-	"		/hasDialog 0",
-	"		/parameterCount 1",
-	"		/parameter-1 {",
-	"			/key 1851878757",
-	"			/showInPalette 4294967295",
-	"			/type (enumerated)",
-	"			/name [ 5",
-	"				4d65726765",
-	"			]",
-	"			/value 8",
-	"		}",
-	"	}",
-	"}",
-	"/action-8 {",
-	"	/name [ 4",
-	"		63726f70",
-	"	]",
-	"	/keyIndex 0",
-	"	/colorIndex 0",
-	"	/isOpen 1",
-	"	/eventCount 1",
-	"	/event-1 {",
-	"		/useRulersIn1stQuadrant 0",
-	"		/internalName (ai_plugin_pathfinder)",
-	"		/localizedName [ 10",
-	"			5061746866696e646572",
-	"		]",
-	"		/isOpen 0",
-	"		/isOn 1",
-	"		/hasDialog 0",
-	"		/parameterCount 1",
-	"		/parameter-1 {",
-	"			/key 1851878757",
-	"			/showInPalette 4294967295",
-	"			/type (enumerated)",
-	"			/name [ 4",
-	"				43726f70",
-	"			]",
-	"			/value 9",
-	"		}",
-	"	}",
-	"}",
-	"/action-9 {",
-	"	/name [ 7",
-	"		6f75746c696e65",
-	"	]",
-	"	/keyIndex 0",
-	"	/colorIndex 0",
-	"	/isOpen 1",
-	"	/eventCount 1",
-	"	/event-1 {",
-	"		/useRulersIn1stQuadrant 0",
-	"		/internalName (ai_plugin_pathfinder)",
-	"		/localizedName [ 10",
-	"			5061746866696e646572",
-	"		]",
-	"		/isOpen 0",
-	"		/isOn 1",
-	"		/hasDialog 0",
-	"		/parameterCount 1",
-	"		/parameter-1 {",
-	"			/key 1851878757",
-	"			/showInPalette 4294967295",
-	"			/type (enumerated)",
-	"			/name [ 7",
-	"				4f75746c696e65",
-	"			]",
-	"			/value 6",
-	"		}",
-	"	}",
-	"}",
-	"/action-10 {",
-	"	/name [ 10",
-	"		6d696e75735f6261636b",
-	"	]",
-	"	/keyIndex 0",
-	"	/colorIndex 0",
-	"	/isOpen 1",
-	"	/eventCount 1",
-	"	/event-1 {",
-	"		/useRulersIn1stQuadrant 0",
-	"		/internalName (ai_plugin_pathfinder)",
-	"		/localizedName [ 10",
-	"			5061746866696e646572",
-	"		]",
-	"		/isOpen 0",
-	"		/isOn 1",
-	"		/hasDialog 0",
-	"		/parameterCount 1",
-	"		/parameter-1 {",
-	"			/key 1851878757",
-	"			/showInPalette 4294967295",
-	"			/type (enumerated)",
-	"			/name [ 10",
-	"				4d696e7573204261636b",
-	"			]",
-	"			/value 4",
-	"		}",
-	"	}",
-	"}"
-]
+var PATHFINDER_ACTION_STRING =
+	[
+		"/version 3",
+		"/name [ 10",
+		"	7061746866696e646572",
+		"]",
+		"/isOpen 1",
+		"/actionCount 10",
+		"/action-1 {",
+		"	/name [ 5",
+		"		756e697465",
+		"	]",
+		"	/keyIndex 0",
+		"	/colorIndex 0",
+		"	/isOpen 0",
+		"	/eventCount 1",
+		"	/event-1 {",
+		"		/useRulersIn1stQuadrant 0",
+		"		/internalName (ai_plugin_pathfinder)",
+		"		/localizedName [ 10",
+		"			5061746866696e646572",
+		"		]",
+		"		/isOpen 0",
+		"		/isOn 1",
+		"		/hasDialog 0",
+		"		/parameterCount 1",
+		"		/parameter-1 {",
+		"			/key 1851878757",
+		"			/showInPalette 4294967295",
+		"			/type (enumerated)",
+		"			/name [ 3",
+		"				416464",
+		"			]",
+		"			/value 0",
+		"		}",
+		"	}",
+		"}",
+		"/action-2 {",
+		"	/name [ 11",
+		"		6d696e75735f66726f6e74",
+		"	]",
+		"	/keyIndex 0",
+		"	/colorIndex 0",
+		"	/isOpen 0",
+		"	/eventCount 1",
+		"	/event-1 {",
+		"		/useRulersIn1stQuadrant 0",
+		"		/internalName (ai_plugin_pathfinder)",
+		"		/localizedName [ 10",
+		"			5061746866696e646572",
+		"		]",
+		"		/isOpen 0",
+		"		/isOn 1",
+		"		/hasDialog 0",
+		"		/parameterCount 1",
+		"		/parameter-1 {",
+		"			/key 1851878757",
+		"			/showInPalette 4294967295",
+		"			/type (enumerated)",
+		"			/name [ 8",
+		"				5375627472616374",
+		"			]",
+		"			/value 3",
+		"		}",
+		"	}",
+		"}",
+		"/action-3 {",
+		"	/name [ 9",
+		"		696e74657273656374",
+		"	]",
+		"	/keyIndex 0",
+		"	/colorIndex 0",
+		"	/isOpen 0",
+		"	/eventCount 1",
+		"	/event-1 {",
+		"		/useRulersIn1stQuadrant 0",
+		"		/internalName (ai_plugin_pathfinder)",
+		"		/localizedName [ 10",
+		"			5061746866696e646572",
+		"		]",
+		"		/isOpen 0",
+		"		/isOn 1",
+		"		/hasDialog 0",
+		"		/parameterCount 1",
+		"		/parameter-1 {",
+		"			/key 1851878757",
+		"			/showInPalette 4294967295",
+		"			/type (enumerated)",
+		"			/name [ 9",
+		"				496e74657273656374",
+		"			]",
+		"			/value 1",
+		"		}",
+		"	}",
+		"}",
+		"/action-4 {",
+		"	/name [ 7",
+		"		6578636c756465",
+		"	]",
+		"	/keyIndex 0",
+		"	/colorIndex 0",
+		"	/isOpen 1",
+		"	/eventCount 1",
+		"	/event-1 {",
+		"		/useRulersIn1stQuadrant 0",
+		"		/internalName (ai_plugin_pathfinder)",
+		"		/localizedName [ 10",
+		"			5061746866696e646572",
+		"		]",
+		"		/isOpen 0",
+		"		/isOn 1",
+		"		/hasDialog 0",
+		"		/parameterCount 1",
+		"		/parameter-1 {",
+		"			/key 1851878757",
+		"			/showInPalette 4294967295",
+		"			/type (enumerated)",
+		"			/name [ 7",
+		"				4578636c756465",
+		"			]",
+		"			/value 2",
+		"		}",
+		"	}",
+		"}",
+		"/action-5 {",
+		"	/name [ 6",
+		"		646976696465",
+		"	]",
+		"	/keyIndex 0",
+		"	/colorIndex 0",
+		"	/isOpen 1",
+		"	/eventCount 1",
+		"	/event-1 {",
+		"		/useRulersIn1stQuadrant 0",
+		"		/internalName (ai_plugin_pathfinder)",
+		"		/localizedName [ 10",
+		"			5061746866696e646572",
+		"		]",
+		"		/isOpen 0",
+		"		/isOn 1",
+		"		/hasDialog 0",
+		"		/parameterCount 1",
+		"		/parameter-1 {",
+		"			/key 1851878757",
+		"			/showInPalette 4294967295",
+		"			/type (enumerated)",
+		"			/name [ 6",
+		"				446976696465",
+		"			]",
+		"			/value 5",
+		"		}",
+		"	}",
+		"}",
+		"/action-6 {",
+		"	/name [ 4",
+		"		7472696d",
+		"	]",
+		"	/keyIndex 0",
+		"	/colorIndex 0",
+		"	/isOpen 1",
+		"	/eventCount 1",
+		"	/event-1 {",
+		"		/useRulersIn1stQuadrant 0",
+		"		/internalName (ai_plugin_pathfinder)",
+		"		/localizedName [ 10",
+		"			5061746866696e646572",
+		"		]",
+		"		/isOpen 0",
+		"		/isOn 1",
+		"		/hasDialog 0",
+		"		/parameterCount 1",
+		"		/parameter-1 {",
+		"			/key 1851878757",
+		"			/showInPalette 4294967295",
+		"			/type (enumerated)",
+		"			/name [ 4",
+		"				5472696d",
+		"			]",
+		"			/value 7",
+		"		}",
+		"	}",
+		"}",
+		"/action-7 {",
+		"	/name [ 5",
+		"		6d65726765",
+		"	]",
+		"	/keyIndex 0",
+		"	/colorIndex 0",
+		"	/isOpen 1",
+		"	/eventCount 1",
+		"	/event-1 {",
+		"		/useRulersIn1stQuadrant 0",
+		"		/internalName (ai_plugin_pathfinder)",
+		"		/localizedName [ 10",
+		"			5061746866696e646572",
+		"		]",
+		"		/isOpen 0",
+		"		/isOn 1",
+		"		/hasDialog 0",
+		"		/parameterCount 1",
+		"		/parameter-1 {",
+		"			/key 1851878757",
+		"			/showInPalette 4294967295",
+		"			/type (enumerated)",
+		"			/name [ 5",
+		"				4d65726765",
+		"			]",
+		"			/value 8",
+		"		}",
+		"	}",
+		"}",
+		"/action-8 {",
+		"	/name [ 4",
+		"		63726f70",
+		"	]",
+		"	/keyIndex 0",
+		"	/colorIndex 0",
+		"	/isOpen 1",
+		"	/eventCount 1",
+		"	/event-1 {",
+		"		/useRulersIn1stQuadrant 0",
+		"		/internalName (ai_plugin_pathfinder)",
+		"		/localizedName [ 10",
+		"			5061746866696e646572",
+		"		]",
+		"		/isOpen 0",
+		"		/isOn 1",
+		"		/hasDialog 0",
+		"		/parameterCount 1",
+		"		/parameter-1 {",
+		"			/key 1851878757",
+		"			/showInPalette 4294967295",
+		"			/type (enumerated)",
+		"			/name [ 4",
+		"				43726f70",
+		"			]",
+		"			/value 9",
+		"		}",
+		"	}",
+		"}",
+		"/action-9 {",
+		"	/name [ 7",
+		"		6f75746c696e65",
+		"	]",
+		"	/keyIndex 0",
+		"	/colorIndex 0",
+		"	/isOpen 1",
+		"	/eventCount 1",
+		"	/event-1 {",
+		"		/useRulersIn1stQuadrant 0",
+		"		/internalName (ai_plugin_pathfinder)",
+		"		/localizedName [ 10",
+		"			5061746866696e646572",
+		"		]",
+		"		/isOpen 0",
+		"		/isOn 1",
+		"		/hasDialog 0",
+		"		/parameterCount 1",
+		"		/parameter-1 {",
+		"			/key 1851878757",
+		"			/showInPalette 4294967295",
+		"			/type (enumerated)",
+		"			/name [ 7",
+		"				4f75746c696e65",
+		"			]",
+		"			/value 6",
+		"		}",
+		"	}",
+		"}",
+		"/action-10 {",
+		"	/name [ 10",
+		"		6d696e75735f6261636b",
+		"	]",
+		"	/keyIndex 0",
+		"	/colorIndex 0",
+		"	/isOpen 1",
+		"	/eventCount 1",
+		"	/event-1 {",
+		"		/useRulersIn1stQuadrant 0",
+		"		/internalName (ai_plugin_pathfinder)",
+		"		/localizedName [ 10",
+		"			5061746866696e646572",
+		"		]",
+		"		/isOpen 0",
+		"		/isOn 1",
+		"		/hasDialog 0",
+		"		/parameterCount 1",
+		"		/parameter-1 {",
+		"			/key 1851878757",
+		"			/showInPalette 4294967295",
+		"			/type (enumerated)",
+		"			/name [ 10",
+		"				4d696e7573204261636b",
+		"			]",
+		"			/value 4",
+		"		}",
+		"	}",
+		"}"
+	]
 
 //cleanup swatches action
-var CLEANUP_SWATCHES_ACTION_STRING = 
-[
-	"/version 3",
-	"/name [ 16",
-	"	636c65616e75705f7377617463686573",
-	"]",
-	"/isOpen 1",
-	"/actionCount 1",
-	"/action-1 {",
-	"	/name [ 16",
-	"		636c65616e75705f7377617463686573",
-	"	]",
-	"	/keyIndex 5",
-	"	/colorIndex 0",
-	"	/isOpen 1",
-	"	/eventCount 2",
-	"	/event-1 {",
-	"		/useRulersIn1stQuadrant 0",
-	"		/internalName (ai_plugin_swatches)",
-	"		/localizedName [ 8",
-	"			5377617463686573",
-	"		]",
-	"		/isOpen 0",
-	"		/isOn 1",
-	"		/hasDialog 0",
-	"		/parameterCount 1",
-	"		/parameter-1 {",
-	"			/key 1835363957",
-	"			/showInPalette 4294967295",
-	"			/type (enumerated)",
-	"			/name [ 17",
-	"				53656c65637420416c6c20556e75736564",
-	"			]",
-	"			/value 11",
-	"		}",
-	"	}",
-	"	/event-2 {",
-	"		/useRulersIn1stQuadrant 0",
-	"		/internalName (ai_plugin_swatches)",
-	"		/localizedName [ 8",
-	"			5377617463686573",
-	"		]",
-	"		/isOpen 0",
-	"		/isOn 1",
-	"		/hasDialog 1",
-	"		/showDialog 0",
-	"		/parameterCount 1",
-	"		/parameter-1 {",
-	"			/key 1835363957",
-	"			/showInPalette 4294967295",
-	"			/type (enumerated)",
-	"			/name [ 13",
-	"				44656c65746520537761746368",
-	"			]",
-	"			/value 3",
-	"		}",
-	"	}",
-	"}"
+var CLEANUP_SWATCHES_ACTION_STRING =
+	[
+		"/version 3",
+		"/name [ 16",
+		"	636c65616e75705f7377617463686573",
+		"]",
+		"/isOpen 1",
+		"/actionCount 1",
+		"/action-1 {",
+		"	/name [ 16",
+		"		636c65616e75705f7377617463686573",
+		"	]",
+		"	/keyIndex 5",
+		"	/colorIndex 0",
+		"	/isOpen 1",
+		"	/eventCount 2",
+		"	/event-1 {",
+		"		/useRulersIn1stQuadrant 0",
+		"		/internalName (ai_plugin_swatches)",
+		"		/localizedName [ 8",
+		"			5377617463686573",
+		"		]",
+		"		/isOpen 0",
+		"		/isOn 1",
+		"		/hasDialog 0",
+		"		/parameterCount 1",
+		"		/parameter-1 {",
+		"			/key 1835363957",
+		"			/showInPalette 4294967295",
+		"			/type (enumerated)",
+		"			/name [ 17",
+		"				53656c65637420416c6c20556e75736564",
+		"			]",
+		"			/value 11",
+		"		}",
+		"	}",
+		"	/event-2 {",
+		"		/useRulersIn1stQuadrant 0",
+		"		/internalName (ai_plugin_swatches)",
+		"		/localizedName [ 8",
+		"			5377617463686573",
+		"		]",
+		"		/isOpen 0",
+		"		/isOn 1",
+		"		/hasDialog 1",
+		"		/showDialog 0",
+		"		/parameterCount 1",
+		"		/parameter-1 {",
+		"			/key 1835363957",
+		"			/showInPalette 4294967295",
+		"			/type (enumerated)",
+		"			/name [ 13",
+		"				44656c65746520537761746368",
+		"			]",
+		"			/value 3",
+		"		}",
+		"	}",
+		"}"
 	]
 
 var UNLOCK_GUIDES_ACTION_STRING = [
@@ -3892,60 +3973,60 @@ var UNLOCK_GUIDES_ACTION_STRING = [
 	"}"
 ]
 
-var TURN_OFF_OVERPRINT_ACTION_STRING = 
-[
-	"/version 3",
-	"/name [ 18",
-	"	7475726e5f6f66665f6f7665727072696e74",
-	"]",
-	"/isOpen 1",
-	"/actionCount 1",
-	"/action-1 {",
-	"	/name [ 18",
-	"		7475726e5f6f66665f6f7665727072696e74",
-	"	]",
-	"	/keyIndex 0",
-	"	/colorIndex 0",
-	"	/isOpen 1",
-	"	/eventCount 2",
-	"	/event-1 {",
-	"		/useRulersIn1stQuadrant 0",
-	"		/internalName (adobe_attributePalette)",
-	"		/localizedName [ 17",
-	"			4174747269627574652053657474696e67",
-	"		]",
-	"		/isOpen 0",
-	"		/isOn 1",
-	"		/hasDialog 0",
-	"		/parameterCount 1",
-	"		/parameter-1 {",
-	"			/key 1718185068",
-	"			/showInPalette 4294967295",
-	"			/type (boolean)",
-	"			/value 1",
-	"		}",
-	"	}",
-	"	/event-2 {",
-	"		/useRulersIn1stQuadrant 0",
-	"		/internalName (adobe_attributePalette)",
-	"		/localizedName [ 17",
-	"			4174747269627574652053657474696e67",
-	"		]",
-	"		/isOpen 0",
-	"		/isOn 1",
-	"		/hasDialog 0",
-	"		/parameterCount 1",
-	"		/parameter-1 {",
-	"			/key 1718185068",
-	"			/showInPalette 4294967295",
-	"			/type (boolean)",
-	"			/value 0",
-	"		}",
-	"	}",
-	"}"
-]
+var TURN_OFF_OVERPRINT_ACTION_STRING =
+	[
+		"/version 3",
+		"/name [ 18",
+		"	7475726e5f6f66665f6f7665727072696e74",
+		"]",
+		"/isOpen 1",
+		"/actionCount 1",
+		"/action-1 {",
+		"	/name [ 18",
+		"		7475726e5f6f66665f6f7665727072696e74",
+		"	]",
+		"	/keyIndex 0",
+		"	/colorIndex 0",
+		"	/isOpen 1",
+		"	/eventCount 2",
+		"	/event-1 {",
+		"		/useRulersIn1stQuadrant 0",
+		"		/internalName (adobe_attributePalette)",
+		"		/localizedName [ 17",
+		"			4174747269627574652053657474696e67",
+		"		]",
+		"		/isOpen 0",
+		"		/isOn 1",
+		"		/hasDialog 0",
+		"		/parameterCount 1",
+		"		/parameter-1 {",
+		"			/key 1718185068",
+		"			/showInPalette 4294967295",
+		"			/type (boolean)",
+		"			/value 1",
+		"		}",
+		"	}",
+		"	/event-2 {",
+		"		/useRulersIn1stQuadrant 0",
+		"		/internalName (adobe_attributePalette)",
+		"		/localizedName [ 17",
+		"			4174747269627574652053657474696e67",
+		"		]",
+		"		/isOpen 0",
+		"		/isOn 1",
+		"		/hasDialog 0",
+		"		/parameterCount 1",
+		"		/parameter-1 {",
+		"			/key 1718185068",
+		"			/showInPalette 4294967295",
+		"			/type (boolean)",
+		"			/value 0",
+		"		}",
+		"	}",
+		"}"
+	]
 
-var GRAPHIC_STYLE_FROM_SELECTION_ACTION_STRING = 
+var GRAPHIC_STYLE_FROM_SELECTION_ACTION_STRING =
 	[
 		"/version 3",
 		"/name [ 28",
@@ -4072,7 +4153,7 @@ var GRAPHIC_STYLE_FROM_SELECTION_ACTION_STRING =
 
 
 
-var CLEAR_APPEARANCE_ACTION_STRING = 
+var CLEAR_APPEARANCE_ACTION_STRING =
 	[
 		"/version 3",
 		"/name [ 16",
@@ -4111,7 +4192,7 @@ var CLEAR_APPEARANCE_ACTION_STRING =
 		"}",
 	];
 
-var ADD_NEW_FILL_ACTION_STRING = 
+var ADD_NEW_FILL_ACTION_STRING =
 	[
 		"/version 3",
 		"/name [ 12",
@@ -4150,8 +4231,8 @@ var ADD_NEW_FILL_ACTION_STRING =
 		"}"
 	]
 
-var EXPORT_JPG_HIGH_QUALITY_ACTION_STRING =	
-	[	
+var EXPORT_JPG_HIGH_QUALITY_ACTION_STRING =
+	[
 		"/version 3",
 		"/name [ 10",
 		"	6578706f7274206a7067",
@@ -4246,44 +4327,44 @@ var EXPORT_JPG_HIGH_QUALITY_ACTION_STRING =
 
 
 
-var BUILDER_GRAPHIC_LOCATION_CODES =  
-	{
-		"Front Upper Right": "TFUR",
-		"Front Upper Left": "TFUL",
-		"Front Center": "TFCC",
-		"Front Lower Right": "TFLR",
-		"Front Lower Center": "TFLC",
-		"Front Lower Left": "TFRL",
-		"Back Locker Tag": "TBLT",
-		"Back Player Name": "TBPL",
-		"Back Player Number": "TBNM",
-		"Back Large": "TBLB",
-		"Right Shoulder": "TRSH",
-		"Right Sleeve": "TRSL",
-		"Left Shoulder": "TLSH",
-		"Left Sleeve": "TLSL",
-		"Right Hood": "TRHD",
-		"Left Hood": "TLHD",
-		"Back Center": "TBCB",
-		"Back Ghosted Mascot": "TBGG",
-		"Back Lower Back": "TBLC",
-		"Front Right Leg": "BFRL",
-		"Front Left Leg": "BFLL",
-		"Back Right Leg": "BBRL",
-		"Back Left Leg": "BBLL",
-		"Right Side Leg": "BRSD",
-		"Right Lower Leg": "BRLW",
-		"Left Side Leg": "BLSD",
-		"Left Lower Leg": "BLLW",
-		"Back Waistband": "BBWB",
-		"Left Waistband": "BFUL",
-		"Right Waistband": "BFUR",
-		"Right Hip": "BFRH",
-		"Left Hip": "BFLH"
-	} 
+var BUILDER_GRAPHIC_LOCATION_CODES =
+{
+	"Front Upper Right": "TFUR",
+	"Front Upper Left": "TFUL",
+	"Front Center": "TFCC",
+	"Front Lower Right": "TFLR",
+	"Front Lower Center": "TFLC",
+	"Front Lower Left": "TFRL",
+	"Back Locker Tag": "TBLT",
+	"Back Player Name": "TBPL",
+	"Back Player Number": "TBNM",
+	"Back Large": "TBLB",
+	"Right Shoulder": "TRSH",
+	"Right Sleeve": "TRSL",
+	"Left Shoulder": "TLSH",
+	"Left Sleeve": "TLSL",
+	"Right Hood": "TRHD",
+	"Left Hood": "TLHD",
+	"Back Center": "TBCB",
+	"Back Ghosted Mascot": "TBGG",
+	"Back Lower Back": "TBLC",
+	"Front Right Leg": "BFRL",
+	"Front Left Leg": "BFLL",
+	"Back Right Leg": "BBRL",
+	"Back Left Leg": "BBLL",
+	"Right Side Leg": "BRSD",
+	"Right Lower Leg": "BRLW",
+	"Left Side Leg": "BLSD",
+	"Left Lower Leg": "BLLW",
+	"Back Waistband": "BBWB",
+	"Left Waistband": "BFUL",
+	"Right Waistband": "BFUR",
+	"Right Hip": "BFRH",
+	"Left Hip": "BFLH"
+}
 
 
-var BOOMBAH_APPROVED_COLORS = 
+var BOOMBAH_APPROVED_COLORS =
 	[
 		"Black B",
 		"White B",
@@ -4381,59 +4462,59 @@ var BOOMBAH_APPROVED_COLORS =
 		"Electric Blue B"
 	];
 
-var BOOMBAH_PRODUCTION_COLORS = 
-	['Thru-cut',
-	 'CUT LINE',
-	 'cut line',
-	 'Info B',
-	 'cutline',
-	 'CUTLINE',
-	 'SEW LINE',
-	 'SEW LINES',
-	 'SEWLINE'];
+var BOOMBAH_PRODUCTION_COLORS =
+	[ 'Thru-cut',
+		'CUT LINE',
+		'cut line',
+		'Info B',
+		'cutline',
+		'CUTLINE',
+		'SEW LINE',
+		'SEW LINES',
+		'SEWLINE' ];
 
 var BUILDER_COLOR_CODES = {
-	"B" : "Black B",
-	"BPU" : "BRIGHT PURPLE B",
-	"BN" : "Brown B",
-	"CRD" : "Cardinal B",
-	"C" : "Charcoal 2 B",
-	"CB" : "Columbia B",
-	"CY" : "Cyan B",
-	"DC" : "Dark Charcoal B",
-	"DF" : "Dark Flesh B",
-	"DG" : "Dark Green B",
-	"FLM" : "FLAME B",
-	"FL" : "Flesh B",
-	"FO" : "FLO ORANGE B",
-	"FY" : "FLO YELLOW B",
-	"FP" : "FLO PINK B",
-	"GD" : "Athletic Gold B",
-	"GY" : "Gray 2 B",
-	"HP" : "Hot Pink B",
-	"KG" : "Kelly Green B",
-	"LG" : "Lime Green B",
-	"MG" : "Magenta 2 B",
-	"MRN" : "Maroon B",
-	"MN" : "MINT B",
-	"N" : "Navy 2 B",
-	"NC" : "NEON CORAL B",
-	"OY" : "Optic Yellow B",
-	"O" : "Orange B",
-	"PK" : "Pink B",
-	"PU" : "Purple B",
-	"RD" : "Red B",
-	"RB" : "Royal Blue B",
-	"SP" : "Soft Pink B",
-	"STL" : "Steel B",
-	"TL" : "Teal B",
-	"TO" : "Texas Orange B",
-	"TW" : "Twitch B",
-	"VG" : "Vegas Gold B",
-	"W" : "White B",
-	"Y" : "Yellow B",
-	"YL" : "Yellow B",
-	'AO': 'Amethyst Orchid B' ,
+	"B": "Black B",
+	"BPU": "BRIGHT PURPLE B",
+	"BN": "Brown B",
+	"CRD": "Cardinal B",
+	"C": "Charcoal 2 B",
+	"CB": "Columbia B",
+	"CY": "Cyan B",
+	"DC": "Dark Charcoal B",
+	"DF": "Dark Flesh B",
+	"DG": "Dark Green B",
+	"FLM": "FLAME B",
+	"FL": "Flesh B",
+	"FO": "FLO ORANGE B",
+	"FY": "FLO YELLOW B",
+	"FP": "FLO PINK B",
+	"GD": "Athletic Gold B",
+	"GY": "Gray 2 B",
+	"HP": "Hot Pink B",
+	"KG": "Kelly Green B",
+	"LG": "Lime Green B",
+	"MG": "Magenta 2 B",
+	"MRN": "Maroon B",
+	"MN": "MINT B",
+	"N": "Navy 2 B",
+	"NC": "NEON CORAL B",
+	"OY": "Optic Yellow B",
+	"O": "Orange B",
+	"PK": "Pink B",
+	"PU": "Purple B",
+	"RD": "Red B",
+	"RB": "Royal Blue B",
+	"SP": "Soft Pink B",
+	"STL": "Steel B",
+	"TL": "Teal B",
+	"TO": "Texas Orange B",
+	"TW": "Twitch B",
+	"VG": "Vegas Gold B",
+	"W": "White B",
+	"Y": "Yellow B",
+	"YL": "Yellow B",
+	'AO': 'Amethyst Orchid B',
 	'AQ': 'Aqua B',
 	'ARGY': 'Arctic Gray B',
 	'AG': 'Autumn Glory B',
