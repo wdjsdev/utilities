@@ -211,7 +211,7 @@ var componentsFolder = new Folder( componentsPath );
 var dataPath = resourcePath + "Data/";
 var dataFolder = new Folder( dataPath );
 
-var logsPath = dataPath + ".script_logs/";
+var logsPath = resourcePath + "Logs/";
 var logsFolder = new Folder( logsPath );
 
 var centralLibraryPath = dataPath + "central_library.js";
@@ -694,16 +694,40 @@ function ungroupAll ( item, parent )
 	}
 }
 
-function ungroup ( group )
+//ungroup function
+//item is a groupItem or a layer to be ungrouped
+//if a group is passed, only ungroup that group
+//if a layer is passed, all layer children are ungrouped
+//parent is the layer or group to which the ungrouped items will be moved
+//depth is the number of levels of children to ungroup
+// if depth is 0, dig recursively through all children and send them to parent
+// if depth is greather than zero, continue digging until curDepth == depth
+// so if depth is 1, basically just take all the top level pageItems
+//curDepth is the current level of nesting. just leave it undefined in the initial function call
+function ungroup ( item, dest, maxDepth, curDepth )
 {
-	group.layer.locked = false;
-	group.layer.visible = true;
-	group.locked = false;
-	group.visible = true;
-	arrayFromContainer( group, "pageItems" ).forEach( function ( curItem )
+	dest = dest || item.parent;
+	maxDepth = maxDepth === undefined ? 1 : maxDepth;
+	curDepth = curDepth === undefined ? 1 : ++curDepth;
+	if ( !item.typename.match( /group|layer/i ) )
 	{
-		curItem.moveToBeginning( group.parent );
-	} )
+		return;
+	}
+	item.locked = item.hidden = false;
+	item.visible = true;
+
+	afc( item, "pageItems" ).forEach( function ( subItem )
+	{
+		if ( !subItem.typename.match( /group/i ) || ( maxDepth > 0 && curDepth == maxDepth ) )
+		{
+			subItem.locked = subItem.hidden = false;
+			subItem.moveToBeginning( dest );
+		}
+		else
+		{
+			ungroup( subItem, dest, 0, curDepth );
+		}
+	} );
 
 }
 
@@ -2978,7 +3002,13 @@ function getVisibleBounds ( object )
 
 function getBoundsData ( item )
 {
-	var bounds = getVisibleBounds( item );
+	if ( !item ) return;
+	var bounds = item.typename.match( /artboard/i ) ? item.artboardRect : getVisibleBounds( item );
+	if ( !bounds )
+	{
+		$.writeln( "Error: " + item.name + " has no visible bounds." );
+		return {};
+	}
 	var result = {};
 
 	result.l = result.left = bounds[ 0 ]; //left
@@ -2994,11 +3024,11 @@ function getBoundsData ( item )
 	result.maxDimProp = result.w > result.h ? "width" : "height"; // larger dimension of width and height
 	result.maxDim = result.maxDimProp.match( /w/i ) ? result.w : result.h; // larger dimension of width and height
 
-	result.clip = result.clippedArtwork = {}; //measurements of amount of artwork clipped/invisible
-	result.clip.leftClipped = result.clip.l = result.l - item.left; // how much is clipped off the left side of the item
-	result.clip.topClipped = result.clip.t = item.top - result.t; // how much is clipped off the top of the item
-	result.clip.rightClipped = result.clip.r = item.right - result.r; // how much is clipped off the right side of the item
-	result.clip.bottomClipped = result.clip.b = result.b - item.bottom; // how much is clipped off the bottom of the item
+	result.clipped = result.clippedArtwork = {}; //measurements of amount of artwork clipped/invisible
+	result.clipped.left = result.clipped.l = result.l - item.left; // how much is clipped off the left side of the item
+	result.clipped.top = result.clipped.t = item.top - result.t; // how much is clipped off the top of the item
+	result.clipped.right = result.clipped.r = item.right - result.r; // how much is clipped off the right side of the item
+	result.clipped.bottom = result.clipped.b = result.b - item.bottom; // how much is clipped off the bottom of the item
 
 	return result;
 }
