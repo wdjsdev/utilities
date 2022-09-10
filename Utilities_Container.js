@@ -3607,7 +3607,7 @@ function rotatePieces ( rotationSets, parentLayer )
 //action string arrays
 //
 
-var PATHFINDER_ACTION_STRING =
+const PATHFINDER_ACTION_STRING =
 	[
 		"/version 3",
 		"/name [ 10",
@@ -3908,67 +3908,67 @@ var PATHFINDER_ACTION_STRING =
 	]
 
 //cleanup swatches action
-var CLEANUP_SWATCHES_ACTION_STRING =
-	[
-		"/version 3",
-		"/name [ 16",
-		"	636c65616e75705f7377617463686573",
-		"]",
-		"/isOpen 1",
-		"/actionCount 1",
-		"/action-1 {",
-		"	/name [ 16",
-		"		636c65616e75705f7377617463686573",
-		"	]",
-		"	/keyIndex 5",
-		"	/colorIndex 0",
-		"	/isOpen 1",
-		"	/eventCount 2",
-		"	/event-1 {",
-		"		/useRulersIn1stQuadrant 0",
-		"		/internalName (ai_plugin_swatches)",
-		"		/localizedName [ 8",
-		"			5377617463686573",
-		"		]",
-		"		/isOpen 0",
-		"		/isOn 1",
-		"		/hasDialog 0",
-		"		/parameterCount 1",
-		"		/parameter-1 {",
-		"			/key 1835363957",
-		"			/showInPalette 4294967295",
-		"			/type (enumerated)",
-		"			/name [ 17",
-		"				53656c65637420416c6c20556e75736564",
-		"			]",
-		"			/value 11",
-		"		}",
-		"	}",
-		"	/event-2 {",
-		"		/useRulersIn1stQuadrant 0",
-		"		/internalName (ai_plugin_swatches)",
-		"		/localizedName [ 8",
-		"			5377617463686573",
-		"		]",
-		"		/isOpen 0",
-		"		/isOn 1",
-		"		/hasDialog 1",
-		"		/showDialog 0",
-		"		/parameterCount 1",
-		"		/parameter-1 {",
-		"			/key 1835363957",
-		"			/showInPalette 4294967295",
-		"			/type (enumerated)",
-		"			/name [ 13",
-		"				44656c65746520537761746368",
-		"			]",
-		"			/value 3",
-		"		}",
-		"	}",
-		"}"
-	]
+// const CLEANUP_SWATCHES_ACTION_STRING =
+// 	[
+// 		"/version 3",
+// 		"/name [ 16",
+// 		"	636c65616e75705f7377617463686573",
+// 		"]",
+// 		"/isOpen 1",
+// 		"/actionCount 1",
+// 		"/action-1 {",
+// 		"	/name [ 16",
+// 		"		636c65616e75705f7377617463686573",
+// 		"	]",
+// 		"	/keyIndex 5",
+// 		"	/colorIndex 0",
+// 		"	/isOpen 1",
+// 		"	/eventCount 2",
+// 		"	/event-1 {",
+// 		"		/useRulersIn1stQuadrant 0",
+// 		"		/internalName (ai_plugin_swatches)",
+// 		"		/localizedName [ 8",
+// 		"			5377617463686573",
+// 		"		]",
+// 		"		/isOpen 0",
+// 		"		/isOn 1",
+// 		"		/hasDialog 0",
+// 		"		/parameterCount 1",
+// 		"		/parameter-1 {",
+// 		"			/key 1835363957",
+// 		"			/showInPalette 4294967295",
+// 		"			/type (enumerated)",
+// 		"			/name [ 17",
+// 		"				53656c65637420416c6c20556e75736564",
+// 		"			]",
+// 		"			/value 11",
+// 		"		}",
+// 		"	}",
+// 		"	/event-2 {",
+// 		"		/useRulersIn1stQuadrant 0",
+// 		"		/internalName (ai_plugin_swatches)",
+// 		"		/localizedName [ 8",
+// 		"			5377617463686573",
+// 		"		]",
+// 		"		/isOpen 0",
+// 		"		/isOn 1",
+// 		"		/hasDialog 1",
+// 		"		/showDialog 0",
+// 		"		/parameterCount 1",
+// 		"		/parameter-1 {",
+// 		"			/key 1835363957",
+// 		"			/showInPalette 4294967295",
+// 		"			/type (enumerated)",
+// 		"			/name [ 13",
+// 		"				44656c65746520537761746368",
+// 		"			]",
+// 		"			/value 3",
+// 		"		}",
+// 		"	}",
+// 		"}"
+// 	]
 
-var UNLOCK_GUIDES_ACTION_STRING = [
+const UNLOCK_GUIDES_ACTION_STRING = [
 	"/version 3",
 	"/name [ 13",
 	"	756e6c6f636b5f677569646573",
@@ -4003,7 +4003,7 @@ var UNLOCK_GUIDES_ACTION_STRING = [
 	"}"
 ]
 
-var TURN_OFF_OVERPRINT_ACTION_STRING =
+const TURN_OFF_OVERPRINT_ACTION_STRING =
 	[
 		"/version 3",
 		"/name [ 18",
@@ -4056,7 +4056,7 @@ var TURN_OFF_OVERPRINT_ACTION_STRING =
 		"}"
 	]
 
-var GRAPHIC_STYLE_FROM_SELECTION_ACTION_STRING =
+const GRAPHIC_STYLE_FROM_SELECTION_ACTION_STRING =
 	[
 		"/version 3",
 		"/name [ 28",
@@ -4096,94 +4096,7 @@ var GRAPHIC_STYLE_FROM_SELECTION_ACTION_STRING =
 		"}"
 	];
 
-//old version.. for some reason i thought it was a good
-//idea to delete any existing unused graphic styles.
-//this is not a good idea. don't do this.
-// var GRAPHIC_STYLE_FROM_SELECTION_ACTION_STRING = 
-// 	[
-// 		"/version 3",
-// 		"/name [ 28",
-// 		"	677261706869635f7374796c655f66726f6d5f73656c656374696f6e",
-// 		"]",
-// 		"/isOpen 1",
-// 		"/actionCount 1",
-// 		"/action-1 {",
-// 		"	/name [ 28",
-// 		"		677261706869635f7374796c655f66726f6d5f73656c656374696f6e",
-// 		"	]",
-// 		"	/keyIndex 0",
-// 		"	/colorIndex 0",
-// 		"	/isOpen 1",
-// 		"	/eventCount 3",
-// 		"	/event-1 {",
-// 		"		/useRulersIn1stQuadrant 0",
-// 		"		/internalName (ai_plugin_styles)",
-// 		"		/localizedName [ 14",
-// 		"			47726170686963205374796c6573",
-// 		"		]",
-// 		"		/isOpen 0",
-// 		"		/isOn 1",
-// 		"		/hasDialog 0",
-// 		"		/parameterCount 1",
-// 		"		/parameter-1 {",
-// 		"			/key 1835363957",
-// 		"			/showInPalette 4294967295",
-// 		"			/type (enumerated)",
-// 		"			/name [ 17",
-// 		"				53656c65637420416c6c20556e75736564",
-// 		"			]",
-// 		"			/value 14",
-// 		"		}",
-// 		"	}",
-// 		"	/event-2 {",
-// 		"		/useRulersIn1stQuadrant 0",
-// 		"		/internalName (ai_plugin_styles)",
-// 		"		/localizedName [ 14",
-// 		"			47726170686963205374796c6573",
-// 		"		]",
-// 		"		/isOpen 0",
-// 		"		/isOn 1",
-// 		"		/hasDialog 1",
-// 		"		/showDialog 0",
-// 		"		/parameterCount 1",
-// 		"		/parameter-1 {",
-// 		"			/key 1835363957",
-// 		"			/showInPalette 4294967295",
-// 		"			/type (enumerated)",
-// 		"			/name [ 20",
-// 		"				44656c6574652047726170686963205374796c65",
-// 		"			]",
-// 		"			/value 3",
-// 		"		}",
-// 		"	}",
-// 		"	/event-3 {",
-// 		"		/useRulersIn1stQuadrant 0",
-// 		"		/internalName (ai_plugin_styles)",
-// 		"		/localizedName [ 14",
-// 		"			47726170686963205374796c6573",
-// 		"		]",
-// 		"		/isOpen 0",
-// 		"		/isOn 1",
-// 		"		/hasDialog 1",
-// 		"		/showDialog 0",
-// 		"		/parameterCount 1",
-// 		"		/parameter-1 {",
-// 		"			/key 1835363957",
-// 		"			/showInPalette 4294967295",
-// 		"			/type (enumerated)",
-// 		"			/name [ 17",
-// 		"				4e65772047726170686963205374796c65",
-// 		"			]",
-// 		"			/value 1",
-// 		"		}",
-// 		"	}",
-// 		"}",
-// 	];
-
-
-
-
-var CLEAR_APPEARANCE_ACTION_STRING =
+const CLEAR_APPEARANCE_ACTION_STRING =
 	[
 		"/version 3",
 		"/name [ 16",
@@ -4222,7 +4135,7 @@ var CLEAR_APPEARANCE_ACTION_STRING =
 		"}",
 	];
 
-var ADD_NEW_FILL_ACTION_STRING =
+const ADD_NEW_FILL_ACTION_STRING =
 	[
 		"/version 3",
 		"/name [ 12",
@@ -4261,7 +4174,7 @@ var ADD_NEW_FILL_ACTION_STRING =
 		"}"
 	]
 
-var EXPORT_JPG_HIGH_QUALITY_ACTION_STRING =
+const EXPORT_JPG_HIGH_QUALITY_ACTION_STRING =
 	[
 		"/version 3",
 		"/name [ 10",
@@ -4350,9 +4263,105 @@ var EXPORT_JPG_HIGH_QUALITY_ACTION_STRING =
 
 	]
 
+const CLEANUP_SWATCHES_ACTION_STRING =
+	[
+		"/version 3",
+		"/name [ 16",
+		"	636c65616e75705f7377617463686573",
+		"]",
+		"/isOpen 1",
+		"/actionCount 2",
+		"/action-1 {",
+		"	/name [ 13",
+		"		64656c6574655f756e75736564",
+		"	]",
+		"	/keyIndex 0",
+		"	/colorIndex 0",
+		"	/isOpen 1",
+		"	/eventCount 2",
+		"	/event-1 {",
+		"		/useRulersIn1stQuadrant 0",
+		"		/internalName (ai_plugin_swatches)",
+		"		/localizedName [ 8",
+		"			5377617463686573",
+		"		]",
+		"		/isOpen 0",
+		"		/isOn 1",
+		"		/hasDialog 0",
+		"		/parameterCount 1",
+		"		/parameter-1 {",
+		"			/key 1835363957",
+		"			/showInPalette 4294967295",
+		"			/type (enumerated)",
+		"			/name [ 17",
+		"				53656c65637420416c6c20556e75736564",
+		"			]",
+		"			/value 11",
+		"		}",
+		"	}",
+		"	/event-2 {",
+		"		/useRulersIn1stQuadrant 0",
+		"		/internalName (ai_plugin_swatches)",
+		"		/localizedName [ 8",
+		"			5377617463686573",
+		"		]",
+		"		/isOpen 0",
+		"		/isOn 1",
+		"		/hasDialog 1",
+		"		/showDialog 0",
+		"		/parameterCount 1",
+		"		/parameter-1 {",
+		"			/key 1835363957",
+		"			/showInPalette 4294967295",
+		"			/type (enumerated)",
+		"			/name [ 13",
+		"				44656c65746520537761746368",
+		"			]",
+		"			/value 3",
+		"		}",
+		"	}",
+		"}",
+		"/action-2 {",
+		"	/name [ 8",
+		"		6164645f75736564",
+		"	]",
+		"	/keyIndex 0",
+		"	/colorIndex 0",
+		"	/isOpen 1",
+		"	/eventCount 1",
+		"	/event-1 {",
+		"		/useRulersIn1stQuadrant 0",
+		"		/internalName (ai_plugin_swatches)",
+		"		/localizedName [ 8",
+		"			5377617463686573",
+		"		]",
+		"		/isOpen 0",
+		"		/isOn 1",
+		"		/hasDialog 0",
+		"		/parameterCount 2",
+		"		/parameter-1 {",
+		"			/key 1835363957",
+		"			/showInPalette 4294967295",
+		"			/type (enumerated)",
+		"			/name [ 15",
+		"				416464205573656420436f6c6f7273",
+		"			]",
+		"			/value 9",
+		"		}",
+		"		/parameter-2 {",
+		"			/key 1634495605",
+		"			/showInPalette 4294967295",
+		"			/type (boolean)",
+		"			/value 1",
+		"		}",
+		"	}",
+		"}"
+	]
+
+
 
 //
-//action string arrays
+//end action string arrays
 //
 
 
