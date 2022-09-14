@@ -157,7 +157,7 @@ if ( user === "thell" )
 
 //boolean to determine whether to use the CustomizationDR drive for testing.
 var spoofDRUser = false;
-if ( DR_USERS.indexOf( user ) > -1 || ( spoofDRUser && user === "will.dowling" ) )
+if ( DR_USERS.indexOf( user ) > -1 || ( user === "will.dowling" && Folder( "/Volumes/CustomizationDR" ).exists ) )
 {
 	customizationPath = customizationPath.replace( "Customization", "CustomizationDR" );
 }
@@ -4270,7 +4270,7 @@ const CLEANUP_SWATCHES_ACTION_STRING =
 		"	636c65616e75705f7377617463686573",
 		"]",
 		"/isOpen 1",
-		"/actionCount 3",
+		"/actionCount 4",
 		"/action-1 {",
 		"	/name [ 13",
 		"		64656c6574655f756e75736564",
@@ -4362,7 +4362,7 @@ const CLEANUP_SWATCHES_ACTION_STRING =
 		"	]",
 		"	/keyIndex 0",
 		"	/colorIndex 0",
-		"	/isOpen 1",
+		"	/isOpen 0",
 		"	/eventCount 3",
 		"	/event-1 {",
 		"		/useRulersIn1stQuadrant 0",
@@ -4429,6 +4429,41 @@ const CLEANUP_SWATCHES_ACTION_STRING =
 		"			/showInPalette 4294967295",
 		"			/type (boolean)",
 		"			/value 1",
+		"		}",
+		"	}",
+		"}",
+		"/action-4 {",
+		"	/name [ 12",
+		"		6164645f73656c6563746564",
+		"	]",
+		"	/keyIndex 0",
+		"	/colorIndex 0",
+		"	/isOpen 0",
+		"	/eventCount 1",
+		"	/event-1 {",
+		"		/useRulersIn1stQuadrant 0",
+		"		/internalName (ai_plugin_swatches)",
+		"		/localizedName [ 8",
+		"			5377617463686573",
+		"		]",
+		"		/isOpen 0",
+		"		/isOn 1",
+		"		/hasDialog 0",
+		"		/parameterCount 2",
+		"		/parameter-1 {",
+		"			/key 1835363957",
+		"			/showInPalette 4294967295",
+		"			/type (enumerated)",
+		"			/name [ 19",
+		"				4164642053656c656374656420436f6c6f7273",
+		"			]",
+		"			/value 9",
+		"		}",
+		"		/parameter-2 {",
+		"			/key 1634495605",
+		"			/showInPalette 4294967295",
+		"			/type (boolean)",
+		"			/value 0",
 		"		}",
 		"	}",
 		"}"
