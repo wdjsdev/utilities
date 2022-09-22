@@ -61,12 +61,19 @@ Array.prototype.backForEach = function ( callback, startPos, inc )
 };
 Array.prototype.filter = function ( callback, context )
 {
+	$.writeln( "starting to filter the following array:\n" + this + "\n------------------" );
+	$.writeln( "callback function = " + callback.toString() );
 	arr = [];
 	for ( var i = 0; i < this.length; i++ )
 	{
 		if ( callback.call( context, this[ i ], i, this ) )
+		{
+			$.writeln( "adding " + this[ i ] + " to the filtered array" );
 			arr.push( this[ i ] );
+
+		}
 	}
+	$.writeln( ( arr.length ? "No matches. Returning []" : "End of filter. Returning the following array:\n" + arr ) + "\n------------------" );
 	return arr;
 };
 Array.prototype.reverse = function ()
@@ -732,6 +739,14 @@ function ungroup ( item, dest, maxDepth, curDepth )
 }
 
 
+function cleanupCompoundPath ( cp )
+{
+	cp.parent.locked = cp.parent.hidden = false;
+	cp.parent.visible = true;
+	var newCp = cp.parent.compoundPathItems.add();
+
+}
+
 
 
 
@@ -1045,7 +1060,7 @@ function getRandom ( min, max )
 function findChildByName ( parent, type, name )
 {
 	var result;
-	var nameRegex = new RegExp( name, "i" );
+	var nameRegex = new RegExp( "^" + name + "$", "i" );
 	var children = afc( parent, type ).filter( function ( child ) { return child.toString().match( nameRegex ) } );
 
 	result = children[ 0 ] || null;
@@ -1467,39 +1482,52 @@ function findSpecificItem ( parent, itemType, name )
 
 }
 
+//array from object
+//intended for getting an array of json objects out of a parent json object
 
-
+function afo ( obj )
+{
+	var arr = [];
+	for ( var x in obj )
+	{
+		arr.push( obj[ x ] );
+	}
+	return arr;
+}
 
 
 
 //container: container object that holds the child items   
 //viable options: App, Layer, Doument, GroupItem, CompoundPathItem
-//crit: string representing the type of collection to arrayify
+//childType: string representing the type of collection to arrayify
 //viable options:   "pageItems", "layers", "pathItems", "compoundPathItems", 
 //                  "groupItems", "swatches", "textFonts", "textFrames", "placedItems",
 //                  "rasterItems", "symbolItems", "pluginItems", "artboards", "selection"
 //					"characterStyles", "paragraphStyles", "brushes"
 
-function afc ( container, crit )
+function afc ( container, childType )
 {
+	log.l( "Making an array of " + childType + " from " + container );
+	if ( !container ) return [];
 	var result = [];
 	var ctn = container.typename;
-	if ( !ctn.match( /app|adobe|document|layer|group|compound|text/i ) )
+
+	var defaultChildTypes = { "document": "layers", "swatchgroup": "swatches", "layer": "pageItems", "groupitem": "pageItems", "compoundpathitem": "pathItems", "textframe": "textRanges" }
+
+	var defaultChildType = defaultChildTypes[ ctn.toLowerCase() ];
+	if ( !childType )
 	{
-		$.writeln( "ERROR: afc(" + container.name + "," + crit + ");" );
-		$.writeln( "Can't make array from this container. Invalid container type: " + container.typename );
-		return [];
+		log.l( "no childType specified, using default: " + defaultChildType );
 	}
-	var defaultCrit = ctn.match( /swatchgroup/i ) ? "swatches" : ctn.match( /compound/ ) ? "pathItems" : "pageItems";
-	crit = crit || defaultCrit;
-	if ( !crit.match( /layers|swatches|items|frames|artboards|selection|documents|contents|styles|fonts|brushes/i ) )
+	childType = childType || defaultChildType;
+	if ( !container[ childType ] )
 	{
-		$.writeln( "ERROR: afc(" + container.name + "," + crit + ");" );
-		$.writeln( "Can't make array from this container. Invalid child item type: " + crit );
+		$.writeln( "ERROR: afc(" + container.name + "," + childType + ");" );
+		$.writeln( "Can't make array from this container. Invalid child item type: " + childType );
 		return [];
 	}
 
-	var items = container[ crit ];
+	var items = container[ childType ];
 	for ( var x = 0; x < items.length; x++ )
 	{
 		result.push( items[ x ] )
@@ -2662,7 +2690,6 @@ function findSwatch ( name )
 	var regex = new RegExp( "\\\[Swatch " + name + "\\\]", "i" );
 	var s = afc( app.activeDocument, "swatches" ).filter( function ( s )
 	{
-
 		return s.toString().match( regex );
 	} );
 
@@ -2762,6 +2789,11 @@ function makeNewSpotColor ( name, colorType, colorValue, tint )
 {
 	var doc = app.activeDocument;
 	var swatches = doc.swatches;
+	var newSpotSwatch = findChildByName( doc, "swatches", name );
+	if ( newSpotSwatch )
+	{
+		return newSpotSwatch;
+	}
 
 	if ( !colorType )
 	{
@@ -2771,25 +2803,21 @@ function makeNewSpotColor ( name, colorType, colorValue, tint )
 	colorValue = colorValue || BOOMBAH_APPROVED_COLOR_VALUES[ name ] || { "cyan": 12, "magenta": 30, "yellow": 84, "black": 5 };
 	tint = tint || 100;
 
-	var newSpotSwatch = findChildByName( doc, "swatches", name );
-	if ( !newSpotSwatch )
+	var newColor = ( colorType === "CMYK" ) ? new CMYKColor() : new RGBColor();
+	for ( var color in colorValue )
 	{
-		var newColor = ( colorType === "CMYK" ) ? new CMYKColor() : new RGBColor();
-		for ( var color in colorValue )
-		{
-			newColor[ color ] = colorValue[ color ];
-		}
-
-		var newSpot = doc.spots.add();
-		newSpot.name = name;
-		newSpot.color = newColor;
-		newSpot.colorType = ColorModel.SPOT;
-
-		newSpotSwatch = new SpotColor();
-		newSpotSwatch.spot = newSpot;
-		newSpotSwatch = swatches[ name ];
-		newSpotSwatch.tint = tint;
+		newColor[ color ] = colorValue[ color ];
 	}
+
+	var newSpot = doc.spots.add();
+	newSpot.name = name;
+	newSpot.color = newColor;
+	newSpot.colorType = ColorModel.SPOT;
+
+	newSpotSwatch = new SpotColor();
+	newSpotSwatch.spot = newSpot;
+	newSpotSwatch = swatches[ name ];
+	newSpotSwatch.tint = tint;
 	return newSpotSwatch;
 }
 
