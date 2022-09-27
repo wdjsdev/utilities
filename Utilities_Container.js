@@ -61,19 +61,15 @@ Array.prototype.backForEach = function ( callback, startPos, inc )
 };
 Array.prototype.filter = function ( callback, context )
 {
-	$.writeln( "starting to filter the following array:\n" + this + "\n------------------" );
-	$.writeln( "callback function = " + callback.toString() );
 	arr = [];
 	for ( var i = 0; i < this.length; i++ )
 	{
 		if ( callback.call( context, this[ i ], i, this ) )
 		{
-			$.writeln( "adding " + this[ i ] + " to the filtered array" );
 			arr.push( this[ i ] );
 
 		}
 	}
-	$.writeln( ( arr.length ? "No matches. Returning []" : "End of filter. Returning the following array:\n" + arr ) + "\n------------------" );
 	return arr;
 };
 Array.prototype.reverse = function ()
@@ -739,13 +735,13 @@ function ungroup ( item, dest, maxDepth, curDepth )
 }
 
 
-function cleanupCompoundPath ( cp )
-{
-	cp.parent.locked = cp.parent.hidden = false;
-	cp.parent.visible = true;
-	var newCp = cp.parent.compoundPathItems.add();
+// function cleanupCompoundPath ( cp )
+// {
+// 	cp.parent.locked = cp.parent.hidden = false;
+// 	cp.parent.visible = true;
+// 	var newCp = cp.parent.compoundPathItems.add();
 
-}
+// }
 
 
 
@@ -1255,7 +1251,7 @@ function findSpecificSwatch ( doc, name )
 	var result;
 	for ( var x = 0; x < doc.swatches.length && !result; x++ )
 	{
-		if ( doc.swatches[ x ].toString === "[Swatch " + name + "]" )
+		if ( doc.swatches[ x ].toString() === "[Swatch " + name + "]" )
 		{
 			result = doc.swatches[ x ];
 		}
@@ -1294,32 +1290,30 @@ function findLayersByName ( parent, name, crit )
 	return result;
 }
 
+
 function findSpecificLayer ( parent, layerName, crit )
 {
-	var result, layers;
-	var matchPat = new RegExp( "^" + layerName + "$" );
-	var iMatchPat = new RegExp( "^" + layerName + "$", "i" );
-	var anyMatchPat = new RegExp( layerName, "i" );
-
-	crit = crit || "any";
-
 	if ( !parent.typename.match( /layer|docum/i ) )
 	{
 		$.writeln( "findSpecificLayer: invalid parent type: " + parent.typename + "." );
 		return
 	}
 
-	if ( parent.typename.match( /^Layers$/i ) )
-	{
-		parent = parent.parent;
-	}
+	var result;
+	var matchPat = new RegExp( "^" + layerName + "$" );
+	var iMatchPat = new RegExp( "^" + layerName + "$", "i" );
+	var anyMatchPat = new RegExp( layerName, "i" );
+	var stringCrits = { "match": matchPat, "imatch": iMatchPat, "any": anyMatchPat };
 
-	layers = afc( parent, "layers" );
+	crit = ( crit && typeof crit === "string" ? stringCrits[ crit ] || matchPat : matchPat );
 
-	var testPat = crit.match( /^any$/i ) ? anyMatchPat : ( crit.match( /^match$/i ) ? matchPat : iMatchPat );
+	parent = parent.typename.match( /layers/i ) ? parent.parent : parent;
+
+	var layers = afc( parent, "layers" );
+
 	result = layers.filter( function ( layer )
 	{
-		return layer.name.match( testPat );
+		return layer.name.match( crit );
 	} )
 
 	if ( result && result.length > 0 )
@@ -1507,7 +1501,6 @@ function afo ( obj )
 
 function afc ( container, childType )
 {
-	log.l( "Making an array of " + childType + " from " + container );
 	if ( !container ) return [];
 	var result = [];
 	var ctn = container.typename;
@@ -2789,11 +2782,20 @@ function makeNewSpotColor ( name, colorType, colorValue, tint )
 {
 	var doc = app.activeDocument;
 	var swatches = doc.swatches;
-	var newSpotSwatch = findChildByName( doc, "swatches", name );
-	if ( newSpotSwatch )
+	var newSpotSwatch;
+	try
 	{
+		newSpotSwatch = swatches[ name ];
 		return newSpotSwatch;
 	}
+	catch ( e ) { };
+
+
+	// var newSpotSwatch = findChildByName( doc, "swatches", name );
+	// if ( newSpotSwatch )
+	// {
+	// 	return newSpotSwatch;
+	// }
 
 	if ( !colorType )
 	{
