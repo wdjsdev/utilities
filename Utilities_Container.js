@@ -3223,7 +3223,7 @@ function removeAction ( actionName )
 function curlData ( url, arg )
 {
 	log.h( "Beginning execution of curlData(" + url + arg + ")" );
-	var result, status, dataFileContents;
+	var result, status;
 	var htmlRegex = /<html>/gmi;
 
 	// url = url+arg;
@@ -3325,31 +3325,48 @@ function curlData ( url, arg )
 		killExecutor = File( resourcePath + "kill_curl_from_illustrator.app" );
 	}
 
+	log.l( "executor: " + executor.name );
 
 
-	var executorDelay = 2000;
+
+
+	var executorDelay = 5000;
 	var maxExecutorCalls = 5;
 	var currentExecutorCalls = 0;
 
-	var checkDelay = 10;
-	var numberOfChecks = 50;
+	var checkDelay = 200;
+	var numberOfChecks = 200;
+	var totalChecks = 0;
 
 	var parseFailResults = 0;
 
 
 	do
 	{
+		totalChecks = 0;
 		//go get the data
+		log.h( "Executing executor for the " + currentExecutorCalls + "th time." );
 		executor.execute();
-		$.sleep( executorDelay );
+		$.sleep( 5000 );
 
 
 		//check the data
 		for ( var a = 0; a < numberOfChecks && status !== "valid"; a++ )
 		{
-			checkData()
+			if ( status != "valid" )
+			{
+				checkData()
+				totalChecks++;
+			}
+			else if ( status === "html" )
+			{
+				break;
+			}
 			$.sleep( checkDelay );
 		}
+
+		log.l( "Checked the data " + totalChecks + " times." );
+
 
 	}
 	while ( status !== "valid" && status !== "html" && currentExecutorCalls < maxExecutorCalls );
@@ -3364,6 +3381,7 @@ function curlData ( url, arg )
 	else if ( status === "valid" )
 	{
 		log.l( "Valid data." );
+		log.l( readDataFile() );
 		return result;
 	}
 
@@ -3432,6 +3450,7 @@ function curlData ( url, arg )
 			{
 				status = "parseFail";
 				parseFailResults++;
+				$.writeln( "Failed contents::: " + contents );
 			}
 		}
 	}
