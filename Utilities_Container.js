@@ -845,30 +845,44 @@ function intersects ( item, dest )
 
 function isContainedWithin ( item, dest )
 {
-	//item coordinates
-	var IL = item.left;
-	var IT = item.top;
-	var IR = item.left + item.width;
-	var IB = item.top - item.height;
+	var vb = getBoundsData( item );
+	var IL = vb.left;
+	var IT = vb.top;
+	var IR = vb.right
+	var IB = vb.bottom;
 
-	//dest coordinates
-	if ( dest.typename === "Artboard" )
-	{
-		var rect = dest.artboardRect;
-		var DL = rect[ 0 ];
-		var DT = rect[ 1 ];
-		var DR = rect[ 2 ];
-		var DB = rect[ 3 ];
-	}
-	else
-	{
-		var DL = dest.left;
-		var DT = dest.top;
-		var DR = dest.left + dest.width;
-		var DB = dest.top - dest.height;
-	}
+	var dvb = getBoundsData( dest );
+	var DL = dvb.left;
+	var DT = dvb.top;
+	var DR = dvb.right;
+	var DB = dvb.bottom;
 
 	return ( IL >= DL && IR <= DR && IT <= DT && IB >= DB );
+
+	// //item coordinates
+	// var IL = item.left;
+	// var IT = item.top;
+	// var IR = item.left + item.width;
+	// var IB = item.top - item.height;
+
+	// //dest coordinates
+	// if ( dest.typename === "Artboard" )
+	// {
+	// 	var rect = dest.artboardRect;
+	// 	var DL = rect[ 0 ];
+	// 	var DT = rect[ 1 ];
+	// 	var DR = rect[ 2 ];
+	// 	var DB = rect[ 3 ];
+	// }
+	// else
+	// {
+	// 	var DL = dest.left;
+	// 	var DT = dest.top;
+	// 	var DR = dest.left + dest.width;
+	// 	var DB = dest.top - dest.height;
+	// }
+
+	// return ( IL >= DL && IR <= DR && IT <= DT && IB >= DB );
 }
 
 function isContainedWithinBuffer ( item, dest, buffer )
