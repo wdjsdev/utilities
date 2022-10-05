@@ -714,6 +714,7 @@ function ungroup ( item, dest, maxDepth, curDepth )
 	curDepth = curDepth === undefined ? 1 : ++curDepth;
 	if ( !item.typename.match( /group|layer/i ) )
 	{
+		item.moveToBeginning( dest );
 		return;
 	}
 	item.locked = item.hidden = false;
