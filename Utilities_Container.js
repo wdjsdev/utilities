@@ -669,6 +669,27 @@ function group ( items, parent )
 }
 
 
+function recursiveDig ( item, callback )
+{
+	if ( item.typename.match( /document/i ) )
+	{
+		alert( "Don't dig recursively through the whole document... figure out a smarter way.." );
+		return;
+	}
+	if ( item.typename.match( /item/i ) )
+	{
+		callback( item );
+	}
+	else if ( item.typename.match( /group|layer/ ) )
+	{
+		afc( item, "pageItems" ).forEach( function ( subItem )
+		{
+			recursiveDig( subItem, callback );
+		} );
+	}
+}
+
+
 
 //release all pageItems from this group to a designated parent
 //if no parent is specified, the item's parent is used
@@ -1306,29 +1327,43 @@ function findLayersByName ( parent, name, crit )
 }
 
 
-function findSpecificLayer ( parent, layerName, crit )
+//find a specific layer inside a given parent
+//parent can be a document or a layer
+//search term can be a string or a regex
+function findSpecificLayer ( parent, searchTerm, crit )
 {
+	if ( !parent ) return;
 	if ( !parent.typename.match( /layer|docum/i ) )
 	{
 		$.writeln( "findSpecificLayer: invalid parent type: " + parent.typename + "." );
-		return
+		return;
 	}
+	//if the parent given was a "layers" collection, use the parent.parent instead
+	//since we're just going to access the layers collection below anyway.
+	//this way we always have a clean parent that at least has the potential
+	//to have a layers collection.
+	parent = parent.typename.match( /layers/i ) ? parent.parent : parent;
 
 	var result;
-	var matchPat = new RegExp( "^" + layerName + "$" );
-	var iMatchPat = new RegExp( "^" + layerName + "$", "i" );
-	var anyMatchPat = new RegExp( layerName, "i" );
-	var stringCrits = { "match": matchPat, "imatch": iMatchPat, "any": anyMatchPat };
 
-	crit = ( crit && typeof crit === "string" ? stringCrits[ crit ] || matchPat : matchPat );
+	if ( typeof searchTerm === "string" )
+	{
+		//search term is a string. convert it to a regex based on the crit given
+		var matchPats = {
+			"any": new RegExp( searchTerm, "i" ),
+			"imatch": new RegExp( "^" + searchTerm + "$", "i" ),
+			"match": new RegExp( "^" + searchTerm + "$" )
+		}
+		searchTerm = matchPats[ crit || "any" ];
+	}
 
-	parent = parent.typename.match( /layers/i ) ? parent.parent : parent;
+
 
 	var layers = afc( parent, "layers" );
 
 	result = layers.filter( function ( layer )
 	{
-		return layer.name.match( crit );
+		return layer.name.match( searchTerm );
 	} )
 
 	if ( result && result.length > 0 )
@@ -1345,13 +1380,13 @@ function findSpecificLayer ( parent, layerName, crit )
 }
 
 //parent = container object
-//itemName = string
+//searchTerm = string or regex
 //[crit] = string representing criteria for a match
-//"match" means the entire name must match exactly
-//"imatch" means name must match, but case doesn't matter
-//"any" means itemName must exist somewhere
+//	"match" means the entire name must match exactly
+//	"imatch" means name must match, but case doesn't matter
+//	"any" means itemName must exist somewhere
 //return a single object or undefined
-function findSpecificPageItem ( parent, itemName, crit )
+function findSpecificPageItem ( parent, searchTerm, crit )
 {
 	if ( !parent )
 	{
@@ -1361,42 +1396,29 @@ function findSpecificPageItem ( parent, itemName, crit )
 	{
 		log.e( "parent has no pageItems" );
 	}
-	var result = [], curItem;
-	if ( parent.pageItems.length )
-	{
-		for ( var x = 0, len = parent.pageItems.length; x < len; x++ )
-		{
-			curItem = parent.pageItems[ x ];
-			if ( crit )
-			{
-				if ( crit === "match" && curItem.name === itemName )
-				{
-					result.push( curItem );
-				}
-				else if ( crit === "imatch" && curItem.name.toLowerCase() === itemName.toLowerCase() )
-				{
-					result.push( curItem );
-				}
-				else if ( crit === "any" && curItem.name.toLowerCase().indexOf( itemName.toLowerCase() ) > -1 )
-				{
-					result.push( curItem );
-				}
-			}
-			else if ( curItem.name.indexOf( itemName ) > -1 )
-			{
-				result.push( curItem );
 
-			}
+	if ( typeof searchTerm === "string" )
+	{
+		//search term is a string. convert it to a regex based on the crit given
+		var matchPats = {
+			"any": new RegExp( searchTerm, "i" ),
+			"imatch": new RegExp( "^" + searchTerm + "$", "i" ),
+			"match": new RegExp( "^" + searchTerm + "$" )
 		}
+		searchTerm = matchPats[ crit || "any" ];
 	}
 
-	if ( result.length )
+
+
+	var items = afc( parent, "pageItems" );
+
+	result = items.filter( function ( item )
 	{
-		// if(result.length > 1)
-		// {
-		// 	var msg = parent + " has multiple items matching the name " + itemName;
-		// 	result = chooseFromListbox(result,msg);
-		// }
+		return item.name.match( searchTerm );
+	} )
+
+	if ( result && result.length > 0 )
+	{
 		result = result[ 0 ];
 	}
 	else
@@ -1405,6 +1427,53 @@ function findSpecificPageItem ( parent, itemName, crit )
 	}
 
 	return result;
+
+
+
+	// var result = [], curItem;
+	// if ( parent.pageItems.length )
+	// {
+	// 	for ( var x = 0, len = parent.pageItems.length; x < len; x++ )
+	// 	{
+	// 		curItem = parent.pageItems[ x ];
+	// 		if ( crit )
+	// 		{
+	// 			if ( crit === "match" && curItem.name === searchTerm )
+	// 			{
+	// 				result.push( curItem );
+	// 			}
+	// 			else if ( crit === "imatch" && curItem.name.toLowerCase() === searchTerm.toLowerCase() )
+	// 			{
+	// 				result.push( curItem );
+	// 			}
+	// 			else if ( crit === "any" && curItem.name.toLowerCase().indexOf( searchTerm.toLowerCase() ) > -1 )
+	// 			{
+	// 				result.push( curItem );
+	// 			}
+	// 		}
+	// 		else if ( curItem.name.indexOf( searchTerm ) > -1 )
+	// 		{
+	// 			result.push( curItem );
+
+	// 		}
+	// 	}
+	// }
+
+	// if ( result.length )
+	// {
+	// 	// if(result.length > 1)
+	// 	// {
+	// 	// 	var msg = parent + " has multiple items matching the name " + itemName;
+	// 	// 	result = chooseFromListbox(result,msg);
+	// 	// }
+	// 	result = result[ 0 ];
+	// }
+	// else
+	// {
+	// 	result = undefined;
+	// }
+
+	// return result;
 }
 
 
