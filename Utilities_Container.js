@@ -3395,14 +3395,14 @@ function getLibraryEntry ( lib, key )
 //compound paths on the sandbox layer. then ungroup everything, and then
 //rebuild the compound path out of the remaining shapes. then move the
 //resulting compound path to "dest".
-function releaseCompoundPath ( item, dest )
+function cleanupCompoundPath ( item )
 {
 	var resultingItem;
 	if ( !item.typename.match( /compoundpath/i ) ) return;
 
 	var doc = app.activeDocument;
 	var sboxLayer = doc.layers.add();
-	item.moveToBeginning( sboxLayer );
+	item.duplicate( sboxLayer );
 	doc.selection = null;
 
 	var cPaths = afc( sboxLayer, "compoundPathItems" );
@@ -3427,7 +3427,12 @@ function releaseCompoundPath ( item, dest )
 		sboxItems.forEach( function ( item ) { item.moveToBeginning( resultingItem ); } );
 	}
 
-	resultingItem.moveToBeginning( dest );
+	resultingItem.move( item, ElementPlacement.PLACEAFTER );
+	if ( item.name )
+	{
+		resultingItem.name = item.name;
+	}
+	item.remove();
 
 	sboxLayer.remove();
 	return resultingItem;
@@ -3471,6 +3476,7 @@ function trimSpacesArray ( arr )
 //create and load a new action
 function createAction ( name, actionString )
 {
+	removeAction( name );
 	var dest = new Folder( documentsPath );
 	var actionFile = new File( decodeURI( dest + "/" + name + ".aia" ) );
 
@@ -4601,7 +4607,7 @@ const CLEANUP_SWATCHES_ACTION_STRING =
 		"	636c65616e75705f7377617463686573",
 		"]",
 		"/isOpen 1",
-		"/actionCount 4",
+		"/actionCount 5",
 		"/action-1 {",
 		"	/name [ 13",
 		"		64656c6574655f756e75736564",
@@ -4797,7 +4803,37 @@ const CLEANUP_SWATCHES_ACTION_STRING =
 		"			/value 0",
 		"		}",
 		"	}",
+		"}",
+		"/action-5 {",
+		"	/name [ 13",
+		"		736f72745f7377617463686573",
+		"	]",
+		"	/keyIndex 0",
+		"	/colorIndex 0",
+		"	/isOpen 1",
+		"	/eventCount 1",
+		"	/event-1 {",
+		"		/useRulersIn1stQuadrant 0",
+		"		/internalName (ai_plugin_swatches)",
+		"		/localizedName [ 8",
+		"			5377617463686573",
+		"		]",
+		"		/isOpen 0",
+		"		/isOn 1",
+		"		/hasDialog 0",
+		"		/parameterCount 1",
+		"		/parameter-1 {",
+		"			/key 1835363957",
+		"			/showInPalette 4294967295",
+		"			/type (enumerated)",
+		"			/name [ 12",
+		"				536f7274204279204e616d65",
+		"			]",
+		"			/value 14",
+		"		}",
+		"	}",
 		"}"
+
 	]
 
 
