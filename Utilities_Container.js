@@ -749,17 +749,36 @@ function ungroup ( item, dest, maxDepth, curDepth )
 	dest = dest || item.parent;
 	maxDepth = maxDepth === undefined ? 1 : maxDepth;
 	curDepth = curDepth === undefined ? 1 : ++curDepth;
-	if ( !item.typename.match( /group|layer/i ) )
+	if ( !item.typename.match( /group|layer|symbol/i ) )
 	{
 		item.moveToBeginning( dest );
 		return;
 	}
+
 	item.locked = item.hidden = false;
 	item.visible = true;
 
+	if ( item.typename.match( /symbol/i ) )
+	{
+		var tmpBreakSymbolGroup = item.parent.groupItems.add();
+		item.moveToBeginning( tmpBreakSymbolGroup );
+		item.breakLink();
+		ungroup( tmpBreakSymbolGroup, dest, maxDepth, curDepth );
+		return;
+	}
+
+	if ( item.layers )
+	{
+		afc( item, "layers" ).forEach( function ( layer )
+		{
+			ungroup( layer, dest, maxDepth, curDepth );
+		} );
+	}
+
+
 	afc( item, "pageItems" ).forEach( function ( subItem )
 	{
-		if ( !subItem.typename.match( /group/i ) || ( maxDepth > 0 && curDepth == maxDepth ) )
+		if ( !subItem.typename.match( /group|symbol/i ) || ( maxDepth > 0 && curDepth == maxDepth ) )
 		{
 			subItem.locked = subItem.hidden = false;
 			subItem.moveToBeginning( dest );
@@ -1734,6 +1753,7 @@ function afo ( obj )
 	var arr = [];
 	for ( var x in obj )
 	{
+		// arr.push( { x: obj[ x ] } );
 		arr.push( obj[ x ] );
 	}
 	return arr;
@@ -1754,6 +1774,8 @@ function afc ( container, childType )
 	if ( !container ) return [];
 	var result = [];
 	var ctn = container.typename;
+
+
 
 	var defaultChildTypes = { "document": "layers", "swatchgroup": "swatches", "layer": "pageItems", "groupitem": "pageItems", "compoundpathitem": "pathItems", "textframe": "textRanges" }
 
@@ -4980,7 +5002,8 @@ var BOOMBAH_APPROVED_COLORS =
 	];
 
 var BOOMBAH_PRODUCTION_COLORS =
-	[ 'Thru-cut',
+	[
+		'Thru-cut',
 		'CUT LINE',
 		'cut line',
 		'Info B',
@@ -4988,7 +5011,11 @@ var BOOMBAH_PRODUCTION_COLORS =
 		'CUTLINE',
 		'SEW LINE',
 		'SEW LINES',
-		'SEWLINE' ];
+		'SEWLINE',
+		'EDGE',
+		'EDGES',
+		'Jock Tag B'
+	];
 
 var BUILDER_COLOR_CODES = {
 	"B": "Black B",
