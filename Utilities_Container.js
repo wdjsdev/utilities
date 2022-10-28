@@ -83,6 +83,17 @@ Array.prototype.reverse = function ()
 }
 
 
+//
+// Array.prototype.merge = function ( incomingArray )
+// {
+
+// 	for ( var i = 0; i < incomingArray.length; i++ )
+// 	{
+// 		this.push( incomingArray[ i ] );
+// 	}
+// 	return arr;
+// }
+
 
 
 
@@ -134,8 +145,15 @@ var DR_USERS =
 		"ismael.noesi",
 		"raymond.fernandez",
 		"isaac.martinez",
-		"joshua.chevalier"
+		"joshua.chevalier",
+		"katherine.ramos",
+		"enmanuel.mercado",
+		"domingo.camilo",
+		"lenin.tavarez"
 	];
+
+
+
 
 
 
@@ -743,15 +761,37 @@ function ungroupAll ( item, parent )
 // if depth is 0, dig recursively through all children and send them to parent
 // if depth is greather than zero, continue digging until curDepth == depth
 // so if depth is 1, basically just take all the top level pageItems
+//callback is an optional function to determine what to do with the lowest level pageItems
+//  the items can be deleted, expanded, ignored, or whatever based on their type
 //curDepth is the current level of nesting. just leave it undefined in the initial function call
-function ungroup ( item, dest, maxDepth, curDepth )
+function ungroup ( item, dest, maxDepth, callback, curDepth )
 {
+
+	//optional verbose logging for debugging
+	// if ( 0 )
+	// {
+	// 	log.h( "Beginning of ungroup function:: item = " + item + "::dest = " + dest + "::maxDepth = " + maxDepth + "::callback = " + callback + "::curDepth = " + curDepth );
+	// }
+
+
+	if ( item.guides )
+	{
+		return;
+	}
+
 	dest = dest || item.parent;
 	maxDepth = maxDepth === undefined ? 1 : maxDepth;
 	curDepth = curDepth === undefined ? 1 : ++curDepth;
 	if ( !item.typename.match( /group|layer|symbol/i ) )
 	{
-		item.moveToBeginning( dest );
+		if ( callback )
+		{
+			callback( item, dest );
+		}
+		else
+		{
+			item.moveToEnd( dest );
+		}
 		return;
 	}
 
@@ -763,7 +803,7 @@ function ungroup ( item, dest, maxDepth, curDepth )
 		var tmpBreakSymbolGroup = item.parent.groupItems.add();
 		item.moveToBeginning( tmpBreakSymbolGroup );
 		item.breakLink();
-		ungroup( tmpBreakSymbolGroup, dest, maxDepth, curDepth );
+		ungroup( tmpBreakSymbolGroup, dest, maxDepth, callback, curDepth );
 		return;
 	}
 
@@ -771,23 +811,21 @@ function ungroup ( item, dest, maxDepth, curDepth )
 	{
 		afc( item, "layers" ).forEach( function ( layer )
 		{
-			ungroup( layer, dest, maxDepth, curDepth );
+			ungroup( layer, dest, maxDepth, callback, curDepth );
 		} );
 	}
 
 
 	afc( item, "pageItems" ).forEach( function ( subItem )
 	{
-		if ( !subItem.typename.match( /group|symbol/i ) || ( maxDepth > 0 && curDepth == maxDepth ) )
-		{
-			subItem.locked = subItem.hidden = false;
-			subItem.moveToBeginning( dest );
-		}
-		else
-		{
-			ungroup( subItem, dest, 0, curDepth );
-		}
+		ungroup( subItem, dest, 0, callback, curDepth );
 	} );
+
+	if ( item && item.typename.match( /group/i ) )
+	{
+		item.remove();
+	}
+
 
 }
 
@@ -1745,6 +1783,15 @@ function findSpecificItem ( parent, itemType, name )
 
 }
 
+
+//get an array of the currently selected objects
+function getSel ()
+{
+	return afc( app.activeDocument, "selection" );
+}
+
+
+
 //array from object
 //intended for getting an array of json objects out of a parent json object
 
@@ -1782,7 +1829,7 @@ function afc ( container, childType )
 	var defaultChildType = defaultChildTypes[ ctn.toLowerCase() ];
 	if ( !childType )
 	{
-		log.l( "no childType specified, using default: " + defaultChildType );
+		// log.l( "no childType specified, using default: " + defaultChildType );
 	}
 	childType = childType || defaultChildType;
 	if ( !container[ childType ] )
@@ -3272,32 +3319,38 @@ function getVisibleBounds ( object )
 				sandboxLayer.remove();
 				sandboxLayer = undefined;
 			}
-		} else
+
+		}
+		else
 		{
 			// if the object is not clipped
-			var subObjectBounds;
-			var allBoundPoints = [ [], [], [], [] ];
-			// get the bounds of every object in the group
-			for ( var i = 0; i < object.pageItems.length; i++ )
-			{
-				curItem = object.pageItems[ i ];
-				subObjectBounds = getVisibleBounds( curItem );
-				allBoundPoints[ 0 ].push( subObjectBounds[ 0 ] );
-				allBoundPoints[ 1 ].push( subObjectBounds[ 1 ] );
-				allBoundPoints[ 2 ].push( subObjectBounds[ 2 ] );
-				allBoundPoints[ 3 ].push( subObjectBounds[ 3 ] );
-			}
-			// determine the groups bounds from it sub object bound points
-			bounds = [
-				Math.min.apply( Math, allBoundPoints[ 0 ] ),
-				Math.max.apply( Math, allBoundPoints[ 1 ] ),
-				Math.max.apply( Math, allBoundPoints[ 2 ] ),
-				Math.min.apply( Math, allBoundPoints[ 3 ] ),
-			];
+			bounds = object.visibleBounds;
+
+			//more thorough logic
+			// var subObjectBounds;
+			// var allBoundPoints = [ [], [], [], [] ];
+			// // get the bounds of every object in the group
+			// for ( var i = 0; i < object.pageItems.length; i++ )
+			// {
+			// 	curItem = object.pageItems[ i ];
+			// 	subObjectBounds = getVisibleBounds( curItem );
+			// 	allBoundPoints[ 0 ].push( subObjectBounds[ 0 ] );
+			// 	allBoundPoints[ 1 ].push( subObjectBounds[ 1 ] );
+			// 	allBoundPoints[ 2 ].push( subObjectBounds[ 2 ] );
+			// 	allBoundPoints[ 3 ].push( subObjectBounds[ 3 ] );
+			// }
+			// // determine the groups bounds from it sub object bound points
+			// bounds = [
+			// 	Math.min.apply( Math, allBoundPoints[ 0 ] ),
+			// 	Math.max.apply( Math, allBoundPoints[ 1 ] ),
+			// 	Math.max.apply( Math, allBoundPoints[ 2 ] ),
+			// 	Math.min.apply( Math, allBoundPoints[ 3 ] ),
+			// ];
 		}
-	} else
+	}
+	else
 	{
-		bounds = object.geometricBounds;
+		bounds = object.visibleBounds;
 	}
 	return bounds;
 }
@@ -3436,18 +3489,21 @@ function cleanupCompoundPath ( item )
 		cPaths = afc( sboxLayer, "compoundPathItems" );
 	}
 
+
 	ungroup( sboxLayer, sboxLayer, 0 );
 
 	var sboxItems = afc( sboxLayer, "pageItems" );
-	if ( sboxItems.length === 1 )
+
+	if ( sboxItems.length < 1 )
 	{
-		resultingItem = sboxItems[ 0 ];
+		sboxLayer.remove();
+		item.remove();
+		return;
 	}
-	else
-	{
-		resultingItem = sboxLayer.compoundPathItems.add();
-		sboxItems.forEach( function ( item ) { item.moveToBeginning( resultingItem ); } );
-	}
+
+	resultingItem = sboxLayer.compoundPathItems.add();
+
+	sboxItems.forEach( function ( i ) { i.move( resultingItem, ElementPlacement.PLACEATEND ) } ); //move all the items to the compound path
 
 	resultingItem.move( item, ElementPlacement.PLACEAFTER );
 	if ( item.name )
@@ -5014,7 +5070,7 @@ var BOOMBAH_PRODUCTION_COLORS =
 		'SEWLINE',
 		'EDGE',
 		'EDGES',
-		'Jock Tag B'
+		'Jock Tag B',
 	];
 
 var BUILDER_COLOR_CODES = {
