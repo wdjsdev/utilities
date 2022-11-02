@@ -767,6 +767,9 @@ function ungroupAll ( item, parent )
 function ungroup ( item, dest, maxDepth, callback, curDepth )
 {
 
+	item.locked = item.hidden = false;
+	item.visible = true;
+
 	//optional verbose logging for debugging
 	if ( 0 )
 	{
@@ -782,6 +785,21 @@ function ungroup ( item, dest, maxDepth, callback, curDepth )
 	maxDepth = maxDepth === undefined ? 1 : maxDepth;
 	curDepth = curDepth === undefined ? 1 : ++curDepth;
 
+	var keepDigging = maxDepth === 0 || curDepth <= maxDepth;
+
+	if ( item.typename.match( /layer/i ) || ( item.typename.match( /group/i ) && keepDigging ) )
+	{
+		afc( item, "pageItems" ).forEach( function ( i )
+		{
+			ungroup( i, dest, maxDepth, callback, curDepth );
+		} );
+		return;
+		// if(item)
+		// {
+		// 	item.remove();
+		// }
+	}
+
 	if ( item.typename.match( /symbol/i ) )
 	{
 		var tmpBreakSymbolGroup = item.parent.groupItems.add();
@@ -790,58 +808,23 @@ function ungroup ( item, dest, maxDepth, callback, curDepth )
 		item.moveToBeginning( tmpBreakSymbolGroup );
 		item.breakLink();
 		ungroup( tmpBreakSymbolGroup, symbolContentsGroup, 0, callback, curDepth );
-		if ( curDepth <= maxDepth )
+		if ( keepDigging )
 		{
 			ungroup( symbolContentsGroup, dest, maxDepth, callback, curDepth );
 		}
 		else
 		{
-			symbolContentsGroup.moveToBeginning( dest );
-			// if ( tmpBreakSymbolGroup )
-			// {
-			// 	tmpBreakSymbolGroup.remove();
-			// }
+			symbolContentsGroup.moveToEnd( dest );
 		}
 		return;
 	}
 
-	if ( curDepth > maxDepth || !item.typename.match( /group|layer|symbol/i ) )
-	{
-		if ( callback )
-		{
-			callback( item, dest );
-		}
-		else
-		{
-			item.moveToEnd( dest );
-		}
-		return;
-	}
+	item.moveToEnd( dest );
 
-	item.locked = item.hidden = false;
-	item.visible = true;
-
-
-
-	if ( item.layers )
-	{
-		afc( item, "layers" ).forEach( function ( layer )
-		{
-			ungroup( layer, dest, maxDepth, callback, curDepth );
-		} );
-	}
-
-
-
-	afc( item, "pageItems" ).forEach( function ( subItem )
-	{
-		ungroup( subItem, dest, maxDepth, callback, curDepth );
-	} );
-
-	if ( item && item.typename.match( /group/i ) )
-	{
-		item.remove();
-	}
+	// if ( item && item.typename.match( /group/i ) )
+	// {
+	// 	item.remove();
+	// }
 
 
 }
