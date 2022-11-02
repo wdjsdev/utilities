@@ -178,7 +178,7 @@ if ( user === "thell" )
 
 //boolean to determine whether to use the CustomizationDR drive for testing.
 var spoofDRUser = false;
-if ( DR_USERS.indexOf( user ) > -1 || ( user === "will.dowling" && Folder( "/Volumes/CustomizationDR" ).exists ) )
+if ( os.match( /mac/i ) && DR_USERS.indexOf( user ) > -1 || ( user === "will.dowling" && Folder( "/Volumes/CustomizationDR" ).exists ) )
 {
 	customizationPath = customizationPath.replace( "Customization", "CustomizationDR" );
 }
@@ -768,11 +768,10 @@ function ungroup ( item, dest, maxDepth, callback, curDepth )
 {
 
 	//optional verbose logging for debugging
-	// if ( 0 )
-	// {
-	// 	log.h( "Beginning of ungroup function:: item = " + item + "::dest = " + dest + "::maxDepth = " + maxDepth + "::callback = " + callback + "::curDepth = " + curDepth );
-	// }
-
+	if ( 0 )
+	{
+		log.h( "Beginning of ungroup function:: item = " + item + "::dest = " + dest + "::maxDepth = " + maxDepth + "::callback = " + callback + "::curDepth = " + curDepth );
+	}
 
 	if ( item.guides )
 	{
@@ -782,7 +781,31 @@ function ungroup ( item, dest, maxDepth, callback, curDepth )
 	dest = dest || item.parent;
 	maxDepth = maxDepth === undefined ? 1 : maxDepth;
 	curDepth = curDepth === undefined ? 1 : ++curDepth;
-	if ( !item.typename.match( /group|layer|symbol/i ) )
+
+	if ( item.typename.match( /symbol/i ) )
+	{
+		var tmpBreakSymbolGroup = item.parent.groupItems.add();
+		tmpBreakSymbolGroup.name = "tmpbreaksymbolgroup";
+		var symbolContentsGroup = item.parent.groupItems.add();
+		item.moveToBeginning( tmpBreakSymbolGroup );
+		item.breakLink();
+		ungroup( tmpBreakSymbolGroup, symbolContentsGroup, 0, callback, curDepth );
+		if ( curDepth <= maxDepth )
+		{
+			ungroup( symbolContentsGroup, dest, maxDepth, callback, curDepth );
+		}
+		else
+		{
+			symbolContentsGroup.moveToBeginning( dest );
+			// if ( tmpBreakSymbolGroup )
+			// {
+			// 	tmpBreakSymbolGroup.remove();
+			// }
+		}
+		return;
+	}
+
+	if ( curDepth > maxDepth || !item.typename.match( /group|layer|symbol/i ) )
 	{
 		if ( callback )
 		{
@@ -798,14 +821,7 @@ function ungroup ( item, dest, maxDepth, callback, curDepth )
 	item.locked = item.hidden = false;
 	item.visible = true;
 
-	if ( item.typename.match( /symbol/i ) )
-	{
-		var tmpBreakSymbolGroup = item.parent.groupItems.add();
-		item.moveToBeginning( tmpBreakSymbolGroup );
-		item.breakLink();
-		ungroup( tmpBreakSymbolGroup, dest, maxDepth, callback, curDepth );
-		return;
-	}
+
 
 	if ( item.layers )
 	{
@@ -816,9 +832,10 @@ function ungroup ( item, dest, maxDepth, callback, curDepth )
 	}
 
 
+
 	afc( item, "pageItems" ).forEach( function ( subItem )
 	{
-		ungroup( subItem, dest, 0, callback, curDepth );
+		ungroup( subItem, dest, maxDepth, callback, curDepth );
 	} );
 
 	if ( item && item.typename.match( /group/i ) )
@@ -5442,10 +5459,10 @@ var BOOMBAH_APPROVED_COLOR_VALUES =
 	},
 	"Dark Charcoal B":
 	{
-		"cyan": 63,
-		"magenta": 62,
-		"yellow": 63,
-		"black": 51
+		"cyan": 65,
+		"magenta": 57,
+		"yellow": 56,
+		"black": 34
 	},
 	"Charcoal B":
 	{
@@ -5457,10 +5474,10 @@ var BOOMBAH_APPROVED_COLOR_VALUES =
 	},
 	"Charcoal 2 B":
 	{
-		"cyan": 65,
-		"magenta": 55,
-		"yellow": 52,
-		"black": 28
+		"cyan": 71,
+		"magenta": 65,
+		"yellow": 58,
+		"black": 53
 
 	},
 	"Fuschia Neon B":
