@@ -515,7 +515,7 @@ var log =
 	{
 		var result = "";
 
-		msg = msg.split( "::" );
+		msg = ( msg + "" ).split( "::" );
 
 		result += "[msg]: ";
 		result += msg.join( "\n[msg]: " );
@@ -787,10 +787,14 @@ function ungroup ( item, dest, maxDepth, callback, curDepth )
 
 	var keepDigging = maxDepth === 0 || curDepth <= maxDepth;
 
-	if ( item.typename.match( /layer/i ) || ( item.typename.match( /group/i ) && keepDigging ) )
+	if ( item.typename.match( /layer/i ) || ( item.typename.match( /group/i ) && item.pageItems.length && keepDigging ) )
 	{
 		afc( item, "pageItems" ).forEach( function ( i )
 		{
+			if ( !i )
+			{
+				return;
+			}
 			ungroup( i, dest, maxDepth, callback, curDepth );
 		} );
 		return;
@@ -802,28 +806,42 @@ function ungroup ( item, dest, maxDepth, callback, curDepth )
 
 	if ( item.typename.match( /symbol/i ) )
 	{
-		var tmpBreakSymbolGroup = item.parent.groupItems.add();
+		var tmpBreakSymbolGroup = dest.groupItems.add();
 		tmpBreakSymbolGroup.name = "tmpbreaksymbolgroup";
-		var symbolContentsGroup = item.parent.groupItems.add();
 		item.moveToBeginning( tmpBreakSymbolGroup );
 		item.breakLink();
-		ungroup( tmpBreakSymbolGroup, symbolContentsGroup, 0, callback, curDepth );
 		if ( keepDigging )
 		{
-			ungroup( symbolContentsGroup, dest, maxDepth, callback, curDepth );
+			ungroup( tmpBreakSymbolGroup, dest, maxDepth, callback, curDepth );
 		}
 		else
 		{
-			symbolContentsGroup.moveToEnd( dest );
+			tmpBreakSymbolGroup.moveToEnd( dest );
 		}
+		try
+		{
+			tmpBreakSymbolGroup.remove();
+		}
+		catch ( e ) { };
 		return;
 	}
 
-	item.moveToEnd( dest );
+	if ( callback )
+	{
+		callback( item, dest );
+	}
+	else
+	{
+		item.moveToEnd( dest );
+	}
+
 
 	// if ( item && item.typename.match( /group/i ) )
 	// {
-	// 	item.remove();
+	// 	// item.remove();
+	// 	var leftoverGroupsDest = findSpecificPageItem( dest, "leftovergroups" ) || dest.groupItems.add();
+	// 	leftoverGroupsDest.name = "leftovergroups";
+	// 	item.duplicate( leftoverGroupsDest, ElementPlacement.PLACEATEND );
 	// }
 
 
@@ -3588,30 +3606,11 @@ function removeAction ( actionName )
 //curl data from a specified url and return the data as an anonymous object
 function curlData ( url, arg )
 {
+	var curlTimer = new Stopwatch();
+	curlTimer.logStart();
 	log.h( "Beginning execution of curlData(" + url + arg + ")" );
-	var result, status;
+	var result, status = "empty";;
 	var htmlRegex = /<html>/gmi;
-
-	// url = url+arg;
-
-
-	//variables for the local data stuff
-	var curlDataPath = documentsPath + "curlData/"
-	var curlDataFolder = new Folder( curlDataPath );
-	if ( !curlDataFolder.exists )
-	{
-		curlDataFolder.create();
-	}
-	var localDataFile = File( curlDataPath + "curlData.txt" );
-
-
-	//clear out the local data file..
-	//make sure we always start with an empty string
-	localDataFile.open( "w" );
-	localDataFile.write( "" );
-	localDataFile.close();
-	status = "empty";
-
 
 	var scriptText,
 		scriptFile,
@@ -3638,21 +3637,13 @@ function curlData ( url, arg )
 	localDataFile.open( "w" );
 	localDataFile.write( "" );
 	localDataFile.close();
-	status = "empty";
 
 
-	var scriptText,
-		scriptFile,
-		executor,
-		killExecutor;
-
-
-
+	curlTimer.beginTask( "getExecutor" );
 	if ( $.os.match( "Windows" ) )
 	{
 		//write the bat file that will be
 		//used to execute the vbs script
-
 		writeVbsFile();
 
 		//define the executor script
@@ -3668,9 +3659,6 @@ function curlData ( url, arg )
 		//vbs argument 2 = path to curlData.txt file
 		scriptText += curlDataPath + "curlData.txt";
 
-
-		$.writeln( scriptText );
-
 		scriptFile = File( curlDataPath + "batFile.bat" );
 		writeScriptFile( scriptFile, scriptText )
 
@@ -3685,18 +3673,21 @@ function curlData ( url, arg )
 			curlDataPath + "curlData.txt" + "\\\"\""
 		].join( "" );
 
+		log.l( "ATTN: scriptText= " + scriptText );
+
 		scriptFile = File( curlDataPath + "curl_from_illustrator.scpt" );
 		writeScriptFile( scriptFile, scriptText );
 		executor = File( resourcePath + "curl_from_illustrator.app" );
-		killExecutor = File( resourcePath + "kill_curl_from_illustrator.app" );
+		var localExecutor = File( documentsPath + "curlData/curl_from_illustrator.app" );
+		if ( localExecutor.exists )
+		{
+			executor = localExecutor;
+		}
 	}
+	curlTimer.endTask( "getExecutor" );
 
 	log.l( "executor: " + executor.name );
 
-
-
-
-	var executorDelay = 5000;
 	var maxExecutorCalls = 5;
 	var currentExecutorCalls = 0;
 
@@ -3706,14 +3697,13 @@ function curlData ( url, arg )
 
 	var parseFailResults = 0;
 
-
+	curlTimer.beginTask( "executeExecutor" )
 	do
 	{
 		totalChecks = 0;
 		//go get the data
-		log.h( "Executing executor for the " + currentExecutorCalls + "th time." );
+		log.h( "Executing executor for the " + ( ++currentExecutorCalls ) + "th time." );
 		executor.execute();
-		$.sleep( 5000 );
 
 
 		//check the data
@@ -3737,19 +3727,22 @@ function curlData ( url, arg )
 	}
 	while ( status !== "valid" && status !== "html" && currentExecutorCalls < maxExecutorCalls );
 
+	curlTimer.endTask( "executeExecutor" );
 
 	//validate
 	if ( status === "html" || ( status === "empty" && parseFailResults.length ) )
 	{
 		errorList.push( "Netsuite returned invalid data for " + arg );
 		log.e( "curl command failed. status = " + status + "::parseFailResults = " + parseFailResults );
+		log.e( "dataFileContents = " + readDataFile() );
 	}
 	else if ( status === "valid" )
 	{
 		log.l( "Valid data." );
 		log.l( readDataFile() );
-		return result;
 	}
+
+	return result;
 
 
 
