@@ -588,6 +588,9 @@ function printLog ()
 			newStr += endScriptString;
 			var logString = contents + newStr;
 
+			//trim log so we only keep the most recent 10000 lines
+			logString = logString.split( "\n" ).slice( -10000 ).join( "\n" );
+
 			thisDest.write( logString );
 			thisDest.close();
 		}
