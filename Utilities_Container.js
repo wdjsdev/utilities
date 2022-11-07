@@ -443,8 +443,12 @@ var DR_USERS =
 		"katherine.ramos",
 		"enmanuel.mercado",
 		"domingo.camilo",
-		"lenin.tavarez"
+		"lenin.tavarez",
+		"franklyn.martin",
+		"gricely.rivas"
 	];
+
+
 
 //boolean to determine whether to use the CustomizationDR drive for testing.
 var spoofDRUser = false;
