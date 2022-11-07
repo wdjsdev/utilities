@@ -152,7 +152,16 @@ var DR_USERS =
 		"lenin.tavarez"
 	];
 
+//boolean to determine whether to use the CustomizationDR drive for testing.
+var spoofDRUser = false;
+log.l( "Checking for dr user:" );
+if ( os.match( /mac/i ) && DR_USERS.indexOf( user ) > -1 || ( user === "will.dowling" && Folder( "/Volumes/CustomizationDR" ).exists ) )
+{
+	log.l( "User is a DR user. using customizationDR path" );
+	customizationPath = customizationPath.replace( "Customization", "CustomizationDR" );
+}
 
+log.l( "Customization path = " + cusomizationPath );
 
 
 
@@ -176,12 +185,7 @@ if ( user === "thell" )
 
 
 
-//boolean to determine whether to use the CustomizationDR drive for testing.
-var spoofDRUser = false;
-if ( os.match( /mac/i ) && DR_USERS.indexOf( user ) > -1 || ( user === "will.dowling" && Folder( "/Volumes/CustomizationDR" ).exists ) )
-{
-	customizationPath = customizationPath.replace( "Customization", "CustomizationDR" );
-}
+
 
 
 
