@@ -1,338 +1,3 @@
-//array.indexOf prototype
-//Network Storage. Production version
-var customizationPath;
-if ( $.os.match( 'Windows' ) )
-{
-	var user = $.getenv( "USERNAME" );
-	customizationPath = "//AD4/Customization/";
-	var homeFolderPath = "C:/Users/" + user + "/";
-	var homeFolder = Folder( homeFolderPath );
-	var os = "windows";
-}
-else
-{
-	// MAC
-	var user = $.getenv( "USER" )
-	customizationPath = "/Volumes/Customization/";
-	var homeFolderPath = "/Volumes/Macintosh HD/Users/" + user + "/";
-	var homeFolder = new Folder( homeFolderPath );
-	var os = "mac";
-	// if(!homeFolder.exists)
-	// {
-	// 	homeFolder = new Folder("~/");
-	// 	homeFolderPath = "~/";
-	// }
-}
-
-
-////////////////////////
-////////ATTENTION://////
-//
-//		array prototypes
-//
-////////////////////////
-
-//array.indexOf()
-Array.prototype.indexOf = function ( a, b, c )
-{
-	for ( c = this.length, b = ( c + ~~b ) % c; b < c && ( !( b in this ) || this[ b ] !== a ); b++ );
-	return b ^ c ? b : -1;
-}
-Array.prototype.map = function ( callback )
-{
-	arr = [];
-	for ( var i = 0; i < this.length; i++ )
-		arr.push( callback( this[ i ], i, this ) );
-	return arr;
-};
-Array.prototype.forEach = function ( callback, startPos, inc )
-{
-	inc = inc || 1;
-	startPos = startPos || 0;
-	for ( var i = startPos; i < this.length; i += inc )
-		callback( this[ i ], i, this );
-};
-Array.prototype.backForEach = function ( callback, startPos, inc )
-{
-	inc = inc || 1;
-	startPos = startPos || this.length - 1;
-	for ( var i = startPos; i >= 0; i-- )
-		callback( this[ i ], i, this );
-};
-Array.prototype.filter = function ( callback, context )
-{
-	arr = [];
-	for ( var i = 0; i < this.length; i++ )
-	{
-		if ( callback.call( context, this[ i ], i, this ) )
-		{
-			arr.push( this[ i ] );
-
-		}
-	}
-	return arr;
-};
-Array.prototype.reverse = function ()
-{
-	var arr = [];
-	for ( var i = this.length - 1; i >= 0; i-- )
-	{
-		arr.push( this[ i ] );
-	}
-	return arr;
-}
-
-
-//
-// Array.prototype.merge = function ( incomingArray )
-// {
-
-// 	for ( var i = 0; i < incomingArray.length; i++ )
-// 	{
-// 		this.push( incomingArray[ i ] );
-// 	}
-// 	return arr;
-// }
-
-
-
-
-
-////////////////////////
-////////ATTENTION://////
-//
-//		array prototypes
-//
-////////////////////////
-
-
-////////////////////////
-////////ATTENTION://////
-//
-//		obj prototypes
-//
-////////////////////////
-
-function objForEach ( obj, func )
-{
-	for ( var i in obj )
-	{
-		func( obj[ i ] );
-	}
-}
-
-////////////////////////
-////////ATTENTION://////
-//
-//		obj prototypes
-//
-////////////////////////
-
-
-//list of dr users
-var DR_USERS =
-	[
-		"medelyn.tavarez",
-		"rafael.nolasco",
-		"nicolas.nicasio",
-		"arlan.grullon",
-		"deivison.urena",
-		"eliezer.lopez",
-		"maximo.montesino",
-		"danny.cabrera",
-		"kelvin.ynoa",
-		"julio.lora",
-		"ismael.noesi",
-		"raymond.fernandez",
-		"isaac.martinez",
-		"joshua.chevalier",
-		"katherine.ramos",
-		"enmanuel.mercado",
-		"domingo.camilo",
-		"lenin.tavarez"
-	];
-
-//boolean to determine whether to use the CustomizationDR drive for testing.
-var spoofDRUser = false;
-log.l( "Checking for dr user:" );
-if ( os.match( /mac/i ) && DR_USERS.indexOf( user ) > -1 || ( user === "will.dowling" && Folder( "/Volumes/CustomizationDR" ).exists ) )
-{
-	log.l( "User is a DR user. using customizationDR path" );
-	customizationPath = customizationPath.replace( "Customization", "CustomizationDR" );
-}
-
-log.l( "Customization path = " + cusomizationPath );
-
-
-
-
-
-
-
-
-
-//specific fix for Sam Bateman's home computer..
-//her username is "thell".
-//And she typically works on the "D" drive instead of "C"
-//then she has to manually move things from D over to C after
-//a script is finished. let's just change her home folder to the
-//D drive so she doesn't have to move everything after the script runs
-if ( user === "thell" )
-{
-	homeFolderPath = homeFolderPath.replace( "C:", "D:" );
-	homeFolder = Folder( homeFolderPath );
-}
-
-
-
-
-
-
-
-
-
-
-
-if ( typeof scriptName === "undefined" )
-{
-	//no scriptName variable existed. create one.
-	var scriptName = $.fileName;
-	scriptName = scriptName.substring( scriptName.lastIndexOf( "/" ) + 1, scriptName.lastIndexOf( "." ) );
-	scriptName = scriptName.toLowerCase();
-}
-
-
-
-
-var desktopPath = homeFolderPath + "Desktop/";
-var desktopFolder = new Folder( desktopPath );
-
-var documentsPath = homeFolderPath + "Documents/";
-var documentsFolder = new Folder( documentsPath );
-
-var customizationFolder = new Folder( customizationPath );
-
-var libraryPath = customizationPath + "Library/";
-var libraryFolder = new Folder( libraryPath );
-
-var graphicsPath = libraryPath + "Graphics/";
-var graphicsFolder = new Folder( graphicsPath );
-
-var prepressPath = libraryPath + "cads/prepress/";
-var prepressFolder = new Folder( prepressPath );
-
-var scriptsPath = libraryPath + "Scripts/";
-var scriptsFolder = new Folder( scriptsPath );
-
-var resourcePath = scriptsPath + "Script_Resources/";
-var resourceFolder = new Folder( resourcePath );
-
-var imagesPath = resourcePath + "Images/";
-var imagesFolder = new Folder( imagesPath );
-
-var componentsPath = resourcePath + "components/";
-var componentsFolder = new Folder( componentsPath );
-
-var dataPath = resourcePath + "Data/";
-var dataFolder = new Folder( dataPath );
-
-var logsPath = resourcePath + "Logs/";
-var logsFolder = new Folder( logsPath );
-
-var centralLibraryPath = dataPath + "central_library.js";
-var centralLibraryFile = File( centralLibraryPath );
-
-var btLibraryPath = dataPath + "build_template_library.js";
-var btLibraryFile = File( btLibraryPath );
-
-var aaSpecialInstructionsFile = File( dataPath + "aa_special_instructions.js" );
-
-var userPathRegex = /(^\/Users\/[^\/]*\/)|(^.*~\/)/i;
-
-
-
-//
-//deprecated
-//
-//logs will now be placed into individual user folders
-//instead of having one central log file for each script.
-//
-//log files
-var centralLog = new File( dataPath + ".script_logs/central_log.txt" );
-var importantLog = new File( dataPath + ".script_logs/important_log.txt" );
-var centralErrorLog = new File( dataPath + ".script_logs/error_log.txt" );
-var buildMockLog = new File( dataPath + ".script_logs/mockup_builder_log.txt" );
-var missingTemplatesLog = new File( dataPath + ".script_logs/converted_templates_needed.txt" );
-var changeCodeLog = new File( dataPath + ".script_logs/change_code_log.txt" );
-//
-//deprecated
-//
-
-
-//
-//Netsuite URLs
-//
-//sales order data for prod file building
-var NOD = netsuiteOrderDataURL = "https://460511.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1477&deploy=1&compid=460511&h=2834dd5419b7c48fdba0&soid=";
-//old version of netsuite order data url. adam g says use the new one below..
-//this one has been working fine domestically, but the new one supposedly works better in the DR???
-// var NOD = netsuiteOrderDataURL = "https://forms.na2.netsuite.com/app/site/hosting/scriptlet.nl?script=1477&deploy=1&compid=460511&h=2834dd5419b7c48fdba0&soid="
-
-//builder data for mockup building
-// var NBD = netsuiteBuilderDataURL = "https://forms.na2.netsuite.com/app/site/hosting/scriptlet.nl?script=908&deploy=1&compid=460511&h=940572c6865fbbe12e98&designId=";
-var NBD = netsuiteBuilderDataURL = "https://460511.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=908&deploy=1&compid=460511&h=940572c6865fbbe12e98&designId=";
-
-
-
-
-
-//stopwatch object for tracking task durations
-var Stopwatch = function ()
-{
-	this.startTime = 0;
-	this.endTime = 0;
-	this.taskStart = 0;
-	this.taskEnd = 0;
-	this.stepLabel = "";
-
-	this.currentTasks = {};
-
-	this.logStart = function ()	
-	{
-		var curDate = new Date();
-		this.startTime = curDate.getTime();
-	}
-	this.logEnd = function ()
-	{
-		var curDate = new Date();
-		this.endTime = curDate.getTime();
-	}
-	this.beginTask = function ( label )
-	{
-		this.currentTasks[ label ] = { "label": label, "taskStart": new Date().getTime(), "taskEnd": undefined };
-	}
-	this.endTask = function ( label )
-	{
-		this.currentTasks[ label ].taskEnd = new Date().getTime();
-		var stepDuration = this.currentTasks[ label ].taskEnd - this.currentTasks[ label ].taskStart;
-		var msg = label + " step took " + stepDuration + " ms.";
-		log.l( msg );
-	}
-	this.getElapsed = function ()
-	{
-		return "Elapsed Time: " + ( new Date().getTime() - this.startTime );
-	}
-	this.calculate = function ()
-	{
-		return ( this.endTime - this.startTime );
-	}
-}
-var scriptTimer = new Stopwatch();
-//initiate the start time
-scriptTimer.logStart();
-
-
-
 //
 //LOGGING
 //
@@ -616,6 +281,353 @@ function printSpecialtyLog ( file, msg )
 //
 //END LOGGING
 //
+
+
+
+
+
+//array.indexOf prototype
+//Network Storage. Production version
+var customizationPath;
+var customizationDRPath;
+if ( $.os.match( 'Windows' ) )
+{
+	var user = $.getenv( "USERNAME" );
+	customizationPath = "//AD4/Customization/";
+	customizationDRPath = "O:/"
+	if ( Folder( customizationDRPath ).exists )
+	{
+		customizationPath = customizationDRPath;
+	}
+	var homeFolderPath = "C:/Users/" + user + "/";
+	var homeFolder = Folder( homeFolderPath );
+	var os = "windows";
+}
+else
+{
+	// MAC
+	var user = $.getenv( "USER" )
+	customizationPath = "/Volumes/Customization/";
+	customizationDrPath = "/Volumes/CustomizationDR/";
+	if ( Folder( customizationDRPath ).exists )
+	{
+		customizationPath = customizationDRPath;
+	}
+	var homeFolderPath = "/Volumes/Macintosh HD/Users/" + user + "/";
+	var homeFolder = new Folder( homeFolderPath );
+	var os = "mac";
+}
+
+
+////////////////////////
+////////ATTENTION://////
+//
+//		array prototypes
+//
+////////////////////////
+
+//array.indexOf()
+Array.prototype.indexOf = function ( a, b, c )
+{
+	for ( c = this.length, b = ( c + ~~b ) % c; b < c && ( !( b in this ) || this[ b ] !== a ); b++ );
+	return b ^ c ? b : -1;
+}
+Array.prototype.map = function ( callback )
+{
+	arr = [];
+	for ( var i = 0; i < this.length; i++ )
+		arr.push( callback( this[ i ], i, this ) );
+	return arr;
+};
+Array.prototype.forEach = function ( callback, startPos, inc )
+{
+	inc = inc || 1;
+	startPos = startPos || 0;
+	for ( var i = startPos; i < this.length; i += inc )
+		callback( this[ i ], i, this );
+};
+Array.prototype.backForEach = function ( callback, startPos, inc )
+{
+	inc = inc || 1;
+	startPos = startPos || this.length - 1;
+	for ( var i = startPos; i >= 0; i-- )
+		callback( this[ i ], i, this );
+};
+Array.prototype.filter = function ( callback, context )
+{
+	arr = [];
+	for ( var i = 0; i < this.length; i++ )
+	{
+		if ( callback.call( context, this[ i ], i, this ) )
+		{
+			arr.push( this[ i ] );
+
+		}
+	}
+	return arr;
+};
+Array.prototype.reverse = function ()
+{
+	var arr = [];
+	for ( var i = this.length - 1; i >= 0; i-- )
+	{
+		arr.push( this[ i ] );
+	}
+	return arr;
+}
+
+
+//
+// Array.prototype.merge = function ( incomingArray )
+// {
+
+// 	for ( var i = 0; i < incomingArray.length; i++ )
+// 	{
+// 		this.push( incomingArray[ i ] );
+// 	}
+// 	return arr;
+// }
+
+
+
+
+
+////////////////////////
+////////ATTENTION://////
+//
+//		array prototypes
+//
+////////////////////////
+
+
+////////////////////////
+////////ATTENTION://////
+//
+//		obj prototypes
+//
+////////////////////////
+
+function objForEach ( obj, func )
+{
+	for ( var i in obj )
+	{
+		func( obj[ i ] );
+	}
+}
+
+////////////////////////
+////////ATTENTION://////
+//
+//		obj prototypes
+//
+////////////////////////
+
+
+//list of dr users
+var DR_USERS =
+	[
+		"medelyn.tavarez",
+		"rafael.nolasco",
+		"nicolas.nicasio",
+		"arlan.grullon",
+		"deivison.urena",
+		"eliezer.lopez",
+		"maximo.montesino",
+		"danny.cabrera",
+		"kelvin.ynoa",
+		"julio.lora",
+		"ismael.noesi",
+		"raymond.fernandez",
+		"isaac.martinez",
+		"joshua.chevalier",
+		"katherine.ramos",
+		"enmanuel.mercado",
+		"domingo.camilo",
+		"lenin.tavarez"
+	];
+
+//boolean to determine whether to use the CustomizationDR drive for testing.
+var spoofDRUser = false;
+log.l( "Checking for dr user:" );
+if ( os.match( /mac/i ) && DR_USERS.indexOf( user ) > -1 || ( user === "will.dowling" && Folder( "/Volumes/CustomizationDR" ).exists ) )
+{
+	log.l( "User is a DR user. using customizationDR path" );
+	customizationPath = customizationPath.replace( "Customization", "CustomizationDR" );
+}
+
+log.l( "Customization path = " + customizationPath );
+
+
+
+
+
+
+
+
+
+//specific fix for Sam Bateman's home computer..
+//her username is "thell".
+//And she typically works on the "D" drive instead of "C"
+//then she has to manually move things from D over to C after
+//a script is finished. let's just change her home folder to the
+//D drive so she doesn't have to move everything after the script runs
+if ( user === "thell" )
+{
+	homeFolderPath = homeFolderPath.replace( "C:", "D:" );
+	homeFolder = Folder( homeFolderPath );
+}
+
+
+
+
+
+
+
+
+
+
+
+if ( typeof scriptName === "undefined" )
+{
+	//no scriptName variable existed. create one.
+	alert( "Please tell william which script you ran before you got this message. Thanks!" );
+	var scriptName = "unknown";
+}
+
+
+
+
+
+var desktopPath = homeFolderPath + "Desktop/";
+var desktopFolder = new Folder( desktopPath );
+
+var documentsPath = homeFolderPath + "Documents/";
+var documentsFolder = new Folder( documentsPath );
+
+var customizationFolder = new Folder( customizationPath );
+
+var libraryPath = customizationPath + "Library/";
+var libraryFolder = new Folder( libraryPath );
+
+var graphicsPath = libraryPath + "Graphics/";
+var graphicsFolder = new Folder( graphicsPath );
+
+var prepressPath = libraryPath + "cads/prepress/";
+var prepressFolder = new Folder( prepressPath );
+
+var scriptsPath = libraryPath + "Scripts/";
+var scriptsFolder = new Folder( scriptsPath );
+
+var resourcePath = scriptsPath + "Script_Resources/";
+var resourceFolder = new Folder( resourcePath );
+
+var imagesPath = resourcePath + "Images/";
+var imagesFolder = new Folder( imagesPath );
+
+var componentsPath = resourcePath + "components/";
+var componentsFolder = new Folder( componentsPath );
+
+var dataPath = resourcePath + "Data/";
+var dataFolder = new Folder( dataPath );
+
+var logsPath = resourcePath + "Logs/";
+var logsFolder = new Folder( logsPath );
+
+var centralLibraryPath = dataPath + "central_library.js";
+var centralLibraryFile = File( centralLibraryPath );
+
+var btLibraryPath = dataPath + "build_template_library.js";
+var btLibraryFile = File( btLibraryPath );
+
+var aaSpecialInstructionsFile = File( dataPath + "aa_special_instructions.js" );
+
+var userPathRegex = /(^\/Users\/[^\/]*\/)|(^.*~\/)/i;
+
+
+
+//
+//deprecated
+//
+//logs will now be placed into individual user folders
+//instead of having one central log file for each script.
+//
+//log files
+var centralLog = new File( dataPath + ".script_logs/central_log.txt" );
+var importantLog = new File( dataPath + ".script_logs/important_log.txt" );
+var centralErrorLog = new File( dataPath + ".script_logs/error_log.txt" );
+var buildMockLog = new File( dataPath + ".script_logs/mockup_builder_log.txt" );
+var missingTemplatesLog = new File( dataPath + ".script_logs/converted_templates_needed.txt" );
+var changeCodeLog = new File( dataPath + ".script_logs/change_code_log.txt" );
+//
+//deprecated
+//
+
+
+//
+//Netsuite URLs
+//
+//sales order data for prod file building
+var NOD = netsuiteOrderDataURL = "https://460511.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=1477&deploy=1&compid=460511&h=2834dd5419b7c48fdba0&soid=";
+//old version of netsuite order data url. adam g says use the new one below..
+//this one has been working fine domestically, but the new one supposedly works better in the DR???
+// var NOD = netsuiteOrderDataURL = "https://forms.na2.netsuite.com/app/site/hosting/scriptlet.nl?script=1477&deploy=1&compid=460511&h=2834dd5419b7c48fdba0&soid="
+
+//builder data for mockup building
+// var NBD = netsuiteBuilderDataURL = "https://forms.na2.netsuite.com/app/site/hosting/scriptlet.nl?script=908&deploy=1&compid=460511&h=940572c6865fbbe12e98&designId=";
+var NBD = netsuiteBuilderDataURL = "https://460511.extforms.netsuite.com/app/site/hosting/scriptlet.nl?script=908&deploy=1&compid=460511&h=940572c6865fbbe12e98&designId=";
+
+
+
+
+
+//stopwatch object for tracking task durations
+var Stopwatch = function ()
+{
+	this.startTime = 0;
+	this.endTime = 0;
+	this.taskStart = 0;
+	this.taskEnd = 0;
+	this.stepLabel = "";
+
+	this.currentTasks = {};
+
+	this.logStart = function ()	
+	{
+		var curDate = new Date();
+		this.startTime = curDate.getTime();
+	}
+	this.logEnd = function ()
+	{
+		var curDate = new Date();
+		this.endTime = curDate.getTime();
+	}
+	this.beginTask = function ( label )
+	{
+		this.currentTasks[ label ] = { "label": label, "taskStart": new Date().getTime(), "taskEnd": undefined };
+	}
+	this.endTask = function ( label )
+	{
+		this.currentTasks[ label ].taskEnd = new Date().getTime();
+		var stepDuration = this.currentTasks[ label ].taskEnd - this.currentTasks[ label ].taskStart;
+		var msg = label + " step took " + stepDuration + " ms.";
+		log.l( msg );
+	}
+	this.getElapsed = function ()
+	{
+		return "Elapsed Time: " + ( new Date().getTime() - this.startTime );
+	}
+	this.calculate = function ()
+	{
+		return ( this.endTime - this.startTime );
+	}
+}
+var scriptTimer = new Stopwatch();
+//initiate the start time
+scriptTimer.logStart();
+
+
+
+
 
 
 
