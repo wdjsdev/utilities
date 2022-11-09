@@ -295,10 +295,7 @@ if ( $.os.match( 'Windows' ) )
 	var user = $.getenv( "USERNAME" );
 	customizationPath = "//AD4/Customization/";
 	customizationDRPath = "O:/"
-	if ( Folder( customizationDRPath ).exists )
-	{
-		customizationPath = customizationDRPath;
-	}
+	customizationPath = Folder( customizationDRPath ).exists ? customizationDRPath : customizationPath;
 	var homeFolderPath = "C:/Users/" + user + "/";
 	var homeFolder = Folder( homeFolderPath );
 	var os = "windows";
@@ -308,16 +305,14 @@ else
 	// MAC
 	var user = $.getenv( "USER" )
 	customizationPath = "/Volumes/Customization/";
-	customizationDrPath = "/Volumes/CustomizationDR/";
-	if ( Folder( customizationDRPath ).exists )
-	{
-		customizationPath = customizationDRPath;
-	}
+	customizationDRPath = "/Volumes/CustomizationDR/";
 	var homeFolderPath = "/Volumes/Macintosh HD/Users/" + user + "/";
 	var homeFolder = new Folder( homeFolderPath );
 	var os = "mac";
 }
 
+customizationPath = Folder( customizationDRPath ).exists ? customizationDRPath : customizationPath;
+log.l( "Utilities Container setting customizationPath to: " + customizationPath );
 
 ////////////////////////
 ////////ATTENTION://////
@@ -423,43 +418,48 @@ function objForEach ( obj, func )
 ////////////////////////
 
 
+////////ATTENTION://////
+//potentially removeable.. testing to see if just looking
+//for the customizationDR drive is enough to accurately determine
+//a dr user.. That way i won't need to maintain this list.
+////////////////////////
 //list of dr users
-var DR_USERS =
-	[
-		"medelyn.tavarez",
-		"rafael.nolasco",
-		"nicolas.nicasio",
-		"arlan.grullon",
-		"deivison.urena",
-		"eliezer.lopez",
-		"maximo.montesino",
-		"danny.cabrera",
-		"kelvin.ynoa",
-		"julio.lora",
-		"ismael.noesi",
-		"raymond.fernandez",
-		"isaac.martinez",
-		"joshua.chevalier",
-		"katherine.ramos",
-		"enmanuel.mercado",
-		"domingo.camilo",
-		"lenin.tavarez",
-		"franklyn.martin",
-		"gricely.rivas"
-	];
+// var DR_USERS =
+// 	[
+// 		"medelyn.tavarez",
+// 		"rafael.nolasco",
+// 		"nicolas.nicasio",
+// 		"arlan.grullon",
+// 		"deivison.urena",
+// 		"eliezer.lopez",
+// 		"maximo.montesino",
+// 		"danny.cabrera",
+// 		"kelvin.ynoa",
+// 		"julio.lora",
+// 		"ismael.noesi",
+// 		"raymond.fernandez",
+// 		"isaac.martinez",
+// 		"joshua.chevalier",
+// 		"katherine.ramos",
+// 		"enmanuel.mercado",
+// 		"domingo.camilo",
+// 		"lenin.tavarez",
+// 		"franklyn.martin",
+// 		"gricely.rivas"
+// 	];
 
 
 
 //boolean to determine whether to use the CustomizationDR drive for testing.
-var spoofDRUser = false;
-log.l( "Checking for dr user:" );
-if ( os.match( /mac/i ) && DR_USERS.indexOf( user ) > -1 || ( user === "will.dowling" && Folder( "/Volumes/CustomizationDR" ).exists ) )
-{
-	log.l( "User is a DR user. using customizationDR path" );
-	customizationPath = customizationPath.replace( "Customization", "CustomizationDR" );
-}
+// var spoofDRUser = false;
+// log.l( "Checking for dr user:" );
+// if ( os.match( /mac/i ) && DR_USERS.indexOf( user ) > -1 || ( user === "will.dowling" && Folder( "/Volumes/CustomizationDR" ).exists ) )
+// {
+// 	log.l( "User is a DR user. using customizationDR path" );
+// 	customizationPath = customizationPath.replace( "Customization", "CustomizationDR" );
+// }
 
-log.l( "Customization path = " + customizationPath );
+// log.l( "Customization path = " + customizationPath );
 
 
 
@@ -3709,7 +3709,7 @@ function curlData ( url, arg )
 	}
 	curlTimer.endTask( "getExecutor" );
 
-	log.l( "executor: " + executor.name );
+	log.l( "executor: " + executor.fullName );
 
 	var maxExecutorCalls = 5;
 	var currentExecutorCalls = 0;
