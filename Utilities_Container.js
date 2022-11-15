@@ -13,6 +13,9 @@ var messageList = [];
 
 var logDest = [];
 
+
+
+
 var LIVE_LOGGING = false;
 var DEV_LOGGING = false;
 
@@ -135,10 +138,7 @@ var log =
 		result += "\n";
 		result += "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n\n";
 		scriptLog += result;
-		if ( LIVE_LOGGING )
-		{
-			livePrintLog( result );
-		}
+		localScriptLogFile.open( "a" ); localScriptLogFile.writeln( msg ); localScriptLogFile.close();
 		if ( DEV_LOGGING )
 		{
 			$.writeln( result );
@@ -171,10 +171,7 @@ var log =
 		scriptLog += result;
 		errorLog += result;
 
-		if ( LIVE_LOGGING )
-		{
-			livePrintLog( result );
-		}
+		localScriptLogFile.open( "a" ); localScriptLogFile.writeln( msg ); localScriptLogFile.close();
 		if ( DEV_LOGGING )
 		{
 			$.writeln( result );
@@ -191,10 +188,7 @@ var log =
 		result += "\n";
 
 		scriptLog += result;
-		if ( LIVE_LOGGING )
-		{
-			livePrintLog( result )
-		}
+		localScriptLogFile.open( "a" ); localScriptLogFile.writeln( msg ); localScriptLogFile.close();
 		if ( DEV_LOGGING )
 		{
 			$.writeln( result );
@@ -226,10 +220,6 @@ var log =
 
 function printLog ()
 {
-	if ( LIVE_LOGGING )
-	{
-		return;
-	}
 	var curTime = logTime();
 
 	if ( logDest.length > 0 && scriptLog !== "" )
@@ -285,34 +275,6 @@ function printSpecialtyLog ( file, msg )
 
 
 
-
-//array.indexOf prototype
-//Network Storage. Production version
-var customizationPath;
-var customizationDRPath;
-if ( $.os.match( 'Windows' ) )
-{
-	var user = $.getenv( "USERNAME" );
-	customizationPath = "//AD4/Customization/";
-	customizationDRPath = "O:/"
-	customizationPath = Folder( customizationDRPath ).exists ? customizationDRPath : customizationPath;
-	var homeFolderPath = "C:/Users/" + user + "/";
-	var homeFolder = Folder( homeFolderPath );
-	var os = "windows";
-}
-else
-{
-	// MAC
-	var user = $.getenv( "USER" )
-	customizationPath = "/Volumes/Customization/";
-	customizationDRPath = "/Volumes/CustomizationDR/";
-	var homeFolderPath = "/Volumes/Macintosh HD/Users/" + user + "/";
-	var homeFolder = new Folder( homeFolderPath );
-	var os = "mac";
-}
-
-customizationPath = Folder( customizationDRPath ).exists ? customizationDRPath : customizationPath;
-log.l( "Utilities Container setting customizationPath to: " + customizationPath );
 
 ////////////////////////
 ////////ATTENTION://////
@@ -466,8 +428,30 @@ function objForEach ( obj, func )
 
 
 
-
-
+//array.indexOf prototype
+//Network Storage. Production version
+var customizationPath;
+var customizationDRPath;
+if ( $.os.match( 'Windows' ) )
+{
+	var user = $.getenv( "USERNAME" );
+	customizationPath = "//AD4/Customization/";
+	customizationDRPath = "O:/"
+	customizationPath = Folder( customizationDRPath ).exists ? customizationDRPath : customizationPath;
+	var homeFolderPath = "C:/Users/" + user + "/";
+	var homeFolder = Folder( homeFolderPath );
+	var os = "windows";
+}
+else
+{
+	// MAC
+	var user = $.getenv( "USER" )
+	customizationPath = "/Volumes/Customization/";
+	customizationDRPath = "/Volumes/CustomizationDR/";
+	var homeFolderPath = "/Volumes/Macintosh HD/Users/" + user + "/";
+	var homeFolder = new Folder( homeFolderPath );
+	var os = "mac";
+}
 
 //specific fix for Sam Bateman's home computer..
 //her username is "thell".
@@ -480,9 +464,6 @@ if ( user === "thell" )
 	homeFolderPath = homeFolderPath.replace( "C:", "D:" );
 	homeFolder = Folder( homeFolderPath );
 }
-
-
-
 
 
 
@@ -546,6 +527,38 @@ var btLibraryFile = File( btLibraryPath );
 var aaSpecialInstructionsFile = File( dataPath + "aa_special_instructions.js" );
 
 var userPathRegex = /(^\/Users\/[^\/]*\/)|(^.*~\/)/i;
+
+
+
+//
+//setup local live log file
+//so that we can write real time logs without the
+//added time of writing to the network.
+//this way if there's a runtime error, we'll still get some logging out
+//of it. otherwise, we only get log files if the script finishes....
+//which means that when there's an error and we need the log file it doesn't exist..
+//but when the script worked fine, then we have a log... dumb.
+var localScriptLogPath = documentsPath + "script_data/"
+var localScriptLogFolder = Folder( localScriptLogPath );
+if ( !localScriptLogFolder.exists )
+{
+	localScriptLogFolder.create();
+}
+var localScriptLogFile = new File( localScriptLogPath + "live_script_log.txt" );
+
+
+//clear the log
+//so it's always fresh when we start a new script
+localScriptLogFile.open( "w" );
+localScriptLogFile.write( "" );
+localScriptLogFile.close();
+
+customizationPath = Folder( customizationDRPath ).exists ? customizationDRPath : customizationPath;
+log.l( "Utilities Container setting customizationPath to: " + customizationPath );
+
+
+
+
 
 
 
