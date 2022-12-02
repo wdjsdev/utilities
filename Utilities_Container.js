@@ -453,6 +453,11 @@ else
 	var os = "mac";
 }
 
+//set the customization path..
+//if customizationDR exists, use that path.
+//otherwise use yorkville based ad4 customization path
+customizationPath = Folder( customizationDRPath ).exists ? customizationDRPath : customizationPath;
+
 //specific fix for Sam Bateman's home computer..
 //her username is "thell".
 //And she typically works on the "D" drive instead of "C"
@@ -529,7 +534,9 @@ var aaSpecialInstructionsFile = File( dataPath + "aa_special_instructions.js" );
 var userPathRegex = /(^\/Users\/[^\/]*\/)|(^.*~\/)/i;
 
 
-
+var localLogTimer = new Stopwatch();
+localLogTimer.logStart();
+localLogTimer.beginTask( "locateLocalLog" );
 //
 //setup local live log file
 //so that we can write real time logs without the
@@ -546,14 +553,19 @@ if ( !localScriptLogFolder.exists )
 }
 var localScriptLogFile = new File( localScriptLogPath + "live_script_log.txt" );
 
+localLogTimer.endTask( "locateLocalLog" );
+localLogTimer.beginTask( "clearLog" );
 
 //clear the log
 //so it's always fresh when we start a new script
 localScriptLogFile.open( "w" );
-localScriptLogFile.write( "" );
+localScriptLogFile.write( "Running Script: " + scriptName + "\n\n" );
 localScriptLogFile.close();
 
-customizationPath = Folder( customizationDRPath ).exists ? customizationDRPath : customizationPath;
+localLogTimer.endTask( "clearLog" );
+
+
+
 log.l( "Utilities Container setting customizationPath to: " + customizationPath );
 
 
@@ -598,7 +610,7 @@ var NBD = netsuiteBuilderDataURL = "https://460511.extforms.netsuite.com/app/sit
 
 
 //stopwatch object for tracking task durations
-var Stopwatch = function ()
+function Stopwatch ()
 {
 	this.startTime = 0;
 	this.endTime = 0;
@@ -760,6 +772,30 @@ function recursiveDig ( item, callback )
 }
 
 
+function cleanupSymbolContents ( item, dest )
+{
+	var testItem = item;
+	if ( item.typename.match( /compound/i ) )
+	{
+		if ( !item.pathItems.length )
+		{
+			item = cleanupCompoundPath( item );
+		}
+		testItem = item.pathItems[ 0 ];
+	}
+
+	if ( testItem.typename.match( /^PathItem/ ) && !testItem.filled && !testItem.stroked )
+	{
+		item.remove();
+	}
+	else
+	{
+		item.moveToEnd( dest );
+	}
+
+}
+
+
 
 //release all pageItems from this group to a designated parent
 //if no parent is specified, the item's parent is used
@@ -825,7 +861,12 @@ function ungroup ( item, dest, maxDepth, callback, curDepth )
 
 	if ( item.typename.match( /layer/i ) || ( item.typename.match( /group/i ) && item.pageItems.length && keepDigging ) )
 	{
-		afc( item, "pageItems" ).forEach( function ( i )
+		var subItems = afc( item, "pageItems" );
+		if ( item.layers && item.layers.length > 0 )
+		{
+			subItems = subItems.concat( afc( item, "layers" ) );
+		}
+		subItems.forEach( function ( i )
 		{
 			if ( !i )
 			{
@@ -833,6 +874,10 @@ function ungroup ( item, dest, maxDepth, callback, curDepth )
 			}
 			ungroup( i, dest, maxDepth, callback, curDepth );
 		} );
+		// afc( item, "layers" ).forEach( function ( i )
+		// {
+		// 	ungroup( i, dest, maxDepth, callback, curDepth );
+		// } )
 		return;
 		// if(item)
 		// {
@@ -4050,6 +4095,62 @@ function rotatePieces ( rotationSets, parentLayer )
 //
 //action string arrays
 //
+
+const EXPAND_STROKE_ACTION_STRING =
+	[
+		"/version 3",
+		"/name [ 13",
+		"	657870616e645f7374726f6b65",
+		"]",
+		"/isOpen 1",
+		"/actionCount 1",
+		"/action-1 {",
+		"	/name [ 13",
+		"		657870616e645f7374726f6b65",
+		"	]",
+		"	/keyIndex 0",
+		"	/colorIndex 0",
+		"	/isOpen 1",
+		"	/eventCount 1",
+		"	/event-1 {",
+		"		/useRulersIn1stQuadrant 0",
+		"		/internalName (ai_plugin_expand)",
+		"		/localizedName [ 6",
+		"			457870616e64",
+		"		]",
+		"		/isOpen 1",
+		"		/isOn 1",
+		"		/hasDialog 1",
+		"		/showDialog 0",
+		"		/parameterCount 4",
+		"		/parameter-1 {",
+		"			/key 1868720756",
+		"			/showInPalette 4294967295",
+		"			/type (boolean)",
+		"			/value 0",
+		"		}",
+		"		/parameter-2 {",
+		"			/key 1718185068",
+		"			/showInPalette 4294967295",
+		"			/type (boolean)",
+		"			/value 0",
+		"		}",
+		"		/parameter-3 {",
+		"			/key 1937011307",
+		"			/showInPalette 4294967295",
+		"			/type (boolean)",
+		"			/value 1",
+		"		}",
+		"		/parameter-4 {",
+		"			/key 1936553064",
+		"			/showInPalette 4294967295",
+		"			/type (boolean)",
+		"			/value 0",
+		"		}",
+		"	}",
+		"}"
+
+	]
 
 const PATHFINDER_ACTION_STRING =
 	[
