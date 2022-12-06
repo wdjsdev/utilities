@@ -480,7 +480,7 @@ if ( user === "thell" )
 if ( typeof scriptName === "undefined" )
 {
 	//no scriptName variable existed. create one.
-	alert( "Please tell william which script you ran before you got this message. Thanks!" );
+	// alert( "Please tell william which script you ran before you got this message. Thanks!" );
 	var scriptName = "unknown";
 }
 
@@ -784,7 +784,7 @@ function cleanupSymbolContents ( item, dest )
 		testItem = item.pathItems[ 0 ];
 	}
 
-	if ( testItem.typename.match( /^PathItem/ ) && !testItem.filled && !testItem.stroked )
+	if ( testItem.typename.match( /^PathItem/ ) && !item.clipping && !testItem.filled && !testItem.stroked )
 	{
 		item.remove();
 	}
@@ -861,49 +861,36 @@ function ungroup ( item, dest, maxDepth, callback, curDepth )
 
 	if ( item.typename.match( /layer/i ) || ( item.typename.match( /group/i ) && item.pageItems.length && keepDigging ) )
 	{
-		var subItems = afc( item, "pageItems" );
-		if ( item.layers && item.layers.length > 0 )
+		var subItems = afc( item, "pageItems" ).concat( afc( item, "layers" ) );
+		if ( item.clipped )
 		{
-			subItems = subItems.concat( afc( item, "layers" ) );
+			item.moveToEnd( dest );
+			subItems.forEach( function ( si )
+			{
+				ungroup( si, item, 0 );
+			}, 1 )
+
+			return
 		}
+
 		subItems.forEach( function ( i )
 		{
-			if ( !i )
-			{
-				return;
-			}
 			ungroup( i, dest, maxDepth, callback, curDepth );
 		} );
-		// afc( item, "layers" ).forEach( function ( i )
-		// {
-		// 	ungroup( i, dest, maxDepth, callback, curDepth );
-		// } )
+
 		return;
-		// if(item)
-		// {
-		// 	item.remove();
-		// }
 	}
 
 	if ( item.typename.match( /symbol/i ) )
 	{
+
 		var tmpBreakSymbolGroup = dest.groupItems.add();
+		var finalSymbolGroup = dest.groupItems.add();
 		tmpBreakSymbolGroup.name = "tmpbreaksymbolgroup";
 		item.moveToBeginning( tmpBreakSymbolGroup );
 		item.breakLink();
-		if ( keepDigging )
-		{
-			ungroup( tmpBreakSymbolGroup, dest, maxDepth, callback, curDepth );
-		}
-		else
-		{
-			tmpBreakSymbolGroup.moveToEnd( dest );
-		}
-		try
-		{
-			tmpBreakSymbolGroup.remove();
-		}
-		catch ( e ) { };
+		ungroup( tmpBreakSymbolGroup, finalSymbolGroup, 0, cleanupSymbolContents );
+
 		return;
 	}
 
@@ -915,15 +902,6 @@ function ungroup ( item, dest, maxDepth, callback, curDepth )
 	{
 		item.moveToEnd( dest );
 	}
-
-
-	// if ( item && item.typename.match( /group/i ) )
-	// {
-	// 	// item.remove();
-	// 	var leftoverGroupsDest = findSpecificPageItem( dest, "leftovergroups" ) || dest.groupItems.add();
-	// 	leftoverGroupsDest.name = "leftovergroups";
-	// 	item.duplicate( leftoverGroupsDest, ElementPlacement.PLACEATEND );
-	// }
 
 
 }
@@ -1919,22 +1897,14 @@ function afc ( container, childType )
 {
 	if ( !container ) return [];
 	var result = [];
-	var ctn = container.typename;
-
-
+	var ctn = container.typename.toLowerCase();
 
 	var defaultChildTypes = { "document": "layers", "swatchgroup": "swatches", "layer": "pageItems", "groupitem": "pageItems", "compoundpathitem": "pathItems", "textframe": "textRanges" }
 
-	var defaultChildType = defaultChildTypes[ ctn.toLowerCase() ];
-	if ( !childType )
-	{
-		// log.l( "no childType specified, using default: " + defaultChildType );
-	}
+	var defaultChildType = defaultChildTypes[ ctn ];
 	childType = childType || defaultChildType;
 	if ( !container[ childType ] )
 	{
-		$.writeln( "ERROR: afc(" + container.name + "," + childType + ");" );
-		$.writeln( "Can't make array from this container. Invalid child item type: " + childType );
 		return [];
 	}
 
