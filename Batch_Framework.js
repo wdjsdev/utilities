@@ -25,17 +25,35 @@ var closeFilePref = true;
 
 
 //initialization function
-function batchInit(func,readMeMsg)
+function batchInit ( func, readMeMsg, folderPath )
 {
-	w = createBatchPreferenceDialog();
-	w.show();
 
-	if(valid && batchFiles.length)
+	if ( !folderPath )
 	{
-		executeBatch(func,closeFilePref);
-		if(readMeMsg !== "")
+		w = createBatchPreferenceDialog();
+		w.show();
+	}
+	else
+	{
+		var folder = Folder( folderPath );
+		if ( folder.exists )
 		{
-			writeReadMe(saveDest,readMeMsg);
+			setDefaultLocation( folderPath );
+			batchFiles = openBatchFiles( Folder( folderPath ), ".ai" );
+		}
+		else
+		{
+			alert( "No folder exists at: " + folderPath );
+		}
+	}
+
+
+	if ( batchFiles.length )
+	{
+		executeBatch( func, closeFilePref );
+		if ( readMeMsg !== "" )
+		{
+			writeReadMe( saveDest, readMeMsg );
 		}
 	}
 }
@@ -55,17 +73,17 @@ function batchInit(func,readMeMsg)
 
 */
 
-function createBatchPreferenceDialog()
+function createBatchPreferenceDialog ()
 {
 	/* beautify ignore:start */
-	var w = new Window("dialog");
-		var topText = UI_staticText(w,"Which files do you want to process?");
-		var btnGroup = UI_group(w);
-			btnGroup.orientation = "column";
-			var currentDocBtn = UI_button(btnGroup,"Just active document",justThisDoc);
-			var batchFolderBtn = UI_button(btnGroup,"Open a folder to batch",getBatchFiles);
-			var batchOpenBtn = UI_button(btnGroup,"Batch open documents",getOpenFiles);
-			var cancelBtn = UI_button(btnGroup,"Cancel",cancelDialog);
+	var w = new Window( "dialog" );
+	var topText = UI_staticText( w, "Which files do you want to process?" );
+	var btnGroup = UI_group( w );
+	btnGroup.orientation = "column";
+	var currentDocBtn = UI_button( btnGroup, "Just active document", justThisDoc );
+	var batchFolderBtn = UI_button( btnGroup, "Open a folder to batch", getBatchFiles );
+	var batchOpenBtn = UI_button( btnGroup, "Batch open documents", getOpenFiles );
+	var cancelBtn = UI_button( btnGroup, "Cancel", cancelDialog );
 	return w;
 	/* beautify ignore:end */
 }
@@ -85,7 +103,7 @@ function createBatchPreferenceDialog()
 
 */
 
-function cancelDialog()
+function cancelDialog ()
 {
 	w.close();
 	valid = false;
@@ -106,18 +124,18 @@ function cancelDialog()
 
 */
 
-function justThisDoc()
+function justThisDoc ()
 {
-	if (app.documents.length)
+	if ( app.documents.length )
 	{
-		log.h("Batching a single document:");
-		log.l(app.activeDocument.name);
-		batchFiles.push(app.activeDocument);
+		log.h( "Batching a single document:" );
+		log.l( app.activeDocument.name );
+		batchFiles.push( app.activeDocument );
 		closeFilePref = false;
 	}
 	else
 	{
-		errorList.push("You must have at least one open document.");
+		errorList.push( "You must have at least one open document." );
 		valid = false;
 	}
 	w.close();
@@ -138,20 +156,20 @@ function justThisDoc()
 
 */
 
-function getOpenFiles()
+function getOpenFiles ()
 {
-	if (app.documents.length)
+	if ( app.documents.length )
 	{
-		for (var x = 0, len = app.documents.length; x < len; x++)
+		for ( var x = 0, len = app.documents.length; x < len; x++ )
 		{
-			batchFiles.push(app.documents[x]);
+			batchFiles.push( app.documents[ x ] );
 		}
-		log.h("Batching the open documents:")
-		log.l(batchFiles.join("::"));
+		log.h( "Batching the open documents:" )
+		log.l( batchFiles.join( "::" ) );
 	}
 	else
 	{
-		errorList.push("You must have at least one open document.");
+		errorList.push( "You must have at least one open document." );
 		valid = false
 	}
 	w.close();
@@ -172,42 +190,42 @@ function getOpenFiles()
 
 */
 
-function getDefaultLocation()
+function getDefaultLocation ()
 {
-	log.h("Getting the default save location.");
+	log.h( "Getting the default save location." );
 	var result;
 	var contents = desktopPath + "Batched_Files";
-	var defaultLocFile = File(documentsPath + "default_batch_folder.txt");
-	if(defaultLocFile.exists)
+	var defaultLocFile = File( documentsPath + "default_batch_folder.txt" );
+	if ( defaultLocFile.exists )
 	{
-		defaultLocFile.open("r");
+		defaultLocFile.open( "r" );
 		contents = defaultLocFile.read();
 		defaultLocFile.close();
-		log.l("Default location file existed. Default save location was: " + contents);
+		log.l( "Default location file existed. Default save location was: " + contents );
 	}
 	else
 	{
-		log.l("No default location file existed. Using this as the default save location: " + contents);
+		log.l( "No default location file existed. Using this as the default save location: " + contents );
 	}
 
-	result = Folder(contents);
+	result = Folder( contents );
 	return result;
 }
 
-function setDefaultLocation(path)
+function setDefaultLocation ( path )
 {
-	log.h("Setting the default save location.");
-	log.l("path = " + path);
-	path = path.replace(userPathRegex,"/Volumes/Macintosh HD/" + user + "/");
+	log.h( "Setting the default save location." );
+	log.l( "path = " + path );
+	path = path.replace( userPathRegex, "/Volumes/Macintosh HD/" + user + "/" );
 
-	log.l("updated path = " + path);
+	log.l( "updated path = " + path );
 
-	var defaultLocFile = File(documentsPath + "default_batch_folder.txt");
-	defaultLocFile.open("w");
-	defaultLocFile.write(path);
+	var defaultLocFile = File( documentsPath + "default_batch_folder.txt" );
+	defaultLocFile.open( "w" );
+	defaultLocFile.write( path );
 	defaultLocFile.close();
 
-	log.l("wrote to default save location file.");
+	log.l( "wrote to default save location file." );
 }
 
 
@@ -226,20 +244,20 @@ function setDefaultLocation(path)
 
 */
 
-function getBatchFiles()
+function getBatchFiles ()
 {
-	log.h("Getting the batch files.");
+	log.h( "Getting the batch files." );
 	// var folderToBatch = desktopFolder.selectDlg("Choose a folder to batch.");
-	var folderToBatch = getDefaultLocation().selectDlg("Choose a folder to batch.");
-	if (folderToBatch)
+	var folderToBatch = getDefaultLocation().selectDlg( "Choose a folder to batch." );
+	if ( folderToBatch )
 	{
-		log.l("Batch folder = " + folderToBatch);
-		setDefaultLocation(folderToBatch.fsName.substring(0,folderToBatch.fsName.lastIndexOf("/")));
-		batchFiles = openBatchFiles(folderToBatch, ".ai");
+		log.l( "Batch folder = " + folderToBatch );
+		setDefaultLocation( folderToBatch.fsName.substring( 0, folderToBatch.fsName.lastIndexOf( "/" ) ) );
+		batchFiles = openBatchFiles( folderToBatch, ".ai" );
 	}
 	else
 	{
-		errorList.push("Couldn't determine the batch folder.");
+		errorList.push( "Couldn't determine the batch folder." );
 		valid = false;
 	}
 	w.close();
@@ -261,31 +279,31 @@ function getBatchFiles()
 
 */
 
-function getBatchDest(file)
+function getBatchDest ( file )
 {
-	log.h("Getting batch dest.");
+	log.h( "Getting batch dest." );
 	var result;
 	var path = file.path.fullName;
-	log.l("path = " + path);
-	path = path.replace(userPathRegex,homeFolderPath + "/");
-	log.l("after replacement, path = " + path);
+	log.l( "path = " + path );
+	path = path.replace( userPathRegex, homeFolderPath + "/" );
+	log.l( "after replacement, path = " + path );
 
 	//first check to see whether the file has a proper file location 
-	if(path)
+	if ( path )
 	{
-		result = new Folder(path + "/Batched_Files");
+		result = new Folder( path + "/Batched_Files" );
 	}
 	else
 	{
-		result = new Folder(desktopPath + "/Batched_Files");
+		result = new Folder( desktopPath + "/Batched_Files" );
 	}
 
-	if(!result.exists)
+	if ( !result.exists )
 	{
 		result.create();
 	}
 
-	log.l("returning dest folder: " + result.fsName);
+	log.l( "returning dest folder: " + result.fsName );
 	return result;
 }
 
@@ -306,32 +324,32 @@ function getBatchDest(file)
 		array of files that have been opened
 
 */
-function openBatchFiles(folder,ext)
+function openBatchFiles ( folder, ext )
 {
 	var result = [];
 
-	if(!folder.exists)
+	if ( !folder.exists )
 	{
-		errorList.push("Failed to find the folder: " + folder.fsName);
-		log.e("Failed to find the folder: " + folder.fsName);
+		errorList.push( "Failed to find the folder: " + folder.fsName );
+		log.e( "Failed to find the folder: " + folder.fsName );
 		return false;
 	}
-	
+
 	var files = folder.getFiles();
 	var len = files.length;
-	for(var x=0;x<len;x++)
+	for ( var x = 0; x < len; x++ )
 	{
-		if(files[x].name.indexOf(ext) === files[x].name.length - ext.length)
+		if ( files[ x ].name.indexOf( ext ) === files[ x ].name.length - ext.length )
 		{
-			app.open(files[x]);
-			result.push(app.activeDocument);
+			app.open( files[ x ] );
+			result.push( app.activeDocument );
 		}
 	}
 
-	if(!result.length)
-	{	
-		errorList.push("No " + ext + " files were found in the folder.");
-		valid= false;
+	if ( !result.length )
+	{
+		errorList.push( "No " + ext + " files were found in the folder." );
+		valid = false;
 	}
 
 	return result;
@@ -358,50 +376,52 @@ function openBatchFiles(folder,ext)
 
 */
 
-function executeBatch(func,closeFilePref)
+function executeBatch ( func, closeFilePref )
 {
 	var saveFile;
 	var docRef;
 
-	log.h("Beginning Execute Batch");
+	log.h( "Beginning Execute Batch" );
 
-	saveDest = getBatchDest(batchFiles[0]);
+	saveDest = getBatchDest( batchFiles[ 0 ] );
 
-	log.l("Using the following saveDest: " + saveDest.fsName);
+	log.l( "Using the following saveDest: " + saveDest.fsName );
 
-	for (var x = batchFiles.length - 1; x >= 0; x--)
+	for ( var x = batchFiles.length - 1; x >= 0; x-- )
 	{
-		log.l("Processing file: " + batchFiles[x].name);
-		docRef = batchFiles[x];
+		log.l( "Processing file: " + batchFiles[ x ].name );
+		docRef = batchFiles[ x ];
 		docRef.activate();
+		zoomOutToRevealAllArtwork();
 		func();
-		if(closeFilePref)
+		if ( closeFilePref )
 		{
-			saveFile = new File(saveDest.fsName + "/" + docRef.name);
-			docRef.saveAs(saveFile);
+			saveFile = new File( saveDest.fsName + "/" + docRef.name );
+			docRef.saveAs( saveFile );
 		}
-		log.l("Successfully processed file: " + batchFiles[x].name + "::");
+		log.l( "Successfully processed file: " + batchFiles[ x ].name + "::" );
 	}
 
-	if(closeFilePref)
+	if ( closeFilePref )
 	{
-		for (var x = batchFiles.length - 1; x >= 0; x--)
+		for ( var x = batchFiles.length - 1; x >= 0; x-- )
 		{
-			batchFiles[x].activate();
-			docRef = app.activeDocument;
-			docRef.close(SaveOptions.DONOTSAVECHANGES);
+			batchFiles[ x ].close( SaveOptions.DONOTSAVECHANGES )
+			// batchFiles[x].activate();
+			// docRef = app.activeDocument;
+			// docRef.close(SaveOptions.DONOTSAVECHANGES);
 		}
 
-		for(var x = filesToClose.length - 1; x>=0; x--)		
+		for ( var x = filesToClose.length - 1; x >= 0; x-- )		
 		{
-			filesToClose[x].activate();
+			filesToClose[ x ].activate();
 			docRef = app.activeDocument;
-			docRef.close(SaveOptions.DONOTSAVECHANGES);	
+			docRef.close( SaveOptions.DONOTSAVECHANGES );
 		}
 	}
 
-	if(errorList.length)
+	if ( errorList.length )
 	{
-		sendErrors(errorList);
+		sendErrors( errorList );
 	}
 }
