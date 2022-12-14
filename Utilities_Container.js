@@ -3732,6 +3732,7 @@ function curlData ( url, arg )
 		var localExecutor = File( documentsPath + "curlData/curl_from_illustrator.app" );
 		if ( localExecutor.exists )
 		{
+			log.l("using local executor");
 			executor = localExecutor;
 		}
 	}
