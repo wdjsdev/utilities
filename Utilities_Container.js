@@ -3396,25 +3396,25 @@ function getVisibleBounds ( object )
 			bounds = object.visibleBounds;
 
 			//more thorough logic
-			// var subObjectBounds;
-			// var allBoundPoints = [ [], [], [], [] ];
-			// // get the bounds of every object in the group
-			// for ( var i = 0; i < object.pageItems.length; i++ )
-			// {
-			// 	curItem = object.pageItems[ i ];
-			// 	subObjectBounds = getVisibleBounds( curItem );
-			// 	allBoundPoints[ 0 ].push( subObjectBounds[ 0 ] );
-			// 	allBoundPoints[ 1 ].push( subObjectBounds[ 1 ] );
-			// 	allBoundPoints[ 2 ].push( subObjectBounds[ 2 ] );
-			// 	allBoundPoints[ 3 ].push( subObjectBounds[ 3 ] );
-			// }
-			// // determine the groups bounds from it sub object bound points
-			// bounds = [
-			// 	Math.min.apply( Math, allBoundPoints[ 0 ] ),
-			// 	Math.max.apply( Math, allBoundPoints[ 1 ] ),
-			// 	Math.max.apply( Math, allBoundPoints[ 2 ] ),
-			// 	Math.min.apply( Math, allBoundPoints[ 3 ] ),
-			// ];
+			var subObjectBounds;
+			var allBoundPoints = [ [], [], [], [] ];
+			// get the bounds of every object in the group
+			for ( var i = 0; i < object.pageItems.length; i++ )
+			{
+				curItem = object.pageItems[ i ];
+				subObjectBounds = getVisibleBounds( curItem );
+				allBoundPoints[ 0 ].push( subObjectBounds[ 0 ] );
+				allBoundPoints[ 1 ].push( subObjectBounds[ 1 ] );
+				allBoundPoints[ 2 ].push( subObjectBounds[ 2 ] );
+				allBoundPoints[ 3 ].push( subObjectBounds[ 3 ] );
+			}
+			// determine the groups bounds from it sub object bound points
+			bounds = [
+				Math.min.apply( Math, allBoundPoints[ 0 ] ),
+				Math.max.apply( Math, allBoundPoints[ 1 ] ),
+				Math.max.apply( Math, allBoundPoints[ 2 ] ),
+				Math.min.apply( Math, allBoundPoints[ 3 ] ),
+			];
 		}
 	}
 	else
