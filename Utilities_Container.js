@@ -3724,7 +3724,7 @@ function curlData ( url, arg )
 			curlDataPath + "curlData.txt" + "\\\"\""
 		].join( "" );
 
-		log.l( "ATTN: scriptText= " + scriptText );
+		// log.l( "ATTN: scriptText= " + scriptText );
 
 		scriptFile = File( curlDataPath + "curl_from_illustrator.scpt" );
 		writeScriptFile( scriptFile, scriptText );
@@ -3861,7 +3861,6 @@ function curlData ( url, arg )
 			{
 				status = "parseFail";
 				parseFailResults++;
-				$.writeln( "Failed contents::: " + contents );
 			}
 		}
 	}
