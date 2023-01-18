@@ -1,3 +1,7 @@
+
+
+
+
 //
 //LOGGING
 //
@@ -431,13 +435,16 @@ function objForEach ( obj, func )
 //array.indexOf prototype
 //Network Storage. Production version
 var customizationPath;
-var customizationDRPath;
+var sharesCustomizationPath;
+var ad4CustomizationPath;
+var drsvCustomizationPath;
 if ( $.os.match( 'Windows' ) )
 {
 	var user = $.getenv( "USERNAME" );
-	customizationPath = "//AD4/Customization/";
-	customizationDRPath = "O:/"
-	customizationPath = Folder( customizationDRPath ).exists ? customizationDRPath : customizationPath;
+	sharesCustomizationPath = "//boombah.local/shares/Customization/";
+	ad4CustomizationPath = "//AD4/Customization/";
+	drsvCustomizationPath = "O:/"
+	customizationPath = Folder( drsvCustomizationPath ).exists ? drsvCustomizationPath : customizationPath;
 	var homeFolderPath = "C:/Users/" + user + "/";
 	var homeFolder = Folder( homeFolderPath );
 	var os = "windows";
@@ -446,17 +453,35 @@ else
 {
 	// MAC
 	var user = $.getenv( "USER" )
-	customizationPath = "/Volumes/Customization/";
-	customizationDRPath = "/Volumes/CustomizationDR/";
+	sharesCustomizationPath = "/Volumes/shares/Customization/";
+	ad4CustomizationPath = "/Volumes/Customization/";
+	drsvCustomizationPath = "/Volumes/CustomizationDR/";
 	var homeFolderPath = "/Volumes/Macintosh HD/Users/" + user + "/";
 	var homeFolder = new Folder( homeFolderPath );
 	var os = "mac";
+	
 }
+
+if(Folder(sharesCustomizationPath).exists)
+{
+	customizationPath = sharesCustomizationPath;
+}
+else if(Folder(drsvCustomizationPath).exists)
+{
+	customizationPath = drsvCustomizationPath;
+}
+else if(Folder(ad4CustomizationPath).exists)
+{
+	customizationPath = ad4CustomizationPath;
+}
+
+
+
 
 //set the customization path..
 //if customizationDR exists, use that path.
 //otherwise use yorkville based ad4 customization path
-customizationPath = Folder( customizationDRPath ).exists ? customizationDRPath : customizationPath;
+// customizationPath = Folder( drsvCustomizationPath ).exists ? drsvCustomizationPath : ad4CustomizationPath;
 
 //specific fix for Sam Bateman's home computer..
 //her username is "thell".
@@ -862,7 +887,7 @@ function ungroup ( item, dest, maxDepth, callback, curDepth )
 	if ( item.typename.match( /layer/i ) || ( item.typename.match( /group/i ) && item.pageItems.length && keepDigging ) )
 	{
 		var subItems = afc( item, "pageItems" ).concat( afc( item, "layers" ) );
-		if ( item.clipped )
+		if ( item.clipped && maxDepth > 0 && curDepth <= maxDepth )
 		{
 			item.moveToEnd( dest );
 			subItems.forEach( function ( si )
@@ -3817,6 +3842,7 @@ function curlData ( url, arg )
 
 	function writeVbsFile ()
 	{
+		log.l("Writing Vbs File");
 		//go to the network and copy the contents of the
 		//socket_xhttpRequest.vbs file
 		//this allows me to manage updates by updating a
