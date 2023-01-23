@@ -216,7 +216,7 @@ function setDefaultLocation ( path )
 {
 	log.h( "Setting the default save location." );
 	log.l( "path = " + path );
-	path = path.replace( userPathRegex, "/Volumes/Macintosh HD/" + user + "/" );
+	path = path.replace( userPathRegex, homeFolderPath );
 
 	log.l( "updated path = " + path );
 

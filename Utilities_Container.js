@@ -448,7 +448,7 @@ if ( $.os.match( 'Windows' ) )
 	ad4CustomizationPath = "//AD4/Customization/";
 	drsvCustomizationPath = "O:/"
 	// customizationPath = Folder( drsvCustomizationPath ).exists ? drsvCustomizationPath : customizationPath;
-	
+
 }
 else
 {
@@ -469,7 +469,8 @@ else
 // 	alert("utilities path = " + $.fileName);
 // }
 
-customizationPath = $.fileName.match(/^.*Customization/)[0] + "/";
+// customizationPath = $.fileName.match(/^.*Customization/)[0] + "/";
+customizationPath = sharesCustomizationPath;
 
 
 // if(user.match(/foust|medelyn/i) && Folder(sharesCustomizationPath).exists)
@@ -3775,7 +3776,7 @@ function curlData ( url, arg )
 		var localExecutor = File( documentsPath + "curlData/curl_from_illustrator.app" );
 		if ( localExecutor.exists )
 		{
-			log.l("using local executor");
+			log.l( "using local executor" );
 			executor = localExecutor;
 		}
 	}
@@ -3860,7 +3861,7 @@ function curlData ( url, arg )
 
 	function writeVbsFile ()
 	{
-		log.l("Writing Vbs File");
+		log.l( "Writing Vbs File" );
 		//go to the network and copy the contents of the
 		//socket_xhttpRequest.vbs file
 		//this allows me to manage updates by updating a
