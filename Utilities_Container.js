@@ -1,5 +1,21 @@
 
 
+if ( $.os.match( 'Windows' ) )
+{
+	var user = $.getenv( "USERNAME" );
+	var homeFolderPath = "C:/Users/" + user + "/";
+	var homeFolder = Folder( homeFolderPath );
+	var os = "windows";
+
+}
+else
+{
+	// MAC
+	var user = $.getenv( "USER" )
+	var homeFolderPath = "/Volumes/Macintosh HD/Users/" + user + "/";
+	var homeFolder = new Folder( homeFolderPath );
+	var os = "mac";
+}
 
 
 //
@@ -338,19 +354,6 @@ Array.prototype.reverse = function ()
 }
 
 
-//
-// Array.prototype.merge = function ( incomingArray )
-// {
-
-// 	for ( var i = 0; i < incomingArray.length; i++ )
-// 	{
-// 		this.push( incomingArray[ i ] );
-// 	}
-// 	return arr;
-// }
-
-
-
 
 
 ////////////////////////
@@ -384,123 +387,9 @@ function objForEach ( obj, func )
 ////////////////////////
 
 
-////////ATTENTION://////
-//potentially removeable.. testing to see if just looking
-//for the customizationDR drive is enough to accurately determine
-//a dr user.. That way i won't need to maintain this list.
-////////////////////////
-//list of dr users
-// var DR_USERS =
-// 	[
-// 		"medelyn.tavarez",
-// 		"rafael.nolasco",
-// 		"nicolas.nicasio",
-// 		"arlan.grullon",
-// 		"deivison.urena",
-// 		"eliezer.lopez",
-// 		"maximo.montesino",
-// 		"danny.cabrera",
-// 		"kelvin.ynoa",
-// 		"julio.lora",
-// 		"ismael.noesi",
-// 		"raymond.fernandez",
-// 		"isaac.martinez",
-// 		"joshua.chevalier",
-// 		"katherine.ramos",
-// 		"enmanuel.mercado",
-// 		"domingo.camilo",
-// 		"lenin.tavarez",
-// 		"franklyn.martin",
-// 		"gricely.rivas"
-// 	];
 
 
 
-//boolean to determine whether to use the CustomizationDR drive for testing.
-// var spoofDRUser = false;
-// log.l( "Checking for dr user:" );
-// if ( os.match( /mac/i ) && DR_USERS.indexOf( user ) > -1 || ( user === "will.dowling" && Folder( "/Volumes/CustomizationDR" ).exists ) )
-// {
-// 	log.l( "User is a DR user. using customizationDR path" );
-// 	customizationPath = customizationPath.replace( "Customization", "CustomizationDR" );
-// }
-
-// log.l( "Customization path = " + customizationPath );
-
-
-
-
-
-
-
-var sharesCustomizationPath;
-var ad4CustomizationPath;
-var drsvCustomizationPath;
-if ( $.os.match( 'Windows' ) )
-{
-	var user = $.getenv( "USERNAME" );
-	var homeFolderPath = "C:/Users/" + user + "/";
-	var homeFolder = Folder( homeFolderPath );
-	var os = "windows";
-
-
-	sharesCustomizationPath = "//boombah.local/shares/Customization/";
-	ad4CustomizationPath = "//AD4/Customization/";
-	drsvCustomizationPath = "O:/"
-	// customizationPath = Folder( drsvCustomizationPath ).exists ? drsvCustomizationPath : customizationPath;
-
-}
-else
-{
-	// MAC
-	var user = $.getenv( "USER" )
-	var homeFolderPath = "/Volumes/Macintosh HD/Users/" + user + "/";
-	var homeFolder = new Folder( homeFolderPath );
-	var os = "mac";
-
-	sharesCustomizationPath = "/Volumes/shares/Customization/";
-	ad4CustomizationPath = "/Volumes/Customization/";
-	drsvCustomizationPath = "/Volumes/CustomizationDR/";
-}
-
-// if(user.match(/dowling/i))
-// {
-// 	alert("customizationPath = " + customizationPath);
-// 	alert("utilities path = " + $.fileName);
-// }
-
-// customizationPath = $.fileName.match(/^.*Customization/)[0] + "/";
-customizationPath = sharesCustomizationPath;
-
-
-// if(user.match(/foust|medelyn/i) && Folder(sharesCustomizationPath).exists)
-// {
-// 	if(confirm("Use shares customization path?"))
-// 	{
-// 		customizationPath = sharesCustomizationPath;
-// 	}
-// }
-
-// if(typeof customizationPath == "undefined" || !customizationPath)
-// {
-// 	var customizationPath;
-
-// 	if(Folder(drsvCustomizationPath).exists)
-// 	{
-// 		customizationPath = drsvCustomizationPath;
-// 	}
-// 	else if(Folder(ad4CustomizationPath).exists)
-// 	{
-// 		customizationPath = ad4CustomizationPath;
-// 	}
-// }
-
-
-
-//set the customization path..
-//if customizationDR exists, use that path.
-//otherwise use yorkville based ad4 customization path
-// customizationPath = Folder( drsvCustomizationPath ).exists ? drsvCustomizationPath : ad4CustomizationPath;
 
 //specific fix for Sam Bateman's home computer..
 //her username is "thell".
@@ -515,6 +404,12 @@ if ( user === "thell" )
 }
 
 
+//log the general user stuff for reference:
+log.h( "general user stuff:" );
+log.l( "user = " + user );
+log.l( "homeFolderPath = " + homeFolderPath );
+log.l( "os = " + os );
+log.l( "::::" );
 
 
 
