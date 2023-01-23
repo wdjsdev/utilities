@@ -432,49 +432,67 @@ function objForEach ( obj, func )
 
 
 
-//array.indexOf prototype
-//Network Storage. Production version
-var customizationPath;
+
 var sharesCustomizationPath;
 var ad4CustomizationPath;
 var drsvCustomizationPath;
 if ( $.os.match( 'Windows' ) )
 {
 	var user = $.getenv( "USERNAME" );
-	sharesCustomizationPath = "//boombah.local/shares/Customization/";
-	ad4CustomizationPath = "//AD4/Customization/";
-	drsvCustomizationPath = "O:/"
-	customizationPath = Folder( drsvCustomizationPath ).exists ? drsvCustomizationPath : customizationPath;
 	var homeFolderPath = "C:/Users/" + user + "/";
 	var homeFolder = Folder( homeFolderPath );
 	var os = "windows";
+
+
+	sharesCustomizationPath = "//boombah.local/shares/Customization/";
+	ad4CustomizationPath = "//AD4/Customization/";
+	drsvCustomizationPath = "O:/"
+	// customizationPath = Folder( drsvCustomizationPath ).exists ? drsvCustomizationPath : customizationPath;
+	
 }
 else
 {
 	// MAC
 	var user = $.getenv( "USER" )
-	sharesCustomizationPath = "/Volumes/shares/Customization/";
-	ad4CustomizationPath = "/Volumes/Customization/";
-	drsvCustomizationPath = "/Volumes/CustomizationDR/";
 	var homeFolderPath = "/Volumes/Macintosh HD/Users/" + user + "/";
 	var homeFolder = new Folder( homeFolderPath );
 	var os = "mac";
-	
+
+	sharesCustomizationPath = "/Volumes/shares/Customization/";
+	ad4CustomizationPath = "/Volumes/Customization/";
+	drsvCustomizationPath = "/Volumes/CustomizationDR/";
 }
 
-if(Folder(sharesCustomizationPath).exists)
-{
-	customizationPath = sharesCustomizationPath;
-}
-else if(Folder(drsvCustomizationPath).exists)
-{
-	customizationPath = drsvCustomizationPath;
-}
-else if(Folder(ad4CustomizationPath).exists)
-{
-	customizationPath = ad4CustomizationPath;
-}
+// if(user.match(/dowling/i))
+// {
+// 	alert("customizationPath = " + customizationPath);
+// 	alert("utilities path = " + $.fileName);
+// }
 
+customizationPath = $.fileName.match(/^.*Customization/)[0] + "/";
+
+
+// if(user.match(/foust|medelyn/i) && Folder(sharesCustomizationPath).exists)
+// {
+// 	if(confirm("Use shares customization path?"))
+// 	{
+// 		customizationPath = sharesCustomizationPath;
+// 	}
+// }
+
+// if(typeof customizationPath == "undefined" || !customizationPath)
+// {
+// 	var customizationPath;
+
+// 	if(Folder(drsvCustomizationPath).exists)
+// 	{
+// 		customizationPath = drsvCustomizationPath;
+// 	}
+// 	else if(Folder(ad4CustomizationPath).exists)
+// 	{
+// 		customizationPath = ad4CustomizationPath;
+// 	}
+// }
 
 
 
