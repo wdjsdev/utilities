@@ -509,7 +509,7 @@ log.l( "os = " + os );
 log.l( "::::" );
 
 
-log.l( "Utilities Container setting customizationPath to: " + customizationPath );
+log.l( "Using customizationPath: " + customizationPath );
 
 
 
