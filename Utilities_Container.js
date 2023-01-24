@@ -288,6 +288,8 @@ function printSpecialtyLog ( file, msg )
 }
 
 
+
+
 //
 //END LOGGING
 //
@@ -404,12 +406,7 @@ if ( user === "thell" )
 }
 
 
-//log the general user stuff for reference:
-log.h( "general user stuff:" );
-log.l( "user = " + user );
-log.l( "homeFolderPath = " + homeFolderPath );
-log.l( "os = " + os );
-log.l( "::::" );
+
 
 
 
@@ -476,6 +473,7 @@ var userPathRegex = /(^\/Users\/[^\/]*\/)|(^.*~\/)/i;
 var localLogTimer = new Stopwatch();
 localLogTimer.logStart();
 localLogTimer.beginTask( "locateLocalLog" );
+
 //
 //setup local live log file
 //so that we can write real time logs without the
@@ -503,6 +501,12 @@ localScriptLogFile.close();
 
 localLogTimer.endTask( "clearLog" );
 
+//log the general user stuff for reference:
+log.h( "general user stuff:" );
+log.l( "user = " + user );
+log.l( "homeFolderPath = " + homeFolderPath );
+log.l( "os = " + os );
+log.l( "::::" );
 
 
 log.l( "Utilities Container setting customizationPath to: " + customizationPath );
