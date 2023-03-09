@@ -717,7 +717,7 @@ function recursiveDig ( item, callback )
 
 function cleanupSymbolContents ( item, dest )
 {
-	var testItem = item;
+	var testItem;
 	if ( item.typename.match( /compound/i ) )
 	{
 		if ( !item.pathItems.length )
@@ -725,6 +725,10 @@ function cleanupSymbolContents ( item, dest )
 			item = cleanupCompoundPath( item );
 		}
 		testItem = item.pathItems[ 0 ];
+	}
+	else
+	{
+		testItem = item;
 	}
 
 	if ( testItem.typename.match( /^PathItem/ ) && !item.clipping && !testItem.filled && !testItem.stroked )
@@ -793,7 +797,7 @@ function ungroup ( item, dest, maxDepth, callback, curDepth )
 
 	if ( item.guides )
 	{
-		return;
+		item.guides = false;
 	}
 
 	dest = dest || item.parent;
@@ -915,6 +919,11 @@ function getUnique ( arr )
 	}
 	return result;
 }
+
+
+
+
+
 
 //////////////
 /*
@@ -1361,7 +1370,6 @@ function chooseFromListbox ( items, msg, size )
 	var btnGroup = UI.group( cfl );
 	var cancel = UI.button( btnGroup, "Cancel", function ()
 	{
-		result = undefined;
 		cfl.close();
 	} )
 	var allBtn = UI.button( btnGroup, "Choose All", function ()
