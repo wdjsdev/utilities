@@ -438,7 +438,7 @@ var libraryFolder = new Folder( libraryPath );
 var graphicsPath = libraryPath + "Graphics/";
 var graphicsFolder = new Folder( graphicsPath );
 
-var prepressPath = libraryPath + "cads/prepress/";
+var prepressPath = libraryPath + "CADs/prepress/";
 var prepressFolder = new Folder( prepressPath );
 
 var scriptsPath = libraryPath + "Scripts/";
