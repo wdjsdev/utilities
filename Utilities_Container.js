@@ -1113,6 +1113,17 @@ function intersects ( item, dest )
 
 }
 
+function halfWayIn ( item, dest )
+{
+	var vb = getBoundsData( item );
+
+	var dvb = getBoundsData( dest );
+
+
+	return !( vb.vc >= dvb.t || vb.vc <= dvb.b || vb.hc <= dvb.l || vb.hc >= dvb.r );
+
+}
+
 function isContainedWithin ( item, dest )
 {
 	var vb = getBoundsData( item );
