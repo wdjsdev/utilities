@@ -5134,6 +5134,9 @@ var BOOMBAH_PRODUCTION_COLORS =
 		'EDGE',
 		'EDGES',
 		'Jock Tag B',
+		"Rhinestone Shine 1",
+		"Rhinestone Shine 2",
+		"Rhinestone Shadow"
 	];
 
 var BUILDER_COLOR_CODES = {
