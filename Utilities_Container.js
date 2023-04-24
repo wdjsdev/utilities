@@ -3364,6 +3364,10 @@ function getVisibleBounds ( object )
 			for ( var i = 0; i < object.pageItems.length; i++ )
 			{
 				curItem = object.pageItems[ i ];
+				if ( curItem.guides )
+				{
+					continue;
+				}
 				subObjectBounds = getVisibleBounds( curItem );
 				allBoundPoints[ 0 ].push( subObjectBounds[ 0 ] );
 				allBoundPoints[ 1 ].push( subObjectBounds[ 1 ] );
