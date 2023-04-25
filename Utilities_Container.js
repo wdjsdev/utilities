@@ -17,6 +17,15 @@ else
 	var os = "mac";
 }
 
+function getUserInitials ()
+{
+	return user.split( "." ).map( function ( u )
+	{
+		return u[ 0 ].toUpperCase();
+	} ).join( "" );
+}
+
+
 
 //
 //LOGGING
