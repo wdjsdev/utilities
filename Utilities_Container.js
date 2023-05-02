@@ -2402,59 +2402,89 @@ function properTemplateSetup ( doc )
 
 function isTemplate ( parent )
 {
-	log.h( "Checking to see whether " + parent + " is a proper converted template." );
+	var result;
 
-	var result = true,
-		art,
-		info,
-		mock,
-		prepress,
-		searchLayer;
-
-	if ( parent.typename === "Document" )
+	if ( parent.typename.match( /document/i ) )
 	{
-		searchLayer = parent.layers[ 0 ];
-	}
-	else if ( parent.typename === "Layer" )
-	{
-		searchLayer = parent;
-	}
-
-	//Try/Catch Description:
-	//set variables for known template layers
-	//if they don't exist, it's not a template
-	try
-	{
-		art = searchLayer.layers[ "Artwork Layer" ];
-		info = searchLayer.layers[ "Information" ];
-		mock = searchLayer.layers[ "Mockup" ];
-		prepress = searchLayer.layers[ "Prepress" ];
-		log.l( parent + " is a proper template. returning true" );
-	}
-	catch ( e )
-	{
-		//this doc is not a converted template.
-		//setting srcIsTemplate to false
-		result = false;
-
-		if ( e.toString().indexOf( "MRAP" ) > -1 )
+		var docLays = afc( parent, "layers" );
+		docLays.forEach( function ( lay )
 		{
-			log.l( "MRAP error occurred." )
-			errorList.push( "Failed to determine whether this file was a proper converted template because of an MRAP error." );
-			errorList.push( "Please restart Illustrator and try again." );
-		}
-		else
-		{
-			log.l( parent + " is NOT a template.::Results of isTemplate function are as follows:" );
-		}
+			if ( result )
+			{
+				return;
+			}
 
-		log.l( "art = " + art );
-		log.l( "info = " + info );
-		log.l( "mock = " + mock );
-		log.l( "prepress = " + prepress + "\n\n" );
+			var ppLay = findSpecificLayer( lay, "Prepress" );
+			if ( ppLay )
+			{
+				result = true;
+			}
+		} );
+	}
+	else
+	{
+		var ppLay = findSpecificLayer( parent, "Prepress" );
+		if ( ppLay )
+		{
+			result = true;
+		}
 	}
 
-	return result
+	return result;
+
+	// log.h( "Checking to see whether " + parent + " is a proper converted template." );
+
+	// var result = true,
+	// 	art,
+	// 	info,
+	// 	mock,
+	// 	prepress,
+	// 	searchLayer;
+
+	// if ( parent.typename === "Document" )
+	// {
+	// 	searchLayer = parent.layers[ 0 ];
+	// }
+	// else if ( parent.typename === "Layer" )
+	// {
+	// 	searchLayer = parent;
+	// }
+
+	// //Try/Catch Description:
+	// //set variables for known template layers
+	// //if they don't exist, it's not a template
+	// try
+	// {
+	// 	art = searchLayer.layers[ "Artwork Layer" ];
+	// 	info = searchLayer.layers[ "Information" ];
+	// 	mock = searchLayer.layers[ "Mockup" ];
+	// 	prepress = searchLayer.layers[ "Prepress" ];
+	// 	log.l( parent + " is a proper template. returning true" );
+	// }
+	// catch ( e )
+	// {
+	// 	//this doc is not a converted template.
+	// 	//setting srcIsTemplate to false
+	// 	result = false;
+
+	// 	if ( e.toString().indexOf( "MRAP" ) > -1 )
+	// 	{
+	// 		log.l( "MRAP error occurred." )
+	// 		errorList.push( "Failed to determine whether this file was a proper converted template because of an MRAP error." );
+	// 		errorList.push( "Please restart Illustrator and try again." );
+	// 	}
+	// 	else
+	// 	{
+	// 		log.l( parent + " is NOT a template.::Results of isTemplate function are as follows:" );
+	// 	}
+
+	// 	log.l( "art = " + art );
+	// 	log.l( "info = " + info );
+	// 	log.l( "mock = " + mock );
+	// 	log.l( "prepress = " + prepress + "\n\n" );
+	// }
+
+	// return result
 }
 
 function writeDatabase ( dbPath, contents )
