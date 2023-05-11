@@ -1670,7 +1670,10 @@ function findSpecificPageItem ( parent, searchTerm, crit )
 
 	if ( typeof searchTerm === "string" )
 	{
+		var spcRegex = /([\^\$\.\*\+\?\=\!\:\|\\\/\(\)\[\]\{\}])/g;
 		//search term is a string. convert it to a regex based on the crit given
+		//escape any special characters in the search term
+		searchTerm = searchTerm.replace( spcRegex, "\\$1" );
 		var matchPats = {
 			"any": new RegExp( searchTerm, "i" ),
 			"imatch": new RegExp( "^" + searchTerm + "$", "i" ),
