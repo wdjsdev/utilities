@@ -4200,17 +4200,36 @@ function rotatePieces ( rotationSets, parentLayer )
 }
 
 
-function exportJpg ( outFilePath, bounds, resolution )
+// function exportJpg ( outFilePath, bounds, resolution )
+// {
+// 	var clipBounds = bounds;
+// 	var imgCapOptions = new ImageCaptureOptions();
+// 	imgCapOptions.resolution = resolution;
+// 	imgCapOptions.antiAliasing = true;
+
+// 	app.activeDocument.imageCapture( File( outFilePath ), clipBounds, imgCapOptions );
+
+// }
+
+
+function exportJpg ( outFilePath, artboardIndex )
 {
-	var clipBounds = bounds;
-	var imgCapOptions = new ImageCaptureOptions();
-	imgCapOptions.resolution = resolution;
-	imgCapOptions.antiAliasing = true;
+	var doc = app.activeDocument;
+	var prevActiveAbIndex = doc.artboards.getActiveArtboardIndex();
+	doc.artboards.setActiveArtboardIndex( artboardIndex );
 
-	app.activeDocument.imageCapture( File( outFilePath ), clipBounds, imgCapOptions );
+	var jpgExportType = ExportType.JPEG;
 
+	var jpgExportOptions = new ExportOptionsJPEG();
+	jpgExportOptions.verticalScale = 250;
+	jpgExportOptions.horizontalScale = 250;
+	jpgExportOptions.qualitySetting = 100;
+	jpgExportOptions.artBoardClipping = true;
+
+	doc.exportFile( File( outFilePath ), jpgExportType, jpgExportOptions );
+
+	doc.artboards.setActiveArtboardIndex( prevActiveAbIndex );
 }
-
 
 
 
