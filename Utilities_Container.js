@@ -5347,7 +5347,8 @@ var BOOMBAH_PRODUCTION_COLORS =
 		'Jock Tag B',
 		"Rhinestone Shine 1",
 		"Rhinestone Shine 2",
-		"Rhinestone Shadow"
+		"Rhinestone Shadow",
+		"FLAG YELLOW"
 	];
 
 var BUILDER_COLOR_CODES = {
