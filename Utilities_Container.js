@@ -2339,6 +2339,11 @@ function properTemplateSetup ( doc )
 		{
 			"locked": true,
 			"visible": false
+		},
+		"Color Info":
+		{
+			locked: false,
+			visible: false
 		}
 
 	}
