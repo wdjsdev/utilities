@@ -1759,36 +1759,30 @@ function findSpecificPageItem ( parent, searchTerm, crit )
 //"imatch" means name must match, but case doesn't matter
 //"any" means itemName must exist somewhere
 //return an array of objects that matched the criteria
-function findAllPageItems ( parent, itemName, crit )
+function findAllPageItems ( parent, searchTerm, crit )
 {
 	var result = [], curItem;
-	if ( parent.pageItems.length )
+	if ( typeof searchTerm === "string" )
 	{
-		for ( var x = 0, len = parent.pageItems.length; x < len; x++ )
-		{
-			curItem = parent.pageItems[ x ];
-			if ( crit )
-			{
-				if ( crit === "match" && curItem.name === itemName )
-				{
-					result.push( curItem );
-				}
-				else if ( crit === "imatch" && curItem.name.toLowerCase() === itemName.toLowerCase() )
-				{
-					result.push( curItem );
-				}
-				else if ( crit === "any" && curItem.name.toLowerCase().indexOf( itemName.toLowerCase() ) > -1 )
-				{
-					result.push( curItem );
-				}
-			}
-			else if ( curItem.name.indexOf( itemName ) > -1 )
-			{
-				result.push( curItem );
-
-			}
+		var spcRegex = /([\^\$\.\*\+\?\=\!\:\|\\\/\(\)\[\]\{\}])/g;
+		//search term is a string. convert it to a regex based on the crit given
+		//escape any special characters in the search term
+		searchTerm = searchTerm.replace( spcRegex, "\\$1" );
+		var matchPats = {
+			"any": new RegExp( searchTerm, "i" ),
+			"imatch": new RegExp( "^" + searchTerm + "$", "i" ),
+			"match": new RegExp( "^" + searchTerm + "$" )
 		}
+		searchTerm = matchPats[ crit || "any" ];
 	}
+
+	afc( parent, "pageItems" ).forEach( function ( item )
+	{
+		if ( item.name.match( searchTerm ) )
+		{
+			result.push( item );
+		}
+	} );
 
 	return result;
 }
