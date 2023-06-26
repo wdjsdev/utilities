@@ -3510,10 +3510,6 @@ function getVisibleBounds ( object )
 						clippedItem = curItem;
 						break;
 					}
-				} else
-				{
-					clippedItem = curItem;
-					break;
 				}
 			}
 			bounds = clippedItem.geometricBounds;
