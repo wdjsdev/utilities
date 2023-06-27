@@ -2606,11 +2606,16 @@ function vAlignBottom ( key, otherObjects )
 //align all objects' center points to center point of key
 function hAlignCenter ( key, otherObjects )
 {
-	var kp = key.left + key.width / 2;
-	for ( var x = 0; x < otherObjects.length; x++ )
+	var kpb = getBoundsData( key );
+	otherObjects.forEach( function ( obj )
 	{
-		otherObjects[ x ].left = kp - otherObjects[ x ].width / 2;
-	}
+		var obb = getBoundsData( obj );
+		obj.left = kpb.hc - obb.halfWidth;
+	} );
+	// for ( var x = 0; x < otherObjects.length; x++ )
+	// {
+	// 	otherObjects[ x ].left = kp - otherObjects[ x ].width / 2;
+	// }
 }
 
 //align all objects to the left edge of key
