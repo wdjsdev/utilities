@@ -3524,7 +3524,6 @@ function getVisibleBounds ( object )
 			}
 			else 
 			{
-				object.clipped = false;
 				bounds = object.visibleBounds;
 			}
 			if ( sandboxLayer )
