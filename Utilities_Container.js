@@ -3517,7 +3517,16 @@ function getVisibleBounds ( object )
 					}
 				}
 			}
-			bounds = clippedItem.geometricBounds;
+			// if the clipping path was found
+			if ( clippedItem )
+			{
+				bounds = clippedItem.geometricBounds;
+			}
+			else 
+			{
+				object.clipped = false;
+				bounds = object.visibleBounds;
+			}
 			if ( sandboxLayer )
 			{
 				// eliminate the sandbox layer since it's no longer needed
