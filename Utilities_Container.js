@@ -3733,6 +3733,35 @@ function cleanupCompoundPath ( item )
 	return resultingItem;
 }
 
+function findBackgroundPath ( item )
+{
+	var bgPath;
+
+	if ( item.typename === "PathItem" )
+	{
+		return item;
+	}
+	else if ( item.typename === "GroupItem" )
+	{
+		dig( item )
+	}
+
+	return bgPath;
+
+	function dig ( subItem )
+	{
+		var lastItem = subItem.pageItems[ subItem.pageItems.length - 1 ];
+		if ( lastItem.typename === "PathItem" )
+		{
+			bgPath = lastItem;
+		}
+		else if ( lastItem.typename === "GroupItem" )
+		{
+			dig( lastItem );
+		}
+	}
+}
+
 
 //basically just indexOf function but for a regex
 //pass in the regex and the string to search and
