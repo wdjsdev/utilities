@@ -502,10 +502,18 @@ var localScriptLogFile = new File( localScriptLogPath + "live_script_log.txt" );
 localLogTimer.endTask( "locateLocalLog" );
 localLogTimer.beginTask( "clearLog" );
 
-//clear the log
-//so it's always fresh when we start a new script
-localScriptLogFile.open( "w" );
-localScriptLogFile.write( "Running Script: " + scriptName + "\n\n" );
+//trim the local log file down to 5k lines
+//so that it doesn't get too big.
+//we'll just keep the last 5k lines of the log
+var localLogContents = "";
+localScriptLogFile.open( "r" );
+localLogContents = localScriptLogFile.read();
+localScriptLogFile.close();
+
+localLogContents = localLogContents.split( "\n" ).slice( -5000 ).join( "\n" );
+
+localScriptLogFile.open( "a" );
+localScriptLogFile.write( "\n\n\n\nRunning Script: " + scriptName + "\n" + "@ " + logTime() + "\n" );
 localScriptLogFile.close();
 
 localLogTimer.endTask( "clearLog" );
@@ -3571,6 +3579,59 @@ function getVisibleBounds ( object )
 	}
 	return bounds;
 }
+
+//make a function that digs recursively through a given group
+//locate the largest clipping mask in the group and return its visibleBounds
+//if no clipping mask is found, return the visibleBounds of the group
+// function getVisibleBounds ( item )
+// {
+// 	if ( !item.typename.match( /groupItem/i ) )
+// 	{
+// 		return item.visibleBounds;
+// 	}
+
+// 	var bounds = [];
+// 	dig( item );
+
+// 	if ( !bounds.length )
+// 	{
+// 		return item.visibleBounds;
+// 	}
+
+// 	//find the largest bounds by area
+// 	var largest = bounds.sort( function ( a, b )
+// 	{
+// 		var aArea = ( a[ 2 ] - a[ 0 ] ) * ( a[ 1 ] - a[ 3 ] );
+// 		var bArea = ( b[ 2 ] - b[ 0 ] ) * ( b[ 1 ] - b[ 3 ] );
+// 		return aArea > bArea ? a : b;
+// 	} );
+// 	return largest[ 0 ];
+
+// 	function dig ( subItem )
+// 	{
+// 		if ( subItem.typename.match( /groupitem/i ) )
+// 		{
+// 			if ( subItem.clipped && subItem.pathItems.length && subItem.pathItems[ 0 ].clipping )
+// 			{
+// 				bounds.push( subItem.pathItems[ 0 ].visibleBounds );
+// 				return;
+// 			}
+// 			else  
+// 			{
+// 				bounds.push( subItem.visibleBounds );
+// 			}
+
+// 			afc( subItem ).forEach( function ( g )
+// 			{
+// 				dig( g );
+// 			} );
+// 		}
+// 		else 
+// 		{
+// 			bounds.push( subItem.visibleBounds );
+// 		}
+// 	}
+// }
 
 function getBoundsData ( item )
 {
