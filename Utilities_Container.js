@@ -3487,151 +3487,163 @@ function getClippedAmount ( group )
 
 //stolen from Josh B Duncan.
 //https://github.com/joshbduncan/adobe-scripts/blob/main/MatchObjects.jsx
-function getVisibleBounds ( object )
-{
-	var bounds, clippedItem, sandboxItem, sandboxLayer;
-	var curItem;
-	if ( object.typename == "GroupItem" )
-	{
-		// if the object is clipped
-		if ( object.clipped )
-		{
-			// check all sub objects to find the clipping path
-			for ( var i = 0; i < object.pageItems.length; i++ )
-			{
-				curItem = object.pageItems[ i ];
-				if ( curItem.clipping )
-				{
-					clippedItem = curItem;
-					break;
-				} else if ( curItem.typename == "CompoundPathItem" )
-				{
-					if ( !curItem.pathItems.length )
-					{
-						// catch compound path items with no pathItems via william dowling @ github.com/wdjsdev
-						sandboxLayer = app.activeDocument.layers.add();
-						sandboxItem = curItem.duplicate( sandboxLayer );
-						app.activeDocument.selection = null;
-						sandboxItem.selected = true;
-						app.executeMenuCommand( "noCompoundPath" );
-						sandboxLayer.hasSelectedArtwork = true;
-						app.executeMenuCommand( "group" );
-						clippedItem = app.activeDocument.selection[ 0 ];
-						break;
-					} else if ( curItem.pathItems[ 0 ].clipping )
-					{
-						clippedItem = curItem;
-						break;
-					}
-				}
-			}
-			// if the clipping path was found
-			if ( clippedItem )
-			{
-				bounds = clippedItem.geometricBounds;
-			}
-			else 
-			{
-				bounds = object.visibleBounds;
-			}
-			if ( sandboxLayer )
-			{
-				// eliminate the sandbox layer since it's no longer needed
-				sandboxLayer.remove();
-				sandboxLayer = undefined;
-			}
+// function getVisibleBounds ( object )
+// {
+// 	var bounds, clippedItem, sandboxItem, sandboxLayer;
+// 	var curItem;
+// 	if ( object.typename == "GroupItem" )
+// 	{
+// 		// if the object is clipped
+// 		if ( object.clipped )
+// 		{
+// 			// check all sub objects to find the clipping path
+// 			for ( var i = 0; i < object.pageItems.length; i++ )
+// 			{
+// 				curItem = object.pageItems[ i ];
+// 				if ( curItem.clipping )
+// 				{
+// 					clippedItem = curItem;
+// 					break;
+// 				} else if ( curItem.typename == "CompoundPathItem" )
+// 				{
+// 					if ( !curItem.pathItems.length )
+// 					{
+// 						// catch compound path items with no pathItems via william dowling @ github.com/wdjsdev
+// 						sandboxLayer = app.activeDocument.layers.add();
+// 						sandboxItem = curItem.duplicate( sandboxLayer );
+// 						app.activeDocument.selection = null;
+// 						sandboxItem.selected = true;
+// 						app.executeMenuCommand( "noCompoundPath" );
+// 						sandboxLayer.hasSelectedArtwork = true;
+// 						app.executeMenuCommand( "group" );
+// 						clippedItem = app.activeDocument.selection[ 0 ];
+// 						break;
+// 					} else if ( curItem.pathItems[ 0 ].clipping )
+// 					{
+// 						clippedItem = curItem;
+// 						break;
+// 					}
+// 				}
+// 			}
+// 			// if the clipping path was found
+// 			if ( clippedItem )
+// 			{
+// 				bounds = clippedItem.geometricBounds;
+// 			}
+// 			else 
+// 			{
+// 				bounds = object.visibleBounds;
+// 			}
+// 			if ( sandboxLayer )
+// 			{
+// 				// eliminate the sandbox layer since it's no longer needed
+// 				sandboxLayer.remove();
+// 				sandboxLayer = undefined;
+// 			}
 
-		}
-		else
-		{
-			// if the object is not clipped
-			bounds = object.visibleBounds;
+// 		}
+// 		else
+// 		{
+// 			// if the object is not clipped
+// 			bounds = object.visibleBounds;
 
-			//more thorough logic
-			var subObjectBounds;
-			var allBoundPoints = [ [], [], [], [] ];
-			// get the bounds of every object in the group
-			for ( var i = 0; i < object.pageItems.length; i++ )
-			{
-				curItem = object.pageItems[ i ];
-				if ( curItem.guides )
-				{
-					continue;
-				}
-				subObjectBounds = getVisibleBounds( curItem );
-				allBoundPoints[ 0 ].push( subObjectBounds[ 0 ] );
-				allBoundPoints[ 1 ].push( subObjectBounds[ 1 ] );
-				allBoundPoints[ 2 ].push( subObjectBounds[ 2 ] );
-				allBoundPoints[ 3 ].push( subObjectBounds[ 3 ] );
-			}
-			// determine the groups bounds from it sub object bound points
-			bounds = [
-				Math.min.apply( Math, allBoundPoints[ 0 ] ),
-				Math.max.apply( Math, allBoundPoints[ 1 ] ),
-				Math.max.apply( Math, allBoundPoints[ 2 ] ),
-				Math.min.apply( Math, allBoundPoints[ 3 ] ),
-			];
-		}
-	}
-	else
-	{
-		bounds = object.visibleBounds;
-	}
-	return bounds;
-}
+// 			//more thorough logic
+// 			var subObjectBounds;
+// 			var allBoundPoints = [ [], [], [], [] ];
+// 			// get the bounds of every object in the group
+// 			for ( var i = 0; i < object.pageItems.length; i++ )
+// 			{
+// 				curItem = object.pageItems[ i ];
+// 				if ( curItem.guides )
+// 				{
+// 					continue;
+// 				}
+// 				subObjectBounds = getVisibleBounds( curItem );
+// 				allBoundPoints[ 0 ].push( subObjectBounds[ 0 ] );
+// 				allBoundPoints[ 1 ].push( subObjectBounds[ 1 ] );
+// 				allBoundPoints[ 2 ].push( subObjectBounds[ 2 ] );
+// 				allBoundPoints[ 3 ].push( subObjectBounds[ 3 ] );
+// 			}
+// 			// determine the groups bounds from it sub object bound points
+// 			bounds = [
+// 				Math.min.apply( Math, allBoundPoints[ 0 ] ),
+// 				Math.max.apply( Math, allBoundPoints[ 1 ] ),
+// 				Math.max.apply( Math, allBoundPoints[ 2 ] ),
+// 				Math.min.apply( Math, allBoundPoints[ 3 ] ),
+// 			];
+// 		}
+// 	}
+// 	else
+// 	{
+// 		bounds = object.visibleBounds;
+// 	}
+// 	return bounds;
+// }
 
 //make a function that digs recursively through a given group
 //locate the largest clipping mask in the group and return its visibleBounds
 //if no clipping mask is found, return the visibleBounds of the group
-// function getVisibleBounds ( item )
-// {
-// 	if ( !item.typename.match( /groupItem/i ) )
-// 	{
-// 		return item.visibleBounds;
-// 	}
+function getVisibleBounds ( item )
+{
+	if ( !item.typename.match( /groupItem/i ) )
+	{
+		return item.visibleBounds;
+	}
 
-// 	var bounds = [];
-// 	dig( item );
+	var bounds = [ [], [], [], [] ];
+	dig( item );
 
-// 	if ( !bounds.length )
-// 	{
-// 		return item.visibleBounds;
-// 	}
+	if ( !bounds[ 0 ].length )
+	{
+		return item.visibleBounds;
+	}
 
-// 	//find the largest bounds by area
-// 	var largest = bounds.sort( function ( a, b )
-// 	{
-// 		var aArea = ( a[ 2 ] - a[ 0 ] ) * ( a[ 1 ] - a[ 3 ] );
-// 		var bArea = ( b[ 2 ] - b[ 0 ] ) * ( b[ 1 ] - b[ 3 ] );
-// 		return aArea > bArea ? a : b;
-// 	} );
-// 	return largest[ 0 ];
+	//find the largest bounds by area
+	var outerBounds = [];
+	outerBounds[ 0 ] = Math.min.apply( Math, bounds[ 0 ] );
+	outerBounds[ 1 ] = Math.max.apply( Math, bounds[ 1 ] );
+	outerBounds[ 2 ] = Math.max.apply( Math, bounds[ 2 ] );
+	outerBounds[ 3 ] = Math.min.apply( Math, bounds[ 3 ] );
+	return outerBounds;
 
-// 	function dig ( subItem )
-// 	{
-// 		if ( subItem.typename.match( /groupitem/i ) )
-// 		{
-// 			if ( subItem.clipped && subItem.pathItems.length && subItem.pathItems[ 0 ].clipping )
-// 			{
-// 				bounds.push( subItem.pathItems[ 0 ].visibleBounds );
-// 				return;
-// 			}
-// 			else  
-// 			{
-// 				bounds.push( subItem.visibleBounds );
-// 			}
+	function dig ( subItem )
+	{
+		var textClip = false;
+		if ( subItem.typename.match( /groupitem/i ) )
+		{
+			if ( subItem.clipped && subItem.pathItems.length && subItem.pathItems[ 0 ].clipping )
+			{
+				bounds.push( subItem.pathItems[ 0 ].visibleBounds );
+				return;
+			}
+			// else  
+			// {
+			// 	bounds.push( subItem.visibleBounds );
+			// }
 
-// 			afc( subItem ).forEach( function ( g )
-// 			{
-// 				dig( g );
-// 			} );
-// 		}
-// 		else 
-// 		{
-// 			bounds.push( subItem.visibleBounds );
-// 		}
-// 	}
-// }
+			afc( subItem ).forEach( function ( g )
+			{
+				if ( textClip ) { return; }
+				if ( subItem.clipped && g.typename.match( /textframe/i ) )
+				{
+					bounds[ 0 ].push( g.visibleBounds[ 0 ] );
+					bounds[ 1 ].push( g.visibleBounds[ 1 ] );
+					bounds[ 2 ].push( g.visibleBounds[ 2 ] );
+					bounds[ 3 ].push( g.visibleBounds[ 3 ] );
+					textClip = true;
+				}
+				dig( g );
+			} );
+		}
+		else 
+		{
+			bounds[ 0 ].push( subItem.visibleBounds[ 0 ] );
+			bounds[ 1 ].push( subItem.visibleBounds[ 1 ] );
+			bounds[ 2 ].push( subItem.visibleBounds[ 2 ] );
+			bounds[ 3 ].push( subItem.visibleBounds[ 3 ] );
+		}
+	}
+}
 
 function getBoundsData ( item )
 {
@@ -3812,7 +3824,7 @@ function findBackgroundPath ( item )
 	function dig ( subItem )
 	{
 		var lastItem = subItem.pageItems[ subItem.pageItems.length - 1 ];
-		if ( lastItem.typename === "PathItem" )
+		if ( lastItem.typename.match( /pathitem/i ) && lastItem.width > ( item.width * .4 ) )
 		{
 			bgPath = lastItem;
 		}
