@@ -873,13 +873,9 @@ function ungroup ( item, dest, maxDepth, callback, curDepth, parentOpacity )
 		{
 			cleanupCompoundPath( item );
 		}
-		if ( item.filled || item.stroked || item.pathItems[ 0 ].filled || item.pathItems[ 0 ].stroked )
+		if ( ( !item.typename.match( /pathItem/i ) ) || item.filled || item.stroked || item.pathItems[ 0 ].filled || item.pathItems[ 0 ].stroked )
 		{
 			item.moveToEnd( dest );
-		}
-		else 
-		{
-			debugger;
 		}
 	}
 
