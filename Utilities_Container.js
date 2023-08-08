@@ -800,21 +800,22 @@ function ungroupAll ( item, parent )
 //callback is an optional function to determine what to do with the lowest level pageItems
 //  the items can be deleted, expanded, ignored, or whatever based on their type
 //curDepth is the current level of nesting. just leave it undefined in the initial function call
-function ungroup ( item, dest, maxDepth, callback, curDepth )
+function ungroup ( item, dest, maxDepth, callback, curDepth, parentOpacity )
 {
-
 	item.locked = item.hidden = false;
 	item.visible = true;
 
 	//optional verbose logging for debugging
 	if ( 0 )
 	{
-		log.h( "Beginning of ungroup function:: item = " + item + "::dest = " + dest + "::maxDepth = " + maxDepth + "::callback = " + callback + "::curDepth = " + curDepth );
+		log.h( "Beginning of ungroup function:: item = " + item + "::dest = " + dest + "::maxDepth = " + maxDepth + "::callback = " + callback + "::curDepth = " + curDepth + "::parentOpacity = " + parentOpacity );
 	}
 
 	if ( item.guides )
 	{
-		item.guides = false;
+		// item.moveToEnd( dest );
+		item.remove();
+		return;
 	}
 
 	dest = dest || item.parent;
@@ -823,15 +824,18 @@ function ungroup ( item, dest, maxDepth, callback, curDepth )
 
 	var keepDigging = maxDepth === 0 || curDepth <= maxDepth;
 
+	// if ( item.name === "clip" ) { debugger; }
+
 	if ( item.typename.match( /layer/i ) || ( item.typename.match( /group/i ) && item.pageItems.length && keepDigging ) )
 	{
+		parentOpacity = item.opacity < 100 ? item.opacity : undefined;
 		var subItems = afc( item, "pageItems" ).concat( afc( item, "layers" ) );
-		if ( item.clipped && maxDepth > 0 && curDepth <= maxDepth )
+		if ( item.clipped )
 		{
 			item.moveToEnd( dest );
 			subItems.forEach( function ( si )
 			{
-				ungroup( si, item, 0 );
+				ungroup( si, item, 0, undefined, undefined, parentOpacity );
 			}, 1 )
 
 			return
@@ -839,7 +843,7 @@ function ungroup ( item, dest, maxDepth, callback, curDepth )
 
 		subItems.forEach( function ( i )
 		{
-			ungroup( i, dest, maxDepth, callback, curDepth );
+			ungroup( i, dest, maxDepth, callback, curDepth, parentOpacity );
 		} );
 
 		return;
@@ -858,13 +862,25 @@ function ungroup ( item, dest, maxDepth, callback, curDepth )
 		return;
 	}
 
+	parentOpacity ? item.opacity = parentOpacity : null;
 	if ( callback )
 	{
 		callback( item, dest );
 	}
 	else
 	{
-		item.moveToEnd( dest );
+		if ( item.typename.match( /compound/i ) && !item.pathItems.length ) 
+		{
+			cleanupCompoundPath( item );
+		}
+		if ( item.filled || item.stroked || item.pathItems[ 0 ].filled || item.pathItems[ 0 ].stroked )
+		{
+			item.moveToEnd( dest );
+		}
+		else 
+		{
+			debugger;
+		}
 	}
 
 
