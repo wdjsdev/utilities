@@ -813,18 +813,17 @@ function ungroup ( item, dest, maxDepth, callback, curDepth, parentOpacity )
 
 	if ( item.guides )
 	{
-		// item.moveToEnd( dest );
-		item.remove();
+		item.moveToEnd( dest );
+		// item.remove();
 		return;
 	}
 
 	dest = dest || item.parent;
-	maxDepth = maxDepth === undefined ? 1 : maxDepth;
-	curDepth = curDepth === undefined ? 1 : ++curDepth;
+	maxDepth = ( maxDepth === undefined ? 1 : maxDepth );
+	curDepth = ( curDepth === undefined ? 1 : ++curDepth );
 
 	var keepDigging = maxDepth === 0 || curDepth <= maxDepth;
 
-	// if ( item.name === "clip" ) { debugger; }
 
 	if ( item.typename.match( /layer/i ) || ( item.typename.match( /group/i ) && item.pageItems.length && keepDigging ) )
 	{
@@ -832,13 +831,18 @@ function ungroup ( item, dest, maxDepth, callback, curDepth, parentOpacity )
 		var subItems = afc( item, "pageItems" ).concat( afc( item, "layers" ) );
 		if ( item.clipped )
 		{
-			item.moveToEnd( dest );
-			subItems.forEach( function ( si )
+			if ( maxDepth > 0 )
 			{
-				ungroup( si, item, 0, undefined, undefined, parentOpacity );
-			}, 1 )
+				item.moveToEnd( dest );
+				dest = item;
+			}
 
-			return
+			// subItems.forEach( function ( si )
+			// {
+			// 	ungroup( si, dest, 0, undefined, undefined, parentOpacity );
+			// }, 1 )
+
+			// return
 		}
 
 		subItems.forEach( function ( i )
@@ -869,14 +873,19 @@ function ungroup ( item, dest, maxDepth, callback, curDepth, parentOpacity )
 	}
 	else
 	{
-		if ( item.typename.match( /compound/i ) && !item.pathItems.length ) 
+		if ( item.typename.match( /compound/i ) ) 
 		{
-			item = cleanupCompoundPath( item );
+			if ( !item.pathItems.length )
+			{
+				item = cleanupCompoundPath( item );
+			}
 		}
-		if ( item && ( ( !item.typename.match( /pathItem/i ) ) || item.filled || item.stroked || item.pathItems[ 0 ].filled || item.pathItems[ 0 ].stroked ) )
+		if ( item.typename.match( /group/i ) && item.pageItems.length > 0 )
 		{
-			item.moveToEnd( dest );
-		}
+			ungroup( item, dest, 0, undefined, undefined, parentOpacity );
+			return;
+		};
+		item.moveToEnd( dest );
 	}
 
 
@@ -3625,7 +3634,11 @@ function getVisibleBounds ( item )
 		{
 			if ( subItem.clipped && subItem.pathItems.length && subItem.pathItems[ 0 ].clipping )
 			{
-				bounds.push( subItem.pathItems[ 0 ].visibleBounds );
+				var g = subItem.pathItems[ 0 ];
+				bounds[ 0 ].push( g.visibleBounds[ 0 ] );
+				bounds[ 1 ].push( g.visibleBounds[ 1 ] );
+				bounds[ 2 ].push( g.visibleBounds[ 2 ] );
+				bounds[ 3 ].push( g.visibleBounds[ 3 ] );
 				return;
 			}
 			// else  
