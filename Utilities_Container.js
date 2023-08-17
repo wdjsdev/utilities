@@ -835,6 +835,7 @@ function ungroup ( item, dest, maxDepth, callback, curDepth, parentOpacity )
 			{
 				item.moveToEnd( dest );
 				dest = item;
+				return;
 			}
 
 			// subItems.forEach( function ( si )
@@ -880,9 +881,16 @@ function ungroup ( item, dest, maxDepth, callback, curDepth, parentOpacity )
 				item = cleanupCompoundPath( item );
 			}
 		}
-		if ( item.typename.match( /group/i ) && item.pageItems.length > 0 )
+		else if ( item.typename.match( /group/i ) && keepDigging )
 		{
-			ungroup( item, dest, 0, undefined, undefined, parentOpacity );
+			if ( item.pageItems.length > 0 )
+			{
+				ungroup( item, dest, maxDepth, undefined, curDepth, parentOpacity );
+			}
+			else 
+			{
+				item.remove();
+			}
 			return;
 		};
 		item.moveToEnd( dest );
@@ -3800,7 +3808,7 @@ function cleanupCompoundPath ( item )
 	{
 		doc.selection = cPaths;
 		app.executeMenuCommand( "noCompoundPath" );
-		afc( sboxLayer, "groupItems" ).forEach( function ( g ) { ungroup( g, g.parent, 0 ) } )
+		// afc( sboxLayer, "groupItems" ).forEach( function ( g ) { ungroup( g, sboxLayer, 0 ) } )
 		cPaths = afc( sboxLayer, "compoundPathItems" );
 	}
 
