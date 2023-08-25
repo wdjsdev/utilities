@@ -3638,6 +3638,7 @@ function getVisibleBounds ( item )
 	function dig ( subItem )
 	{
 		var textClip = false;
+		if ( subItem.guides ) { return; }
 		if ( subItem.typename.match( /groupitem/i ) )
 		{
 			if ( subItem.clipped && subItem.pathItems.length && subItem.pathItems[ 0 ].clipping )
