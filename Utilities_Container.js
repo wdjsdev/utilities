@@ -718,7 +718,9 @@ function recursiveDig ( item, callback )
 	{
 		if ( item.typename.match( /group|layer/i ) )
 		{
-			afc( item, "pageItems" ).forEach( function ( item ) { dig( item ) } );
+			item.locked = item.hidden = false;
+			item.visible = true;
+			afc( item, "layers" ).concat( afc( item, "pageItems" ) ).forEach( function ( item ) { dig( item ) } );
 		}
 		else
 		{
@@ -3650,9 +3652,14 @@ function getVisibleBounds ( item )
 				bounds[ 3 ].push( g.visibleBounds[ 3 ] );
 				return;
 			}
-			// else  
+
+			// if ( subItem.typename.match( /compound/i ) && subItem.clipping )
 			// {
-			// 	bounds.push( subItem.visibleBounds );
+			// 	bounds[ 0 ].push( subItem.visibleBounds[ 0 ] );
+			// 	bounds[ 1 ].push( subItem.visibleBounds[ 1 ] );
+			// 	bounds[ 2 ].push( subItem.visibleBounds[ 2 ] );
+			// 	bounds[ 3 ].push( subItem.visibleBounds[ 3 ] );
+			// 	return;
 			// }
 
 			afc( subItem ).forEach( function ( g )
