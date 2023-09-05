@@ -3643,24 +3643,35 @@ function getVisibleBounds ( item )
 		if ( subItem.guides ) { return; }
 		if ( subItem.typename.match( /groupitem/i ) )
 		{
-			if ( subItem.clipped && subItem.pathItems.length && subItem.pathItems[ 0 ].clipping )
+			if ( subItem.clipped )
 			{
-				var g = subItem.pathItems[ 0 ];
-				bounds[ 0 ].push( g.visibleBounds[ 0 ] );
-				bounds[ 1 ].push( g.visibleBounds[ 1 ] );
-				bounds[ 2 ].push( g.visibleBounds[ 2 ] );
-				bounds[ 3 ].push( g.visibleBounds[ 3 ] );
+				var g;
+				if ( subItem.pathItems.length && subItem.pathItems[ 0 ].clipping )
+				{
+					var g = subItem.pathItems[ 0 ];
+				}
+				else if ( subItem.compoundPathItems.length )
+				{
+					var g = subItem.compoundPathItems[ 0 ];
+					if ( !g.pathItems.length )
+					{
+						g = cleanupCompoundPath( g );
+					}
+					if ( !g.pathItems.length || !g.pathItems[ 0 ].clipping )
+					{
+						g = undefined;
+					}
+				}
+
+				if ( g )
+				{
+					bounds[ 0 ].push( g.visibleBounds[ 0 ] );
+					bounds[ 1 ].push( g.visibleBounds[ 1 ] );
+					bounds[ 2 ].push( g.visibleBounds[ 2 ] );
+					bounds[ 3 ].push( g.visibleBounds[ 3 ] );
+				}
 				return;
 			}
-
-			// if ( subItem.typename.match( /compound/i ) && subItem.clipping )
-			// {
-			// 	bounds[ 0 ].push( subItem.visibleBounds[ 0 ] );
-			// 	bounds[ 1 ].push( subItem.visibleBounds[ 1 ] );
-			// 	bounds[ 2 ].push( subItem.visibleBounds[ 2 ] );
-			// 	bounds[ 3 ].push( subItem.visibleBounds[ 3 ] );
-			// 	return;
-			// }
 
 			afc( subItem ).forEach( function ( g )
 			{
