@@ -512,8 +512,8 @@ localScriptLogFile.close();
 
 localLogContents = localLogContents.split( "\n" ).slice( -5000 ).join( "\n" );
 
-localScriptLogFile.open( "a" );
-localScriptLogFile.write( "\n\n\n\nRunning Script: " + scriptName + "\n" + "@ " + logTime() + "\n" );
+localScriptLogFile.open( "w" );
+localScriptLogFile.write( localLogContents + "\n\n\n\nRunning Script: " + scriptName + "\n" + "@ " + logTime() + "\n" );
 localScriptLogFile.close();
 
 localLogTimer.endTask( "clearLog" );
@@ -718,8 +718,8 @@ function recursiveDig ( item, callback )
 	{
 		if ( item.typename.match( /group|layer/i ) )
 		{
-			item.locked = item.hidden = false;
-			item.visible = true;
+			// item.locked = item.hidden = false;
+			// item.visible = true;
 			afc( item, "layers" ).concat( afc( item, "pageItems" ) ).forEach( function ( item ) { dig( item ) } );
 		}
 		else
