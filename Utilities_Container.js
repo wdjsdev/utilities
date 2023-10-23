@@ -5402,6 +5402,7 @@ var BOOMBAH_APPROVED_COLORS =
 		"Gray B",
 		"Gray 2 B",
 		"Steel B",
+		"Steel 2 B",
 		"Navy B",
 		"Navy 2 B",
 		"Royal Blue B",
@@ -5419,6 +5420,7 @@ var BOOMBAH_APPROVED_COLORS =
 		"Red B",
 		"Cardinal B",
 		"Maroon B",
+		"Maroon 2 B",
 		"Hot Pink B",
 		"Pink B",
 		"Soft Pink B",
@@ -5535,7 +5537,7 @@ var BUILDER_COLOR_CODES = {
 	"KG": "Kelly Green B",
 	"LG": "Lime Green B",
 	"MG": "Magenta 2 B",
-	"MRN": "Maroon B",
+	"MRN": "Maroon 2 B",
 	"MN": "MINT B",
 	"N": "Navy 2 B",
 	"NC": "NEON CORAL B",
@@ -5546,7 +5548,7 @@ var BUILDER_COLOR_CODES = {
 	"RD": "Red B",
 	"RB": "Royal Blue B",
 	"SP": "Soft Pink B",
-	"STL": "Steel B",
+	"STL": "Steel 2 B",
 	"TL": "Teal B",
 	"TO": "Texas Orange B",
 	"TW": "Twitch B",
@@ -5593,1037 +5595,881 @@ var BUILDER_COLOR_CODES = {
 
 var BOOMBAH_APPROVED_COLOR_VALUES =
 {
-	"[Registration]":
-	{
-		"cyan": 100,
-		"magenta": 100,
-		"yellow": 100,
-		"black": 100
+	"Black B": {
+		"cyan": 72.0000028610229,
+		"magenta": 67.0000016689301,
+		"yellow": 62.9999995231628,
+		"black": 72.0000028610229
 	},
-	"Black B":
-	{
-		"cyan": 72,
-		"magenta": 67,
-		"yellow": 63,
-		"black": 72
-	},
-	"White B":
-	{
+	"White B": {
 		"cyan": 0,
 		"magenta": 0,
 		"yellow": 0,
 		"black": 0
 	},
-	"Gray B":
-	{
-		"cyan": 44,
-		"magenta": 40,
-		"yellow": 41,
-		"black": 3
+	"Gray B": {
+		"cyan": 43.9999997615814,
+		"magenta": 40.0000005960464,
+		"yellow": 40.9999996423721,
+		"black": 2.99999993294477
 	},
-	"Gray 2 B":
-	{
-		"cyan": 43,
-		"magenta": 30,
-		"yellow": 26,
+	"Gray 2 B": {
+		"cyan": 42.9694056510925,
+		"magenta": 29.8344373703003,
+		"yellow": 25.6137937307358,
 		"black": 0
 	},
-	"Steel B":
-	{
-		"cyan": 53,
-		"magenta": 49,
-		"yellow": 43,
-		"black": 10
+	"Steel B": {
+		"cyan": 52.9999971389771,
+		"magenta": 49.0000009536743,
+		"yellow": 43.0000007152557,
+		"black": 10.0000001490116
 	},
-	"Navy B":
-	{
-		"cyan": 83,
-		"magenta": 73,
-		"yellow": 53,
-		"black": 61
+	"Steel 2 B": {
+		"cyan": 52.9999971389771,
+		"magenta": 49.0000009536743,
+		"yellow": 43.0000007152557,
+		"black": 10.0000001490116
 	},
-	"Navy 2 B":
-	{
+	"Charcoal B": {
+		"cyan": 65.389484167099,
+		"magenta": 55.8037638664246,
+		"yellow": 52.3552298545837,
+		"black": 27.9301136732101
+	},
+	"Charcoal 2 B": {
+		"cyan": 70.9999978542328,
+		"magenta": 64.9999976158142,
+		"yellow": 57.9999983310699,
+		"black": 52.9999971389771
+	},
+	"Navy B": {
+		"cyan": 82.9999983310699,
+		"magenta": 73.0000019073486,
+		"yellow": 52.9999971389771,
+		"black": 61.0000014305115
+	},
+	"Navy 2 B": {
 		"cyan": 100,
-		"magenta": 87,
-		"yellow": 42,
-		"black": 53
+		"magenta": 86.9474291801453,
+		"yellow": 42.2125577926636,
+		"black": 52.6726126670837
 	},
-	"Royal Blue B":
-	{
+	"Royal Blue B": {
 		"cyan": 100,
-		"magenta": 89,
-		"yellow": 33,
-		"black": 23
+		"magenta": 88.9999985694885,
+		"yellow": 33.0000013113022,
+		"black": 23.0000004172325
 	},
-	"Columbia B":
-	{
-		"cyan": 68,
-		"magenta": 30,
-		"yellow": 5,
+	"Columbia B": {
+		"cyan": 68.0000007152557,
+		"magenta": 30.0000011920929,
+		"yellow": 5.00000007450581,
 		"black": 0
 	},
-	"Cyan B":
-	{
-		"cyan": 88,
-		"magenta": 48,
-		"yellow": 15,
-		"black": 1
+	"Cyan B": {
+		"cyan": 88.3000016212463,
+		"magenta": 48.0300009250641,
+		"yellow": 14.6300002932549,
+		"black": 0.71000000461936
 	},
-	"Teal B":
-	{
-		"cyan": 87,
-		"magenta": 40,
-		"yellow": 44,
-		"black": 11
+	"Teal B": {
+		"cyan": 87.0000004768372,
+		"magenta": 40.0000005960464,
+		"yellow": 43.9999997615814,
+		"black": 10.9999999403954
 	},
-	"Dark Green B":
-	{
-		"cyan": 85,
-		"magenta": 48,
-		"yellow": 76,
-		"black": 54
+	"Dark Green B": {
+		"cyan": 88.9999985694885,
+		"magenta": 55.0000011920929,
+		"yellow": 100,
+		"black": 44.9999988079071
 	},
-	"Kelly Green B":
-	{
-		"cyan": 94,
-		"magenta": 26,
-		"yellow": 87,
-		"black": 13
+	"Kelly Green B": {
+		"cyan": 93.9999997615814,
+		"magenta": 25.9999990463257,
+		"yellow": 87.0000004768372,
+		"black": 12.9999995231628
 	},
-	"Lime Green B":
-	{
-		"cyan": 51,
+	"Lime Green B": {
+		"cyan": 50.9999990463257,
 		"magenta": 0,
-		"yellow": 87,
+		"yellow": 87.0000004768372,
 		"black": 0
 	},
-	"Yellow B":
-	{
+	"Yellow B": {
 		"cyan": 0,
 		"magenta": 0,
 		"yellow": 100,
 		"black": 0
 	},
-	"Optic Yellow B":
-	{
-		"cyan": 22,
-		"magenta": 2,
-		"yellow": 98,
+	"Optic Yellow B": {
+		"cyan": 21.9999998807907,
+		"magenta": 1.99999995529652,
+		"yellow": 98.0000019073486,
 		"black": 0
 	},
-	"Athletic Gold B":
-	{
-		"cyan": 5,
-		"magenta": 40,
-		"yellow": 95,
+	"Athletic Gold B": {
+		"cyan": 5.00000007450581,
+		"magenta": 40.0000005960464,
+		"yellow": 94.9999988079071,
 		"black": 0
 	},
-	"Vegas Gold B":
-	{
-		"cyan": 26,
-		"magenta": 31,
-		"yellow": 57,
-		"black": 1
+	"Vegas Gold B": {
+		"cyan": 25.9999990463257,
+		"magenta": 31.0000002384186,
+		"yellow": 56.9999992847443,
+		"black": 0.99999997764826
 	},
-	"Orange B":
-	{
-		"cyan": 11,
-		"magenta": 85,
+	"Orange B": {
+		"cyan": 10.9999999403954,
+		"magenta": 85.0000023841858,
 		"yellow": 100,
-		"black": 2
+		"black": 1.99999995529652
 	},
-	"Texas Orange B":
-	{
-		"cyan": 27,
-		"magenta": 78,
-		"yellow": 99,
-		"black": 20
+	"Texas Orange B": {
+		"cyan": 27.0000010728836,
+		"magenta": 77.9999971389771,
+		"yellow": 99.0000009536743,
+		"black": 20.0000002980232
 	},
-	"Red B":
-	{
-		"cyan": 22,
+	"Red B": {
+		"cyan": 21.9999998807907,
 		"magenta": 100,
-		"yellow": 93,
-		"black": 16
+		"yellow": 93.0000007152557,
+		"black": 15.9999996423721
 	},
-	"Cardinal B":
-	{
-		"cyan": 35,
-		"magenta": 95,
-		"yellow": 71,
-		"black": 44
+	"Cardinal B": {
+		"cyan": 34.9999994039536,
+		"magenta": 94.9999988079071,
+		"yellow": 70.9999978542328,
+		"black": 43.9999997615814
 	},
-	"Maroon B":
-	{
+	"Maroon B": {
 		"cyan": 50,
-		"magenta": 76,
-		"yellow": 61,
-		"black": 57
+		"magenta": 75.9999990463257,
+		"yellow": 61.0000014305115,
+		"black": 56.9999992847443
 	},
-	"Hot Pink B":
-	{
-		"cyan": 35,
-		"magenta": 98,
-		"yellow": 31,
-		"black": 5
+	"Maroon 2 B": {
+		"cyan": 50,
+		"magenta": 75.9999990463257,
+		"yellow": 61.0000014305115,
+		"black": 56.9999992847443
 	},
-	"Pink B":
-	{
-		"cyan": 11,
-		"magenta": 71,
-		"yellow": 17,
+	"Pink B": {
+		"cyan": 10.9999999403954,
+		"magenta": 70.9999978542328,
+		"yellow": 17.0000001788139,
 		"black": 0
 	},
-	"Soft Pink B":
-	{
-		"cyan": 4,
-		"magenta": 30,
-		"yellow": 1,
+	"Hot Pink B": {
+		"cyan": 17.0000001788139,
+		"magenta": 98.0895698070526,
+		"yellow": 34.9999994039536,
+		"black": 15.9999996423721
+	},
+	"Soft Pink B": {
+		"cyan": 3.99999991059303,
+		"magenta": 30.0000011920929,
+		"yellow": 0.99999997764826,
 		"black": 0
 	},
-	"Purple B":
-	{
-		"cyan": 91,
-		"magenta": 99,
-		"yellow": 27,
-		"black": 15
+	"Purple B": {
+		"cyan": 91.0000026226044,
+		"magenta": 99.0000009536743,
+		"yellow": 27.0000010728836,
+		"black": 15.0000005960464
 	},
-	"Flesh B":
-	{
-		"cyan": 7,
-		"magenta": 17,
-		"yellow": 34,
+	"Flesh B": {
+		"cyan": 7.00000002980232,
+		"magenta": 17.0000001788139,
+		"yellow": 34.0000003576279,
 		"black": 0
 	},
-	"Dark Flesh B":
-	{
-		"cyan": 24,
-		"magenta": 41,
-		"yellow": 51,
-		"black": 1
+	"Brown B": {
+		"cyan": 43.0000007152557,
+		"magenta": 70.9999978542328,
+		"yellow": 81.0000002384186,
+		"black": 50.9999990463257
 	},
-	"Brown B":
-	{
-		"cyan": 43,
-		"magenta": 71,
-		"yellow": 81,
-		"black": 51
+	"FLO ORANGE B": {
+		"cyan": 1.31000000983477,
+		"magenta": 72.3699986934662,
+		"yellow": 98.1500029563904,
+		"black": 0.06999999750406
 	},
-	"FLO ORANGE B":
-	{
-		"cyan": 1,
-		"magenta": 72,
-		"yellow": 98,
-		"black": 0
-	},
-	"FLO YELLOW B":
-	{
-		"cyan": 3,
+	"FLO YELLOW B": {
+		"cyan": 2.99999993294477,
 		"magenta": 0,
 		"yellow": 100,
-		"black": 3
+		"black": 2.99999993294477
 	},
-	"FLO PINK B":
-	{
+	"FLO PINK B": {
 		"cyan": 0,
 		"magenta": 100,
 		"yellow": 0,
 		"black": 0
 	},
-	"Twitch B":
-	{
-		"cyan": 15,
+	"Twitch B": {
+		"cyan": 21.9999998807907,
 		"magenta": 0,
-		"yellow": 97,
+		"yellow": 96.5799987316132,
 		"black": 0
 	},
-	"MINT B":
-	{
-		"cyan": 57,
+	"MINT B": {
+		"cyan": 57.3800027370453,
 		"magenta": 0,
-		"yellow": 62,
+		"yellow": 62.2399985790253,
 		"black": 0
 	},
-	"NEON CORAL B":
-	{
+	"NEON CORAL B": {
 		"cyan": 0,
-		"magenta": 82,
-		"yellow": 57,
-		"black": 0
+		"magenta": 82.3300004005432,
+		"yellow": 56.8700015544891,
+		"black": 0.01999999949476
 	},
-	"FLAME B":
-	{
+	"FLAME B": {
 		"cyan": 0,
-		"magenta": 87,
+		"magenta": 87.0000004768372,
 		"yellow": 100,
 		"black": 0
 	},
-	"Magenta B":
-	{
-		"cyan": 7,
+	"Magenta 2 B": {
+		"cyan": 20.0000002980232,
 		"magenta": 100,
-		"yellow": 64,
-		"black": 26
+		"yellow": 64.9999976158142,
+		"black": 0
 	},
-	"Magenta 2 B":
-	{
-		"cyan": 12,
+	"Magenta B": {
+		"cyan": 7.00000002980232,
 		"magenta": 100,
-		"yellow": 36,
+		"yellow": 63.9999985694885,
+		"black": 25.9999990463257
+	},
+	"BRIGHT PURPLE B": {
+		"cyan": 40.3899997472763,
+		"magenta": 67.4600005149841,
+		"yellow": 1.36000001803041,
 		"black": 0
 	},
-	"BRIGHT PURPLE B":
-	{
-		"cyan": 40,
-		"magenta": 67,
-		"yellow": 1,
+	"Dark Charcoal B": {
+		"cyan": 64.9999976158142,
+		"magenta": 56.9999992847443,
+		"yellow": 56.0000002384186,
+		"black": 34.0000003576279
+	},
+	"Dark Flesh B": {
+		"cyan": 20.0000002980232,
+		"magenta": 56.9999992847443,
+		"yellow": 68.9999997615814,
+		"black": 5.99999986588955
+	},
+	"Khaki B": {
+		"cyan": 29.8771619796753,
+		"magenta": 33.1212311983109,
+		"yellow": 43.3875024318695,
+		"black": 0.51880674436688
+	},
+	"Olive Drab B": {
+		"cyan": 60.0732386112213,
+		"magenta": 42.6977932453156,
+		"yellow": 87.2495591640472,
+		"black": 28.4428149461746
+	},
+	"Wolf Gray B": {
+		"cyan": 25.9999990463257,
+		"magenta": 18.0000007152557,
+		"yellow": 15.0000005960464,
 		"black": 0
 	},
-	"Dark Charcoal B":
-	{
-		"cyan": 65,
-		"magenta": 57,
-		"yellow": 56,
-		"black": 34
-	},
-	"Charcoal B":
-	{
-		"cyan": 65,
-		"magenta": 55,
-		"yellow": 52,
-		"black": 28
-
-	},
-	"Charcoal 2 B":
-	{
-		"cyan": 71,
-		"magenta": 65,
-		"yellow": 58,
-		"black": 53
-
-	},
-	"Fuschia Neon B":
-	{
-		"cyan": 39.62,
-		"magenta": 92.28,
-		"yellow": 0,
+	"Arctic Gray B": {
+		"cyan": 17.1877607703209,
+		"magenta": 11.9337737560272,
+		"yellow": 10.2455161511898,
 		"black": 0
 	},
-	"Fuschia B":
-	{
-		"cyan": 39.62,
-		"magenta": 92.28,
-		"yellow": 0,
-		"black": 0
-	},
-	"Khaki B":
-	{
-		"cyan": 29.88,
-		"magenta": 33.12,
-		"yellow": 43.39,
-		"black": 0.52
-	},
-	"Wolf Gray B":
-	{
-		"cyan": 25.999,
-		"magenta": 18,
-		"yellow": 15,
-		"black": 0
-	},
-	"Arctic Gray B":
-	{
-		"cyan": 17.187,
-		"magenta": 11.933,
-		"yellow": 10.245,
-		"black": 0
-	},
-	"Storm B":
-	{
-		"cyan": 78.515,
-		"magenta": 61.328,
+	"Storm B": {
+		"cyan": 78.515625,
+		"magenta": 61.328125,
 		"yellow": 50,
-		"black": 35.546
+		"black": 35.546875
 	},
-	"Slate B":
-	{
-		"cyan": 67.186,
-		"magenta": 52.355,
-		"yellow": 44.663,
-		"black": 17.541
+	"Slate B": {
+		"cyan": 67.1869933605194,
+		"magenta": 52.3552298545837,
+		"yellow": 44.6631550788879,
+		"black": 17.5417706370354
 	},
-	"Gun Metal B":
-	{
-		"cyan": 57.918,
-		"magenta": 47.446,
-		"yellow": 46.933,
-		"black": 13.687
+	"Gun Metal B": {
+		"cyan": 46.9999998807907,
+		"magenta": 40.0000005960464,
+		"yellow": 47.9999989271164,
+		"black": 54.0000021457672
 	},
-	"Steel B copy":
-	{
-		"cyan": 52.999,
-		"magenta": 49,
-		"yellow": 43,
-		"black": 10
+	"Foliage B": {
+		"cyan": 60.7232749462128,
+		"magenta": 41.8554961681366,
+		"yellow": 44.1260367631912,
+		"black": 9.28664058446884
 	},
-	"Foliage B":
-	{
-		"cyan": 60.723,
-		"magenta": 41.855,
-		"yellow": 44.126,
-		"black": 9.286
-	},
-	"Cobalt B":
-	{
+	"Cobalt B": {
 		"cyan": 100,
-		"magenta": 98.626,
-		"yellow": 17.767,
-		"black": 5.581
+		"magenta": 98.6266851425171,
+		"yellow": 17.7676036953926,
+		"black": 5.5817499756813
 	},
-	"Azure B":
-	{
+	"Azure B": {
 		"cyan": 100,
-		"magenta": 44.999,
+		"magenta": 75.9999990463257,
 		"yellow": 0,
-		"black": 28.999
+		"black": 20.9999993443489
 	},
-	"Peacock B":
-	{
-		"cyan": 96.932,
-		"magenta": 44.077,
-		"yellow": 57.46,
-		"black": 27.078
+	"Peacock B": {
+		"cyan": 96.9329357147217,
+		"magenta": 44.0772086381912,
+		"yellow": 57.4608981609344,
+		"black": 27.0786583423615
 	},
-	"Tropical Green B":
-	{
-		"cyan": 97.476,
-		"magenta": 26.486,
-		"yellow": 54.433,
-		"black": 6.842
+	"Tropical Green B": {
+		"cyan": 97.4761545658112,
+		"magenta": 26.4866083860397,
+		"yellow": 54.4335067272186,
+		"black": 6.84214532375336
 	},
-	"Turquoise B":
-	{
-		"cyan": 64.831,
+	"Turquoise B": {
+		"cyan": 62.0000004768372,
+		"magenta": 9.00000035762787,
+		"yellow": 32.2087407112122,
+		"black": 0
+	},
+	"Aqua B": {
+		"cyan": 66.030365228653,
 		"magenta": 0,
-		"yellow": 32.208,
+		"yellow": 21.4236661791801,
 		"black": 0
 	},
-	"Aqua B":
-	{
-		"cyan": 66.03,
+	"Ice Blue B": {
+		"cyan": 40.9999996423721,
+		"magenta": 10.9999999403954,
+		"yellow": 10.9999999403954,
+		"black": 9.00000035762787
+	},
+	"Desert B": {
+		"cyan": 26.7704278230667,
+		"magenta": 21.6037228703499,
+		"yellow": 43.9093589782715,
+		"black": 0
+	},
+	"Teak Brown B": {
+		"cyan": 39.4384652376175,
+		"magenta": 48.020139336586,
+		"yellow": 65.2826726436615,
+		"black": 13.2143124938011
+	},
+	"Oak Brown B": {
+		"cyan": 45.4352617263794,
+		"magenta": 62.0000004768372,
+		"yellow": 75.0576019287109,
+		"black": 38.9999985694885
+	},
+	"Tree Bark B": {
+		"cyan": 56.2218606472015,
+		"magenta": 57.7935397624969,
+		"yellow": 81.9999992847443,
+		"black": 56.0000002384186
+	},
+	"Sand B": {
+		"cyan": 39.682611823082,
+		"magenta": 34.406042098999,
+		"yellow": 71.5907514095306,
+		"black": 6.13412670791149
+	},
+	"Coyote B": {
+		"cyan": 43.0000007152557,
+		"magenta": 38.0559980869293,
+		"yellow": 91.0000026226044,
+		"black": 15.9999996423721
+	},
+	"Kiwi B": {
+		"cyan": 40.6286716461182,
 		"magenta": 0,
-		"yellow": 21.423,
+		"yellow": 81.5091133117676,
 		"black": 0
 	},
-	"Ice Blue B":
-	{
-		"cyan": 33,
-		"magenta": 10.999,
-		"yellow": 10.999,
-		"black": 9
+	"Forest Green B": {
+		"cyan": 72.7077126502991,
+		"magenta": 50.8049130439758,
+		"yellow": 87.2007310390472,
+		"black": 59.7619533538818
 	},
-	"Desert B":
-	{
-		"cyan": 26.77,
-		"magenta": 21.603,
-		"yellow": 43.909,
-		"black": 0
+	"Mulch B": {
+		"cyan": 63.8971507549286,
+		"magenta": 66.1249697208405,
+		"yellow": 63.4668469429016,
+		"black": 61.6693317890167
 	},
-	"Khaki B":
-	{
-		"cyan": 29.877,
-		"magenta": 33.121,
-		"yellow": 43.387,
-		"black": 0.518
+	"Plum B": {
+		"cyan": 37.9999995231628,
+		"magenta": 79.0000021457672,
+		"yellow": 7.99999982118607,
+		"black": 64.9999976158142
 	},
-	"Teak Brown B":
-	{
-		"cyan": 39.438,
-		"magenta": 48.02,
-		"yellow": 65.282,
-		"black": 13.214
+	"Eggplant B": {
+		"cyan": 33.0000013113022,
+		"magenta": 62.9999995231628,
+		"yellow": 25,
+		"black": 49.0000009536743
 	},
-	"Oak Brown B":
-	{
-		"cyan": 45.435,
-		"magenta": 58.782,
-		"yellow": 75.057,
-		"black": 34.668
+	"Wine B": {
+		"cyan": 47.614249587059,
+		"magenta": 91.0612642765045,
+		"yellow": 49.6559083461761,
+		"black": 41.1047518253326
 	},
-	"Tree Bark B":
-	{
-		"cyan": 56.221,
-		"magenta": 57.793,
-		"yellow": 79.143,
-		"black": 51.497
-	},
-	"Sand B":
-	{
-		"cyan": 39.682,
-		"magenta": 34.406,
-		"yellow": 71.59,
-		"black": 6.134
-	},
-	"Coyote B":
-	{
-		"cyan": 45.77,
-		"magenta": 38.055,
-		"yellow": 90.24,
-		"black": 13.464
-	},
-	"Olive Drab B":
-	{
-		"cyan": 60.073,
-		"magenta": 42.697,
-		"yellow": 87.249,
-		"black": 28.442
-	},
-	"Kiwi B":
-	{
-		"cyan": 40.628,
-		"magenta": 0,
-		"yellow": 81.509,
-		"black": 0
-	},
-	"Forest Green B":
-	{
-		"cyan": 72.707,
-		"magenta": 50.804,
-		"yellow": 87.2,
-		"black": 59.761
-	},
-	"Mulch B":
-	{
-		"cyan": 63.897,
-		"magenta": 66.124,
-		"yellow": 63.466,
-		"black": 61.669
-	},
-	"Plum B":
-	{
-		"cyan": 37.999,
-		"magenta": 79,
-		"yellow": 7.999,
-		"black": 64.999
-	},
-	"Eggplant B":
-	{
-		"cyan": 33,
-		"magenta": 62.999,
-		"yellow": 27,
-		"black": 64.999
-	},
-	"Wine B":
-	{
-		"cyan": 47.614,
-		"magenta": 91.061,
-		"yellow": 49.655,
-		"black": 41.104
-	},
-	"Sangria B":
-	{
+	"Sangria B": {
 		"cyan": 0,
-		"magenta": 98,
-		"yellow": 40,
-		"black": 62
+		"magenta": 98.0000019073486,
+		"yellow": 40.0000005960464,
+		"black": 62.0000004768372
 	},
-	"Violet B":
-	{
-		"cyan": 81.493,
+	"Violet B": {
+		"cyan": 81.4938545227051,
 		"magenta": 100,
-		"yellow": 11.581,
-		"black": 1.724
+		"yellow": 11.5815974771976,
+		"black": 1.7242694273591
 	},
-	"Amethyst Orchid B":
-	{
-		"cyan": 53.099,
-		"magenta": 68.337,
+	"Amethyst Orchid B": {
+		"cyan": 53.0998647212982,
+		"magenta": 68.3375239372253,
 		"yellow": 0,
 		"black": 0
 	},
-	"Dusty Rose B":
-	{
-		"cyan": 11.999,
-		"magenta": 50.999,
-		"yellow": 38.999,
-		"black": 28
+	"Fuschia B": {
+		"cyan": 39.6185219287872,
+		"magenta": 92.2789335250854,
+		"yellow": 0,
+		"black": 0
 	},
-	"Hot Coral B":
-	{
+	"Dusty Rose B": {
+		"cyan": 11.9999997317791,
+		"magenta": 49.0000009536743,
+		"yellow": 23.0000004172325,
+		"black": 12.9999995231628
+	},
+	"Hot Coral B": {
 		"cyan": 0,
-		"magenta": 82.999,
-		"yellow": 66,
+		"magenta": 80.0000011920929,
+		"yellow": 56.0000002384186,
 		"black": 0
 	},
-	"Poppy B":
-	{
-		"cyan": 2.999,
-		"magenta": 91,
-		"yellow": 86,
+	"Poppy B": {
+		"cyan": 2.99999993294477,
+		"magenta": 91.0000026226044,
+		"yellow": 86.0000014305115,
 		"black": 0
 	},
-	"Autumn Glory B":
-	{
+	"Autumn Glory B": {
 		"cyan": 0,
-		"magenta": 53.579,
-		"yellow": 95.175,
+		"magenta": 53.5790026187897,
+		"yellow": 95.1750934123993,
 		"black": 0
 	},
-	"PerfCutContour":
-	{
-		"cyan": 78,
+	"PerfCutContour": {
+		"cyan": 77.9999971389771,
 		"magenta": 0,
 		"yellow": 100,
 		"black": 0
 	},
-	"CutContour":
-	{
+	"CutContour": {
 		"cyan": 0,
 		"magenta": 100,
 		"yellow": 0,
 		"black": 0
 	},
-	"Info B":
-	{
-		"cyan": 30,
-		"magenta": 30,
-		"yellow": 30,
+	"Info B": {
+		"cyan": 30.0000011920929,
+		"magenta": 30.0000011920929,
+		"yellow": 30.0000011920929,
 		"black": 100
 	},
-	"Jock Tag B":
-	{
-		"cyan": 30,
-		"magenta": 30,
-		"yellow": 30,
+	"Jock Tag B": {
+		"cyan": 30.0000011920929,
+		"magenta": 30.0000011920929,
+		"yellow": 30.0000011920929,
 		"black": 100
 	},
-	"Thru-cut":
-	{
+	"EDGE": {
+		"cyan": 75.0209808349609,
+		"magenta": 67.9682552814484,
+		"yellow": 67.0221984386444,
+		"black": 90.1640295982361
+	},
+	"Thru-cut": {
 		"cyan": 100,
-		"magenta": 40,
+		"magenta": 40.0000005960464,
 		"yellow": 0,
 		"black": 0
 	},
-	"SEW LINE":
-	{
+	"SEW LINE": {
 		"cyan": 0,
 		"magenta": 100,
 		"yellow": 100,
 		"black": 0
 	},
-	"CUT LINE":
-	{
-		"cyan": 10,
+	"CUT LINE": {
+		"cyan": 10.0000001490116,
 		"magenta": 0,
 		"yellow": 100,
 		"black": 0
 	},
-	"Collar B":
-	{
-		"cyan": 33,
-		"magenta": 34,
-		"yellow": 2,
+	"Collar B": {
+		"cyan": 32.8125,
+		"magenta": 33.59375,
+		"yellow": 1.5625,
 		"black": 0
 	},
-	"Collar Info B":
-	{
-		"cyan": 42,
-		"magenta": 58,
-		"yellow": 79,
-		"black": 30
+	"Collar Info B": {
+		"cyan": 41.796875,
+		"magenta": 57.8125,
+		"yellow": 78.515625,
+		"black": 30.46875
 	},
-	"C1":
-	{
-		"cyan": 100,
-		"magenta": 0,
-		"yellow": 0,
-		"black": 0
-	},
-	"C2":
-	{
-		"cyan": 0,
-		"magenta": 100,
-		"yellow": 0,
-		"black": 0
-	},
-	"C3":
-	{
-		"cyan": 0,
-		"magenta": 0,
-		"yellow": 100,
-		"black": 0
-	},
-	"C4":
-	{
-		"cyan": 82,
-		"magenta": 4,
-		"yellow": 100,
-		"black": 0
-	},
-	"C5":
-	{
-		"cyan": 40,
-		"magenta": 53,
-		"yellow": 0,
-		"black": 0
-	},
-	"C6":
-	{
-		"cyan": 0,
-		"magenta": 54,
-		"yellow": 100,
-		"black": 0
-	},
-	"C7":
-	{
-		"cyan": 92,
-		"magenta": 27,
-		"yellow": 41,
-		"black": 26
-	},
-	"C8":
-	{
-		"cyan": 0,
-		"magenta": 100,
-		"yellow": 55,
-		"black": 30
-	},
-	"C9":
-	{
-		"cyan": 42,
-		"magenta": 1,
-		"yellow": 100,
-		"black": 0
-	},
-	"C10":
-	{
-		"cyan": 60,
-		"magenta": 85,
-		"yellow": 0,
-		"black": 0
-	},
-	"C11":
-	{
-		"cyan": 100,
-		"magenta": 69,
-		"yellow": 0,
-		"black": 0
-	},
-	"C12":
-	{
-		"cyan": 81,
-		"magenta": 0,
-		"yellow": 82,
-		"black": 65
-	},
-	"C13":
-	{
-		"cyan": 0,
-		"magenta": 54,
-		"yellow": 100,
-		"black": 23
-	},
-	"C14":
-	{
-		"cyan": 9,
-		"magenta": 0,
-		"yellow": 0,
-		"black": 76
-	},
-	"Boombah Logo B":
-	{
-		"cyan": 70,
-		"magenta": 100,
-		"yellow": 0,
-		"black": 0
-	},
-	"Boombah Logo 2 B":
-	{
-		"cyan": 35,
-		"magenta": 35,
-		"yellow": 0,
-		"black": 0
-	},
-	"Drawstring":
-	{
-		"cyan": 67,
-		"magenta": 0,
-		"yellow": 34,
-		"black": 0
-	},
-	"Zipper":
-	{
-		"cyan": 1,
-		"magenta": 16,
-		"yellow": 71,
-		"black": 0
-	},
-	"Binding":
-	{
-		"cyan": 0,
-		"magenta": 82,
-		"yellow": 100,
-		"black": 0
-	},
-	"Buttons":
-	{
-		"cyan": 57,
-		"magenta": 0,
-		"yellow": 71,
-		"black": 0
-	},
-	"Pocket Welt 1":
-	{
-		"cyan": 35,
-		"magenta": 88,
-		"yellow": 94,
-		"black": 53
-	},
-	"Pocket Welt 2":
-	{
-		"cyan": 0,
-		"magenta": 56,
-		"yellow": 35,
-		"black": 0
-	},
-	"Pocket Facing":
-	{
-		"cyan": 93,
-		"magenta": 74,
-		"yellow": 45,
-		"black": 40
-	},
-	"C15":
-	{
-		"cyan": 0,
-		"magenta": 69,
-		"yellow": 0,
-		"black": 62
-	},
-	"Num1":
-	{
+	"C1": {
 		"cyan": 100,
 		"magenta": 0,
 		"yellow": 0,
 		"black": 0
 	},
-	"Num2":
-	{
+	"C2": {
 		"cyan": 0,
 		"magenta": 100,
 		"yellow": 0,
 		"black": 0
 	},
-	"Num3":
-	{
+	"C3": {
 		"cyan": 0,
 		"magenta": 0,
 		"yellow": 100,
 		"black": 0
 	},
-	"Num4":
-	{
-		"cyan": 82,
-		"magenta": 4,
+	"C4": {
+		"cyan": 81.9607973098755,
+		"magenta": 4.31369990110397,
 		"yellow": 100,
-		"black": 0
+		"black": 0.39220000617206
 	},
-	"Num5":
-	{
-		"cyan": 40,
-		"magenta": 53,
+	"C5": {
+		"cyan": 40.3921991586685,
+		"magenta": 52.5489985942841,
 		"yellow": 0,
 		"black": 0
 	},
-	"Num6":
-	{
+	"C6": {
 		"cyan": 0,
-		"magenta": 54,
+		"magenta": 54.0428757667542,
+		"yellow": 99.801629781723,
+		"black": 0
+	},
+	"C7": {
+		"cyan": 91.869992017746,
+		"magenta": 27.0000010728836,
+		"yellow": 41.4984345436096,
+		"black": 26.2180507183075
+	},
+	"C8": {
+		"cyan": 0,
+		"magenta": 100,
+		"yellow": 55.0000011920929,
+		"black": 30.0000011920929
+	},
+	"C9": {
+		"cyan": 41.7700439691544,
+		"magenta": 1.44655527547002,
 		"yellow": 100,
 		"black": 0
 	},
-	"Name1":
-	{
+	"C10": {
+		"cyan": 59.7985804080963,
+		"magenta": 85.1071894168854,
+		"yellow": 0,
+		"black": 0
+	},
+	"C11": {
+		"cyan": 100,
+		"magenta": 68.9999997615814,
+		"yellow": 0,
+		"black": 0
+	},
+	"C12": {
+		"cyan": 81.0000002384186,
+		"magenta": 0,
+		"yellow": 81.9999992847443,
+		"black": 64.9999976158142
+	},
+	"C13": {
+		"cyan": 0,
+		"magenta": 54.0000021457672,
+		"yellow": 100,
+		"black": 23.0000004172325
+	},
+	"C14": {
+		"cyan": 9.00000035762787,
+		"magenta": 0,
+		"yellow": 0,
+		"black": 75.9999990463257
+	},
+	"Boombah Logo B": {
+		"cyan": 69.9999988079071,
+		"magenta": 100,
+		"yellow": 0,
+		"black": 0
+	},
+	"Boombah Logo 2 B": {
+		"cyan": 34.9999994039536,
+		"magenta": 34.9999994039536,
+		"yellow": 0,
+		"black": 0
+	},
+	"Drawstring": {
+		"cyan": 66.5400147438049,
+		"magenta": 0,
+		"yellow": 33.9726835489273,
+		"black": 0
+	},
+	"Zipper": {
+		"cyan": 1.44350342452526,
+		"magenta": 15.5123203992844,
+		"yellow": 71.4198470115662,
+		"black": 0
+	},
+	"Binding": {
+		"cyan": 0,
+		"magenta": 81.9088995456696,
+		"yellow": 100,
+		"black": 0
+	},
+	"Buttons": {
+		"cyan": 56.786447763443,
+		"magenta": 0,
+		"yellow": 71.0627853870392,
+		"black": 0
+	},
+	"Pocket Welt 1": {
+		"cyan": 35.3551536798477,
+		"magenta": 87.7470016479492,
+		"yellow": 94.3846762180328,
+		"black": 53.0205190181732
+	},
+	"Pocket Welt 2": {
+		"cyan": 0,
+		"magenta": 55.6023478507996,
+		"yellow": 34.818035364151,
+		"black": 0
+	},
+	"Pocket Facing": {
+		"cyan": 93.4081017971039,
+		"magenta": 74.0566074848175,
+		"yellow": 45.1697558164597,
+		"black": 39.5147621631622
+	},
+	"C15": {
+		"cyan": 0,
+		"magenta": 68.9999997615814,
+		"yellow": 0,
+		"black": 62.0000004768372
+	},
+	"Num1": {
 		"cyan": 100,
 		"magenta": 0,
 		"yellow": 0,
 		"black": 0
 	},
-	"Name2":
-	{
+	"Num2": {
 		"cyan": 0,
 		"magenta": 100,
 		"yellow": 0,
 		"black": 0
 	},
-	"Name3":
-	{
+	"Num3": {
 		"cyan": 0,
 		"magenta": 0,
 		"yellow": 100,
 		"black": 0
 	},
-	"Name4":
-	{
-		"cyan": 82,
-		"magenta": 4,
+	"Num4": {
+		"cyan": 81.9607973098755,
+		"magenta": 4.31369990110397,
 		"yellow": 100,
-		"black": 0
+		"black": 0.39220000617206
 	},
-	"Name5":
-	{
-		"cyan": 40,
-		"magenta": 53,
+	"Num5": {
+		"cyan": 40.3921991586685,
+		"magenta": 52.5489985942841,
 		"yellow": 0,
 		"black": 0
 	},
-	"Name6":
-	{
+	"Num6": {
 		"cyan": 0,
-		"magenta": 54,
-		"yellow": 100,
+		"magenta": 54.0428757667542,
+		"yellow": 99.801629781723,
 		"black": 0
 	},
-	"Logo1":
-	{
+	"Name1": {
 		"cyan": 100,
 		"magenta": 0,
 		"yellow": 0,
 		"black": 0
 	},
-	"Logo2":
-	{
+	"Name2": {
 		"cyan": 0,
 		"magenta": 100,
 		"yellow": 0,
 		"black": 0
 	},
-	"Logo3":
-	{
+	"Name3": {
 		"cyan": 0,
 		"magenta": 0,
 		"yellow": 100,
 		"black": 0
 	},
-	"Logo4":
-	{
-		"cyan": 82,
-		"magenta": 4,
+	"Name4": {
+		"cyan": 81.9607973098755,
+		"magenta": 4.31369990110397,
 		"yellow": 100,
-		"black": 0
+		"black": 0.39220000617206
 	},
-	"Logo5":
-	{
-		"cyan": 40,
-		"magenta": 53,
+	"Name5": {
+		"cyan": 40.3921991586685,
+		"magenta": 52.5489985942841,
 		"yellow": 0,
 		"black": 0
 	},
-	"Logo6":
-	{
+	"Name6": {
 		"cyan": 0,
-		"magenta": 54,
-		"yellow": 100,
+		"magenta": 54.0428757667542,
+		"yellow": 99.801629781723,
 		"black": 0
 	},
-	"B1":
-	{
+	"Logo1": {
 		"cyan": 100,
 		"magenta": 0,
 		"yellow": 0,
 		"black": 0
 	},
-	"B2":
-	{
+	"Logo2": {
 		"cyan": 0,
 		"magenta": 100,
 		"yellow": 0,
 		"black": 0
 	},
-	"B3":
-	{
+	"Logo3": {
 		"cyan": 0,
 		"magenta": 0,
 		"yellow": 100,
 		"black": 0
 	},
-	"B4":
-	{
-		"cyan": 82,
-		"magenta": 4,
+	"Logo4": {
+		"cyan": 81.9607973098755,
+		"magenta": 4.31369990110397,
 		"yellow": 100,
-		"black": 0
+		"black": 0.39220000617206
 	},
-	"B5":
-	{
-		"cyan": 40,
-		"magenta": 53,
+	"Logo5": {
+		"cyan": 40.3921991586685,
+		"magenta": 52.5489985942841,
 		"yellow": 0,
 		"black": 0
 	},
-	"B6":
-	{
+	"Logo6": {
 		"cyan": 0,
-		"magenta": 54,
-		"yellow": 100,
+		"magenta": 54.0428757667542,
+		"yellow": 99.801629781723,
 		"black": 0
 	},
-	"B7":
-	{
-		"cyan": 92,
-		"magenta": 27,
-		"yellow": 41,
-		"black": 26
-	},
-	"B8":
-	{
-		"cyan": 0,
-		"magenta": 100,
-		"yellow": 55,
-		"black": 30
-	},
-	"B9":
-	{
-		"cyan": 42,
-		"magenta": 1,
-		"yellow": 100,
-		"black": 0
-	},
-	"B10":
-	{
-		"cyan": 60,
-		"magenta": 85,
-		"yellow": 0,
-		"black": 0
-	},
-	"B11":
-	{
+	"B1": {
 		"cyan": 100,
-		"magenta": 69,
+		"magenta": 0,
 		"yellow": 0,
 		"black": 0
 	},
-	"B14":
-	{
-		"cyan": 9,
+	"B2": {
+		"cyan": 0,
+		"magenta": 100,
+		"yellow": 0,
+		"black": 0
+	},
+	"B3": {
+		"cyan": 0,
+		"magenta": 0,
+		"yellow": 100,
+		"black": 0
+	},
+	"B4": {
+		"cyan": 81.9607973098755,
+		"magenta": 4.31369990110397,
+		"yellow": 100,
+		"black": 0.39220000617206
+	},
+	"B5": {
+		"cyan": 40.3921991586685,
+		"magenta": 52.5489985942841,
+		"yellow": 0,
+		"black": 0
+	},
+	"B6": {
+		"cyan": 0,
+		"magenta": 54.0428757667542,
+		"yellow": 99.801629781723,
+		"black": 0
+	},
+	"B7": {
+		"cyan": 91.869992017746,
+		"magenta": 27.0000010728836,
+		"yellow": 41.4984345436096,
+		"black": 26.2180507183075
+	},
+	"B8": {
+		"cyan": 0,
+		"magenta": 100,
+		"yellow": 55.0000011920929,
+		"black": 30.0000011920929
+	},
+	"B9": {
+		"cyan": 41.7700439691544,
+		"magenta": 1.44655527547002,
+		"yellow": 100,
+		"black": 0
+	},
+	"B10": {
+		"cyan": 59.7985804080963,
+		"magenta": 85.1071894168854,
+		"yellow": 0,
+		"black": 0
+	},
+	"B11": {
+		"cyan": 100,
+		"magenta": 68.9999997615814,
+		"yellow": 0,
+		"black": 0
+	},
+	"B14": {
+		"cyan": 9.00000035762787,
 		"magenta": 0,
 		"yellow": 0,
-		"black": 76
+		"black": 75.9999990463257
 	},
-	"B13":
-	{
+	"B13": {
 		"cyan": 0,
-		"magenta": 54,
+		"magenta": 54.0000021457672,
 		"yellow": 100,
-		"black": 23
+		"black": 23.0000004172325
 	},
-	"B12":
-	{
-		"cyan": 81,
+	"B12": {
+		"cyan": 81.0000002384186,
 		"magenta": 0,
-		"yellow": 82,
-		"black": 65
-	},
-
+		"yellow": 81.9999992847443,
+		"black": 64.9999976158142
+	}
 }
 
