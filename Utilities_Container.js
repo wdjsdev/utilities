@@ -5503,6 +5503,7 @@ var BOOMBAH_PRODUCTION_COLORS =
 		'Info B',
 		'cutline',
 		'CUTLINE',
+		'CALLOUT',
 		'SEW LINE',
 		'SEW LINES',
 		'SEWLINE',
@@ -6470,6 +6471,12 @@ var BOOMBAH_APPROVED_COLOR_VALUES =
 		"magenta": 0,
 		"yellow": 81.9999992847443,
 		"black": 64.9999976158142
+	},
+	"CALLOUT": {
+		"cyan": 40.0000005960464,
+		"magenta": 40.0000005960464,
+		"yellow": 60.0000023841858,
+		"black": 0
 	}
 }
 
