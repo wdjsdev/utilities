@@ -891,7 +891,7 @@ function ungroup ( item, dest, maxDepth, callback, curDepth, parentOpacity )
 			}
 			else 
 			{
-				item.remove();
+				// item.remove();
 			}
 			return;
 		};
@@ -1125,6 +1125,20 @@ function jsonArrayOnOneLineReplacerFunction ( k, v )
 	}
 }
 
+
+function offsetPath ( item, offset )
+{
+	offset = offset || 10;
+	var offsetString = OFFSET_PATH_ACTION_STRING.map( function ( line )
+	{
+		return line.replace( /\*\*OFFSET_VALUE\*\*/, offset );
+	} );
+	createAction( "Offset Path", offsetString );
+	item.selected = true;
+	app.doScript( "offset", "offset" );
+	removeAction( "offset" );
+	return app.activeDocument.selection[ 0 ];
+}
 
 
 
@@ -3961,6 +3975,7 @@ function curlData ( url, arg )
 {
 	var curlTimer = new Stopwatch();
 	curlTimer.logStart();
+	arg = arg.replace( /\s*/g, "" );
 	log.h( "Beginning execution of curlData(" + url + arg + ")" );
 	var result, status = "empty";;
 	var htmlRegex = /<html>/gmi;
@@ -5350,6 +5365,97 @@ const CLEANUP_SWATCHES_ACTION_STRING =
 
 	]
 
+const OFFSET_PATH_ACTION_STRING =
+	[
+		"/version 3",
+		"/name [ 6",
+		"	6f6666736574",
+		"]",
+		"/isOpen 1",
+		"/actionCount 1",
+		"/action-1 {",
+		"	/name [ 6",
+		"		6f6666736574",
+		"	]",
+		"	/keyIndex 0",
+		"	/colorIndex 0",
+		"	/isOpen 1",
+		"	/eventCount 1",
+		"	/event-1 {",
+		"		/useRulersIn1stQuadrant 0",
+		"		/internalName (ai_plugin_offset)",
+		"		/localizedName [ 11",
+		"			4f66667365742050617468",
+		"		]",
+		"		/isOpen 1",
+		"		/isOn 1",
+		"		/hasDialog 1",
+		"		/showDialog 0",
+		"		/parameterCount 3",
+		"		/parameter-1 {",
+		"			/key 1868985204",
+		"			/showInPalette 4294967295",
+		"			/type (unit real)",
+		"			/value **OFFSET_VALUE**",
+		"			/unit 592476268",
+		"		}",
+		"		/parameter-2 {",
+		"			/key 1835627634",
+		"			/showInPalette 4294967295",
+		"			/type (real)",
+		"			/value 4.0",
+		"		}",
+		"		/parameter-3 {",
+		"			/key 1785623664",
+		"			/showInPalette 4294967295",
+		"			/type (enumerated)",
+		"			/name [ 5",
+		"				4d69746572",
+		"			]",
+		"			/value 2",
+		"		}",
+		"	}",
+		"}"
+	];
+
+
+const LUMINOSITY_ACTION_STRING =
+	[ "/version 3",
+		"/name [ 10",
+		"	6c756d696e6f73697479",
+		"]",
+		"/isOpen 1",
+		"/actionCount 1",
+		"/action-1 {",
+		"	/name [ 10",
+		"		6c756d696e6f73697479",
+		"	]",
+		"	/keyIndex 0",
+		"	/colorIndex 0",
+		"	/isOpen 1",
+		"	/eventCount 1",
+		"	/event-1 {",
+		"		/useRulersIn1stQuadrant 0",
+		"		/internalName (ai_plugin_transparency)",
+		"		/localizedName [ 12",
+		"			5472616e73706172656e6379",
+		"		]",
+		"		/isOpen 0",
+		"		/isOn 1",
+		"		/hasDialog 0",
+		"		/parameterCount 1",
+		"		/parameter-1 {",
+		"			/key 1836016741",
+		"			/showInPalette 4294967295",
+		"			/type (enumerated)",
+		"			/name [ 10",
+		"				4c756d696e6f73697479",
+		"			]",
+		"			/value 15",
+		"		}",
+		"	}",
+		"}"
+	]
 
 
 //
