@@ -1,5 +1,30 @@
 
 
+if ( $.os.match( 'Windows' ) )
+{
+	var user = $.getenv( "USERNAME" );
+	var homeFolderPath = "C:/Users/" + user + "/";
+	var homeFolder = Folder( homeFolderPath );
+	var os = "windows";
+
+}
+else
+{
+	// MAC
+	var user = $.getenv( "USER" )
+	var homeFolderPath = "/Volumes/Macintosh HD/Users/" + user + "/";
+	var homeFolder = new Folder( homeFolderPath );
+	var os = "mac";
+}
+
+function getUserInitials ()
+{
+	return user.split( "." ).map( function ( u )
+	{
+		return u[ 0 ].toUpperCase();
+	} ).join( "" );
+}
+
 
 
 //
@@ -272,6 +297,8 @@ function printSpecialtyLog ( file, msg )
 }
 
 
+
+
 //
 //END LOGGING
 //
@@ -338,19 +365,6 @@ Array.prototype.reverse = function ()
 }
 
 
-//
-// Array.prototype.merge = function ( incomingArray )
-// {
-
-// 	for ( var i = 0; i < incomingArray.length; i++ )
-// 	{
-// 		this.push( incomingArray[ i ] );
-// 	}
-// 	return arr;
-// }
-
-
-
 
 
 ////////////////////////
@@ -384,123 +398,9 @@ function objForEach ( obj, func )
 ////////////////////////
 
 
-////////ATTENTION://////
-//potentially removeable.. testing to see if just looking
-//for the customizationDR drive is enough to accurately determine
-//a dr user.. That way i won't need to maintain this list.
-////////////////////////
-//list of dr users
-// var DR_USERS =
-// 	[
-// 		"medelyn.tavarez",
-// 		"rafael.nolasco",
-// 		"nicolas.nicasio",
-// 		"arlan.grullon",
-// 		"deivison.urena",
-// 		"eliezer.lopez",
-// 		"maximo.montesino",
-// 		"danny.cabrera",
-// 		"kelvin.ynoa",
-// 		"julio.lora",
-// 		"ismael.noesi",
-// 		"raymond.fernandez",
-// 		"isaac.martinez",
-// 		"joshua.chevalier",
-// 		"katherine.ramos",
-// 		"enmanuel.mercado",
-// 		"domingo.camilo",
-// 		"lenin.tavarez",
-// 		"franklyn.martin",
-// 		"gricely.rivas"
-// 	];
 
 
 
-//boolean to determine whether to use the CustomizationDR drive for testing.
-// var spoofDRUser = false;
-// log.l( "Checking for dr user:" );
-// if ( os.match( /mac/i ) && DR_USERS.indexOf( user ) > -1 || ( user === "will.dowling" && Folder( "/Volumes/CustomizationDR" ).exists ) )
-// {
-// 	log.l( "User is a DR user. using customizationDR path" );
-// 	customizationPath = customizationPath.replace( "Customization", "CustomizationDR" );
-// }
-
-// log.l( "Customization path = " + customizationPath );
-
-
-
-
-
-
-
-var sharesCustomizationPath;
-var ad4CustomizationPath;
-var drsvCustomizationPath;
-if ( $.os.match( 'Windows' ) )
-{
-	var user = $.getenv( "USERNAME" );
-	var homeFolderPath = "C:/Users/" + user + "/";
-	var homeFolder = Folder( homeFolderPath );
-	var os = "windows";
-
-
-	sharesCustomizationPath = "//boombah.local/shares/Customization/";
-	ad4CustomizationPath = "//AD4/Customization/";
-	drsvCustomizationPath = "O:/"
-	// customizationPath = Folder( drsvCustomizationPath ).exists ? drsvCustomizationPath : customizationPath;
-
-}
-else
-{
-	// MAC
-	var user = $.getenv( "USER" )
-	var homeFolderPath = "/Volumes/Macintosh HD/Users/" + user + "/";
-	var homeFolder = new Folder( homeFolderPath );
-	var os = "mac";
-
-	sharesCustomizationPath = "/Volumes/shares/Customization/";
-	ad4CustomizationPath = "/Volumes/Customization/";
-	drsvCustomizationPath = "/Volumes/CustomizationDR/";
-}
-
-// if(user.match(/dowling/i))
-// {
-// 	alert("customizationPath = " + customizationPath);
-// 	alert("utilities path = " + $.fileName);
-// }
-
-// customizationPath = $.fileName.match(/^.*Customization/)[0] + "/";
-customizationPath = sharesCustomizationPath;
-
-
-// if(user.match(/foust|medelyn/i) && Folder(sharesCustomizationPath).exists)
-// {
-// 	if(confirm("Use shares customization path?"))
-// 	{
-// 		customizationPath = sharesCustomizationPath;
-// 	}
-// }
-
-// if(typeof customizationPath == "undefined" || !customizationPath)
-// {
-// 	var customizationPath;
-
-// 	if(Folder(drsvCustomizationPath).exists)
-// 	{
-// 		customizationPath = drsvCustomizationPath;
-// 	}
-// 	else if(Folder(ad4CustomizationPath).exists)
-// 	{
-// 		customizationPath = ad4CustomizationPath;
-// 	}
-// }
-
-
-
-//set the customization path..
-//if customizationDR exists, use that path.
-//otherwise use yorkville based ad4 customization path
-// customizationPath = Folder( drsvCustomizationPath ).exists ? drsvCustomizationPath : ad4CustomizationPath;
 
 //specific fix for Sam Bateman's home computer..
 //her username is "thell".
@@ -513,6 +413,7 @@ if ( user === "thell" )
 	homeFolderPath = homeFolderPath.replace( "C:", "D:" );
 	homeFolder = Folder( homeFolderPath );
 }
+
 
 
 
@@ -546,7 +447,7 @@ var libraryFolder = new Folder( libraryPath );
 var graphicsPath = libraryPath + "Graphics/";
 var graphicsFolder = new Folder( graphicsPath );
 
-var prepressPath = libraryPath + "cads/prepress/";
+var prepressPath = libraryPath + "CADs/prepress/";
 var prepressFolder = new Folder( prepressPath );
 
 var scriptsPath = libraryPath + "Scripts/";
@@ -581,6 +482,7 @@ var userPathRegex = /(^\/Users\/[^\/]*\/)|(^.*~\/)/i;
 var localLogTimer = new Stopwatch();
 localLogTimer.logStart();
 localLogTimer.beginTask( "locateLocalLog" );
+
 //
 //setup local live log file
 //so that we can write real time logs without the
@@ -600,17 +502,31 @@ var localScriptLogFile = new File( localScriptLogPath + "live_script_log.txt" );
 localLogTimer.endTask( "locateLocalLog" );
 localLogTimer.beginTask( "clearLog" );
 
-//clear the log
-//so it's always fresh when we start a new script
+//trim the local log file down to 5k lines
+//so that it doesn't get too big.
+//we'll just keep the last 5k lines of the log
+var localLogContents = "";
+localScriptLogFile.open( "r" );
+localLogContents = localScriptLogFile.read();
+localScriptLogFile.close();
+
+localLogContents = localLogContents.split( "\n" ).slice( -5000 ).join( "\n" );
+
 localScriptLogFile.open( "w" );
-localScriptLogFile.write( "Running Script: " + scriptName + "\n\n" );
+localScriptLogFile.write( localLogContents + "\n\n\n\nRunning Script: " + scriptName + "\n" + "@ " + logTime() + "\n" );
 localScriptLogFile.close();
 
 localLogTimer.endTask( "clearLog" );
 
+//log the general user stuff for reference:
+log.h( "general user stuff:" );
+log.l( "user = " + user );
+log.l( "homeFolderPath = " + homeFolderPath );
+log.l( "os = " + os );
+log.l( "::::" );
 
 
-log.l( "Utilities Container setting customizationPath to: " + customizationPath );
+log.l( "Using customizationPath: " + customizationPath );
 
 
 
@@ -802,7 +718,9 @@ function recursiveDig ( item, callback )
 	{
 		if ( item.typename.match( /group|layer/i ) )
 		{
-			afc( item, "pageItems" ).forEach( function ( item ) { dig( item ) } );
+			// item.locked = item.hidden = false;
+			// item.visible = true;
+			afc( item, "layers" ).concat( afc( item, "pageItems" ) ).forEach( function ( item ) { dig( item ) } );
 		}
 		else
 		{
@@ -818,7 +736,7 @@ function recursiveDig ( item, callback )
 
 function cleanupSymbolContents ( item, dest )
 {
-	var testItem = item;
+	var testItem;
 	if ( item.typename.match( /compound/i ) )
 	{
 		if ( !item.pathItems.length )
@@ -826,6 +744,10 @@ function cleanupSymbolContents ( item, dest )
 			item = cleanupCompoundPath( item );
 		}
 		testItem = item.pathItems[ 0 ];
+	}
+	else
+	{
+		testItem = item;
 	}
 
 	if ( testItem.typename.match( /^PathItem/ ) && !item.clipping && !testItem.filled && !testItem.stroked )
@@ -880,46 +802,55 @@ function ungroupAll ( item, parent )
 //callback is an optional function to determine what to do with the lowest level pageItems
 //  the items can be deleted, expanded, ignored, or whatever based on their type
 //curDepth is the current level of nesting. just leave it undefined in the initial function call
-function ungroup ( item, dest, maxDepth, callback, curDepth )
+function ungroup ( item, dest, maxDepth, callback, curDepth, parentOpacity )
 {
-
 	item.locked = item.hidden = false;
 	item.visible = true;
 
 	//optional verbose logging for debugging
 	if ( 0 )
 	{
-		log.h( "Beginning of ungroup function:: item = " + item + "::dest = " + dest + "::maxDepth = " + maxDepth + "::callback = " + callback + "::curDepth = " + curDepth );
+		log.h( "Beginning of ungroup function:: item = " + item + "::dest = " + dest + "::maxDepth = " + maxDepth + "::callback = " + callback + "::curDepth = " + curDepth + "::parentOpacity = " + parentOpacity );
 	}
 
 	if ( item.guides )
 	{
+		item.moveToEnd( dest );
+		// item.remove();
 		return;
 	}
 
 	dest = dest || item.parent;
-	maxDepth = maxDepth === undefined ? 1 : maxDepth;
-	curDepth = curDepth === undefined ? 1 : ++curDepth;
+	maxDepth = ( maxDepth === undefined ? 1 : maxDepth );
+	curDepth = ( curDepth === undefined ? 1 : ++curDepth );
 
 	var keepDigging = maxDepth === 0 || curDepth <= maxDepth;
 
+
 	if ( item.typename.match( /layer/i ) || ( item.typename.match( /group/i ) && item.pageItems.length && keepDigging ) )
 	{
+		parentOpacity = item.opacity < 100 ? item.opacity : undefined;
 		var subItems = afc( item, "pageItems" ).concat( afc( item, "layers" ) );
-		if ( item.clipped && maxDepth > 0 && curDepth <= maxDepth )
+		if ( item.clipped )
 		{
-			item.moveToEnd( dest );
-			subItems.forEach( function ( si )
+			if ( maxDepth > 0 )
 			{
-				ungroup( si, item, 0 );
-			}, 1 )
+				item.moveToEnd( dest );
+				dest = item;
+				return;
+			}
 
-			return
+			// subItems.forEach( function ( si )
+			// {
+			// 	ungroup( si, dest, 0, undefined, undefined, parentOpacity );
+			// }, 1 )
+
+			// return
 		}
 
 		subItems.forEach( function ( i )
 		{
-			ungroup( i, dest, maxDepth, callback, curDepth );
+			ungroup( i, dest, maxDepth, callback, curDepth, parentOpacity );
 		} );
 
 		return;
@@ -938,12 +869,32 @@ function ungroup ( item, dest, maxDepth, callback, curDepth )
 		return;
 	}
 
+	parentOpacity ? item.opacity = parentOpacity : null;
 	if ( callback )
 	{
 		callback( item, dest );
 	}
 	else
 	{
+		if ( item.typename.match( /compound/i ) ) 
+		{
+			if ( !item.pathItems.length )
+			{
+				item = cleanupCompoundPath( item );
+			}
+		}
+		else if ( item.typename.match( /group/i ) && keepDigging )
+		{
+			if ( item.pageItems.length > 0 )
+			{
+				ungroup( item, dest, maxDepth, undefined, curDepth, parentOpacity );
+			}
+			else 
+			{
+				// item.remove();
+			}
+			return;
+		};
 		item.moveToEnd( dest );
 	}
 
@@ -1016,6 +967,11 @@ function getUnique ( arr )
 	}
 	return result;
 }
+
+
+
+
+
 
 //////////////
 /*
@@ -1170,6 +1126,20 @@ function jsonArrayOnOneLineReplacerFunction ( k, v )
 }
 
 
+function offsetPath ( item, offset )
+{
+	offset = offset || 10;
+	var offsetString = OFFSET_PATH_ACTION_STRING.map( function ( line )
+	{
+		return line.replace( /\*\*OFFSET_VALUE\*\*/, offset );
+	} );
+	createAction( "Offset Path", offsetString );
+	item.selected = true;
+	app.doScript( "offset", "offset" );
+	removeAction( "offset" );
+	return app.activeDocument.selection[ 0 ];
+}
+
 
 
 
@@ -1202,6 +1172,17 @@ function intersects ( item, dest )
 	//check for anything that could make overlap false
 	//if any of these conditions are true, an intersection is impossible
 	return !( IL > DR || IR < DL || IT < DB || IB > DT );
+
+}
+
+function halfWayIn ( item, dest )
+{
+	var vb = getBoundsData( item );
+
+	var dvb = getBoundsData( dest );
+
+
+	return !( vb.vc >= dvb.t || vb.vc <= dvb.b || vb.hc <= dvb.l || vb.hc >= dvb.r );
 
 }
 
@@ -1462,7 +1443,6 @@ function chooseFromListbox ( items, msg, size )
 	var btnGroup = UI.group( cfl );
 	var cancel = UI.button( btnGroup, "Cancel", function ()
 	{
-		result = undefined;
 		cfl.close();
 	} )
 	var allBtn = UI.button( btnGroup, "Choose All", function ()
@@ -1743,7 +1723,10 @@ function findSpecificPageItem ( parent, searchTerm, crit )
 
 	if ( typeof searchTerm === "string" )
 	{
+		var spcRegex = /([\^\$\.\*\+\?\=\!\:\|\\\/\(\)\[\]\{\}])/g;
 		//search term is a string. convert it to a regex based on the crit given
+		//escape any special characters in the search term
+		searchTerm = searchTerm.replace( spcRegex, "\\$1" );
 		var matchPats = {
 			"any": new RegExp( searchTerm, "i" ),
 			"imatch": new RegExp( "^" + searchTerm + "$", "i" ),
@@ -1829,36 +1812,30 @@ function findSpecificPageItem ( parent, searchTerm, crit )
 //"imatch" means name must match, but case doesn't matter
 //"any" means itemName must exist somewhere
 //return an array of objects that matched the criteria
-function findAllPageItems ( parent, itemName, crit )
+function findAllPageItems ( parent, searchTerm, crit )
 {
 	var result = [], curItem;
-	if ( parent.pageItems.length )
+	if ( typeof searchTerm === "string" )
 	{
-		for ( var x = 0, len = parent.pageItems.length; x < len; x++ )
-		{
-			curItem = parent.pageItems[ x ];
-			if ( crit )
-			{
-				if ( crit === "match" && curItem.name === itemName )
-				{
-					result.push( curItem );
-				}
-				else if ( crit === "imatch" && curItem.name.toLowerCase() === itemName.toLowerCase() )
-				{
-					result.push( curItem );
-				}
-				else if ( crit === "any" && curItem.name.toLowerCase().indexOf( itemName.toLowerCase() ) > -1 )
-				{
-					result.push( curItem );
-				}
-			}
-			else if ( curItem.name.indexOf( itemName ) > -1 )
-			{
-				result.push( curItem );
-
-			}
+		var spcRegex = /([\^\$\.\*\+\?\=\!\:\|\\\/\(\)\[\]\{\}])/g;
+		//search term is a string. convert it to a regex based on the crit given
+		//escape any special characters in the search term
+		searchTerm = searchTerm.replace( spcRegex, "\\$1" );
+		var matchPats = {
+			"any": new RegExp( searchTerm, "i" ),
+			"imatch": new RegExp( "^" + searchTerm + "$", "i" ),
+			"match": new RegExp( "^" + searchTerm + "$" )
 		}
+		searchTerm = matchPats[ crit || "any" ];
 	}
+
+	afc( parent, "pageItems" ).forEach( function ( item )
+	{
+		if ( item.name.match( searchTerm ) )
+		{
+			result.push( item );
+		}
+	} );
 
 	return result;
 }
@@ -2409,6 +2386,11 @@ function properTemplateSetup ( doc )
 		{
 			"locked": true,
 			"visible": false
+		},
+		"Color Info":
+		{
+			locked: false,
+			visible: false
 		}
 
 	}
@@ -2475,59 +2457,89 @@ function properTemplateSetup ( doc )
 
 function isTemplate ( parent )
 {
-	log.h( "Checking to see whether " + parent + " is a proper converted template." );
+	var result;
 
-	var result = true,
-		art,
-		info,
-		mock,
-		prepress,
-		searchLayer;
-
-	if ( parent.typename === "Document" )
+	if ( parent.typename.match( /document/i ) )
 	{
-		searchLayer = parent.layers[ 0 ];
-	}
-	else if ( parent.typename === "Layer" )
-	{
-		searchLayer = parent;
-	}
-
-	//Try/Catch Description:
-	//set variables for known template layers
-	//if they don't exist, it's not a template
-	try
-	{
-		art = searchLayer.layers[ "Artwork Layer" ];
-		info = searchLayer.layers[ "Information" ];
-		mock = searchLayer.layers[ "Mockup" ];
-		prepress = searchLayer.layers[ "Prepress" ];
-		log.l( parent + " is a proper template. returning true" );
-	}
-	catch ( e )
-	{
-		//this doc is not a converted template.
-		//setting srcIsTemplate to false
-		result = false;
-
-		if ( e.toString().indexOf( "MRAP" ) > -1 )
+		var docLays = afc( parent, "layers" );
+		docLays.forEach( function ( lay )
 		{
-			log.l( "MRAP error occurred." )
-			errorList.push( "Failed to determine whether this file was a proper converted template because of an MRAP error." );
-			errorList.push( "Please restart Illustrator and try again." );
-		}
-		else
-		{
-			log.l( parent + " is NOT a template.::Results of isTemplate function are as follows:" );
-		}
+			if ( result )
+			{
+				return;
+			}
 
-		log.l( "art = " + art );
-		log.l( "info = " + info );
-		log.l( "mock = " + mock );
-		log.l( "prepress = " + prepress + "\n\n" );
+			var ppLay = findSpecificLayer( lay, "Prepress" );
+			if ( ppLay )
+			{
+				result = true;
+			}
+		} );
+	}
+	else
+	{
+		var ppLay = findSpecificLayer( parent, "Prepress" );
+		if ( ppLay )
+		{
+			result = true;
+		}
 	}
 
-	return result
+	return result;
+
+	// log.h( "Checking to see whether " + parent + " is a proper converted template." );
+
+	// var result = true,
+	// 	art,
+	// 	info,
+	// 	mock,
+	// 	prepress,
+	// 	searchLayer;
+
+	// if ( parent.typename === "Document" )
+	// {
+	// 	searchLayer = parent.layers[ 0 ];
+	// }
+	// else if ( parent.typename === "Layer" )
+	// {
+	// 	searchLayer = parent;
+	// }
+
+	// //Try/Catch Description:
+	// //set variables for known template layers
+	// //if they don't exist, it's not a template
+	// try
+	// {
+	// 	art = searchLayer.layers[ "Artwork Layer" ];
+	// 	info = searchLayer.layers[ "Information" ];
+	// 	mock = searchLayer.layers[ "Mockup" ];
+	// 	prepress = searchLayer.layers[ "Prepress" ];
+	// 	log.l( parent + " is a proper template. returning true" );
+	// }
+	// catch ( e )
+	// {
+	// 	//this doc is not a converted template.
+	// 	//setting srcIsTemplate to false
+	// 	result = false;
+
+	// 	if ( e.toString().indexOf( "MRAP" ) > -1 )
+	// 	{
+	// 		log.l( "MRAP error occurred." )
+	// 		errorList.push( "Failed to determine whether this file was a proper converted template because of an MRAP error." );
+	// 		errorList.push( "Please restart Illustrator and try again." );
+	// 	}
+	// 	else
+	// 	{
+	// 		log.l( parent + " is NOT a template.::Results of isTemplate function are as follows:" );
+	// 	}
+
+	// 	log.l( "art = " + art );
+	// 	log.l( "info = " + info );
+	// 	log.l( "mock = " + mock );
+	// 	log.l( "prepress = " + prepress + "\n\n" );
+	// }
+
+	// return result
 }
 
 function writeDatabase ( dbPath, contents )
@@ -2647,11 +2659,16 @@ function vAlignBottom ( key, otherObjects )
 //align all objects' center points to center point of key
 function hAlignCenter ( key, otherObjects )
 {
-	var kp = key.left + key.width / 2;
-	for ( var x = 0; x < otherObjects.length; x++ )
+	var kpb = getBoundsData( key );
+	otherObjects.forEach( function ( obj )
 	{
-		otherObjects[ x ].left = kp - otherObjects[ x ].width / 2;
-	}
+		var obb = getBoundsData( obj );
+		obj.left = kpb.hc - obb.halfWidth;
+	} );
+	// for ( var x = 0; x < otherObjects.length; x++ )
+	// {
+	// 	otherObjects[ x ].left = kp - otherObjects[ x ].width / 2;
+	// }
 }
 
 //align all objects to the left edge of key
@@ -2672,6 +2689,138 @@ function hAlignRight ( key, otherObjects )
 	{
 		otherObjects[ x ].left = kp - otherObjects[ x ].width;
 	}
+}
+
+//customize these "alignType" arguments to your hearts desire
+//whatever tickles your brain just right.
+function align ( key, otherObjects, alignType )
+{
+	switch ( alignType )
+	{
+		//center horizontally and vertically
+		case "center":
+			doTheAligning( key, otherObjects, "vc", "hc" );
+			break;
+
+		//center vertically by centerpoints
+		case "vcenter":
+			doTheAligning( key, otherObjects, "vc", undefined );
+			break;
+
+		//align top of objects to top of key
+		case "vtop":
+			doTheAligning( key, otherObjects, "t", undefined );
+			break;
+
+		//align bottom of objects to bottom of key
+		case "vbottom":
+			doTheAligning( key, otherObjects, "b", undefined );
+			break;
+
+		//center horizontally by centerpoints
+		case "hcenter":
+			doTheAligning( key, otherObjects, undefined, "hc" );
+			break;
+
+		//align left of objects to left of key
+		case "hleft":
+			doTheAligning( key, otherObjects, undefined, "l" );
+			break;
+
+		//align right of objects to right of key
+		case "hright":
+			doTheAligning( key, otherObjects, undefined, "r" );
+			break;
+
+		//align bottom left of objects bottom left of key
+		case "botleft":
+			doTheAligning( key, otherObjects, "b", "l" );
+			break;
+
+		//align bottom right of objects bottom right of key
+		case "botright":
+			doTheAligning( key, otherObjects, "b", "r" );
+			break;
+
+		//align top left of objects top left of key
+		case "topleft":
+			doTheAligning( key, otherObjects, "t", "l" );
+			break;
+
+		//align top right of objects top right of key
+		case "topright":
+			doTheAligning( key, otherObjects, "t", "r" );
+			break;
+
+		//align left of objects to left of key, and vertical center of object to verical center of key
+		case "leftcenter":
+			doTheAligning( key, otherObjects, "vc", "l" );
+			break;
+
+		//align right of objects to right of key, and vertical center of object to verical center of key
+		case "rightcenter":
+			doTheAligning( key, otherObjects, "vc", "r" );
+			break;
+
+		//align top of objects to top of key, and horizontal center of object to horizontal center of key
+		case "topcenter":
+			doTheAligning( key, otherObjects, "t", "hc" );
+			break;
+
+		//align bottom of objects to bottom of key, and horizontal center of object to horizontal center of key
+		case "botcenter":
+			doTheAligning( key, otherObjects, "b", "hc" );
+			break;
+
+		default:
+			$.writeln( "Error: Invalid alignType argument.\nValid arguments are: center, vcenter, vtop, vbottom, hcenter, hleft, hright, botleft, botright, topleft, topright, leftcenter, rightcenter, topcenter, botcenter" );
+
+	}
+}
+
+
+function doTheAligning ( key, otherObjects, va, ha )
+{
+	var destBounds = getBoundsData( key );
+	if ( !destBounds )
+	{
+		$.writeln( "Error: No bounds data found for key object" );
+		return undefined;
+	}
+	otherObjects.forEach( function ( item )
+	{
+		var itemBounds = getBoundsData( item );
+		if ( !itemBounds.w ) return;
+		if ( va ) //vertical alignment
+		{
+			switch ( va )
+			{
+				case "vc":
+					item.top = destBounds.vc + itemBounds.hh; //vertical center point of key + half height of item
+					break;
+				case "t":
+					item.top = destBounds.t; //top of key
+					break;
+				case "b":
+					item.top = destBounds.b + itemBounds.h; //bottom of key + height of item
+			}
+
+		}
+		if ( ha ) //horizontal alignment
+		{
+			switch ( ha )
+			{
+				case "hc":
+					item.left = destBounds.hc - itemBounds.hw; //horizontal center point of key - half width of item
+					break;
+				case "l":
+					item.left = destBounds.l; //left of key
+					break;
+				case "r":
+					item.left = destBounds.r - itemBounds.w; //right of key - width of item
+			}
+		}
+	} );
 }
 
 
@@ -3383,89 +3532,183 @@ function getClippedAmount ( group )
 
 //stolen from Josh B Duncan.
 //https://github.com/joshbduncan/adobe-scripts/blob/main/MatchObjects.jsx
-function getVisibleBounds ( object )
+// function getVisibleBounds ( object )
+// {
+// 	var bounds, clippedItem, sandboxItem, sandboxLayer;
+// 	var curItem;
+// 	if ( object.typename == "GroupItem" )
+// 	{
+// 		// if the object is clipped
+// 		if ( object.clipped )
+// 		{
+// 			// check all sub objects to find the clipping path
+// 			for ( var i = 0; i < object.pageItems.length; i++ )
+// 			{
+// 				curItem = object.pageItems[ i ];
+// 				if ( curItem.clipping )
+// 				{
+// 					clippedItem = curItem;
+// 					break;
+// 				} else if ( curItem.typename == "CompoundPathItem" )
+// 				{
+// 					if ( !curItem.pathItems.length )
+// 					{
+// 						// catch compound path items with no pathItems via william dowling @ github.com/wdjsdev
+// 						sandboxLayer = app.activeDocument.layers.add();
+// 						sandboxItem = curItem.duplicate( sandboxLayer );
+// 						app.activeDocument.selection = null;
+// 						sandboxItem.selected = true;
+// 						app.executeMenuCommand( "noCompoundPath" );
+// 						sandboxLayer.hasSelectedArtwork = true;
+// 						app.executeMenuCommand( "group" );
+// 						clippedItem = app.activeDocument.selection[ 0 ];
+// 						break;
+// 					} else if ( curItem.pathItems[ 0 ].clipping )
+// 					{
+// 						clippedItem = curItem;
+// 						break;
+// 					}
+// 				}
+// 			}
+// 			// if the clipping path was found
+// 			if ( clippedItem )
+// 			{
+// 				bounds = clippedItem.geometricBounds;
+// 			}
+// 			else 
+// 			{
+// 				bounds = object.visibleBounds;
+// 			}
+// 			if ( sandboxLayer )
+// 			{
+// 				// eliminate the sandbox layer since it's no longer needed
+// 				sandboxLayer.remove();
+// 				sandboxLayer = undefined;
+// 			}
+
+// 		}
+// 		else
+// 		{
+// 			// if the object is not clipped
+// 			bounds = object.visibleBounds;
+
+// 			//more thorough logic
+// 			var subObjectBounds;
+// 			var allBoundPoints = [ [], [], [], [] ];
+// 			// get the bounds of every object in the group
+// 			for ( var i = 0; i < object.pageItems.length; i++ )
+// 			{
+// 				curItem = object.pageItems[ i ];
+// 				if ( curItem.guides )
+// 				{
+// 					continue;
+// 				}
+// 				subObjectBounds = getVisibleBounds( curItem );
+// 				allBoundPoints[ 0 ].push( subObjectBounds[ 0 ] );
+// 				allBoundPoints[ 1 ].push( subObjectBounds[ 1 ] );
+// 				allBoundPoints[ 2 ].push( subObjectBounds[ 2 ] );
+// 				allBoundPoints[ 3 ].push( subObjectBounds[ 3 ] );
+// 			}
+// 			// determine the groups bounds from it sub object bound points
+// 			bounds = [
+// 				Math.min.apply( Math, allBoundPoints[ 0 ] ),
+// 				Math.max.apply( Math, allBoundPoints[ 1 ] ),
+// 				Math.max.apply( Math, allBoundPoints[ 2 ] ),
+// 				Math.min.apply( Math, allBoundPoints[ 3 ] ),
+// 			];
+// 		}
+// 	}
+// 	else
+// 	{
+// 		bounds = object.visibleBounds;
+// 	}
+// 	return bounds;
+// }
+
+//make a function that digs recursively through a given group
+//locate the largest clipping mask in the group and return its visibleBounds
+//if no clipping mask is found, return the visibleBounds of the group
+function getVisibleBounds ( item )
 {
-	var bounds, clippedItem, sandboxItem, sandboxLayer;
-	var curItem;
-	if ( object.typename == "GroupItem" )
+	if ( !item.typename.match( /groupItem/i ) )
 	{
-		// if the object is clipped
-		if ( object.clipped )
+		return item.visibleBounds;
+	}
+
+	var bounds = [ [], [], [], [] ];
+	dig( item );
+
+	if ( !bounds[ 0 ].length )
+	{
+		return item.visibleBounds;
+	}
+
+	//find the largest bounds by area
+	var outerBounds = [];
+	outerBounds[ 0 ] = Math.min.apply( Math, bounds[ 0 ] );
+	outerBounds[ 1 ] = Math.max.apply( Math, bounds[ 1 ] );
+	outerBounds[ 2 ] = Math.max.apply( Math, bounds[ 2 ] );
+	outerBounds[ 3 ] = Math.min.apply( Math, bounds[ 3 ] );
+	return outerBounds;
+
+	function dig ( subItem )
+	{
+		var textClip = false;
+		if ( subItem.guides ) { return; }
+		if ( subItem.typename.match( /groupitem/i ) )
 		{
-			// check all sub objects to find the clipping path
-			for ( var i = 0; i < object.pageItems.length; i++ )
+			if ( subItem.clipped )
 			{
-				curItem = object.pageItems[ i ];
-				if ( curItem.clipping )
+				var g;
+				if ( subItem.pathItems.length && subItem.pathItems[ 0 ].clipping )
 				{
-					clippedItem = curItem;
-					break;
-				} else if ( curItem.typename == "CompoundPathItem" )
-				{
-					if ( !curItem.pathItems.length )
-					{
-						// catch compound path items with no pathItems via william dowling @ github.com/wdjsdev
-						sandboxLayer = app.activeDocument.layers.add();
-						sandboxItem = curItem.duplicate( sandboxLayer );
-						app.activeDocument.selection = null;
-						sandboxItem.selected = true;
-						app.executeMenuCommand( "noCompoundPath" );
-						sandboxLayer.hasSelectedArtwork = true;
-						app.executeMenuCommand( "group" );
-						clippedItem = app.activeDocument.selection[ 0 ];
-						break;
-					} else if ( curItem.pathItems[ 0 ].clipping )
-					{
-						clippedItem = curItem;
-						break;
-					}
-				} else
-				{
-					clippedItem = curItem;
-					break;
+					var g = subItem.pathItems[ 0 ];
 				}
-			}
-			bounds = clippedItem.geometricBounds;
-			if ( sandboxLayer )
-			{
-				// eliminate the sandbox layer since it's no longer needed
-				sandboxLayer.remove();
-				sandboxLayer = undefined;
+				else if ( subItem.compoundPathItems.length )
+				{
+					var g = subItem.compoundPathItems[ 0 ];
+					if ( !g.pathItems.length )
+					{
+						g = cleanupCompoundPath( g );
+					}
+					if ( !g.pathItems.length || !g.pathItems[ 0 ].clipping )
+					{
+						g = undefined;
+					}
+				}
+
+				if ( g )
+				{
+					bounds[ 0 ].push( g.visibleBounds[ 0 ] );
+					bounds[ 1 ].push( g.visibleBounds[ 1 ] );
+					bounds[ 2 ].push( g.visibleBounds[ 2 ] );
+					bounds[ 3 ].push( g.visibleBounds[ 3 ] );
+				}
+				return;
 			}
 
+			afc( subItem ).forEach( function ( g )
+			{
+				if ( textClip ) { return; }
+				if ( subItem.clipped && g.typename.match( /textframe/i ) )
+				{
+					bounds[ 0 ].push( g.visibleBounds[ 0 ] );
+					bounds[ 1 ].push( g.visibleBounds[ 1 ] );
+					bounds[ 2 ].push( g.visibleBounds[ 2 ] );
+					bounds[ 3 ].push( g.visibleBounds[ 3 ] );
+					textClip = true;
+				}
+				dig( g );
+			} );
 		}
-		else
+		else 
 		{
-			// if the object is not clipped
-			bounds = object.visibleBounds;
-
-			//more thorough logic
-			var subObjectBounds;
-			var allBoundPoints = [ [], [], [], [] ];
-			// get the bounds of every object in the group
-			for ( var i = 0; i < object.pageItems.length; i++ )
-			{
-				curItem = object.pageItems[ i ];
-				subObjectBounds = getVisibleBounds( curItem );
-				allBoundPoints[ 0 ].push( subObjectBounds[ 0 ] );
-				allBoundPoints[ 1 ].push( subObjectBounds[ 1 ] );
-				allBoundPoints[ 2 ].push( subObjectBounds[ 2 ] );
-				allBoundPoints[ 3 ].push( subObjectBounds[ 3 ] );
-			}
-			// determine the groups bounds from it sub object bound points
-			bounds = [
-				Math.min.apply( Math, allBoundPoints[ 0 ] ),
-				Math.max.apply( Math, allBoundPoints[ 1 ] ),
-				Math.max.apply( Math, allBoundPoints[ 2 ] ),
-				Math.min.apply( Math, allBoundPoints[ 3 ] ),
-			];
+			bounds[ 0 ].push( subItem.visibleBounds[ 0 ] );
+			bounds[ 1 ].push( subItem.visibleBounds[ 1 ] );
+			bounds[ 2 ].push( subItem.visibleBounds[ 2 ] );
+			bounds[ 3 ].push( subItem.visibleBounds[ 3 ] );
 		}
 	}
-	else
-	{
-		bounds = object.visibleBounds;
-	}
-	return bounds;
 }
 
 function getBoundsData ( item )
@@ -3598,7 +3841,7 @@ function cleanupCompoundPath ( item )
 	{
 		doc.selection = cPaths;
 		app.executeMenuCommand( "noCompoundPath" );
-		afc( sboxLayer, "groupItems" ).forEach( function ( g ) { ungroup( g, g.parent, 0 ) } )
+		// afc( sboxLayer, "groupItems" ).forEach( function ( g ) { ungroup( g, sboxLayer, 0 ) } )
 		cPaths = afc( sboxLayer, "compoundPathItems" );
 	}
 
@@ -3627,6 +3870,35 @@ function cleanupCompoundPath ( item )
 
 	sboxLayer.remove();
 	return resultingItem;
+}
+
+function findBackgroundPath ( item )
+{
+	var bgPath;
+
+	if ( item.typename === "PathItem" )
+	{
+		return item;
+	}
+	else if ( item.typename === "GroupItem" )
+	{
+		dig( item )
+	}
+
+	return bgPath;
+
+	function dig ( subItem )
+	{
+		var lastItem = subItem.pageItems[ subItem.pageItems.length - 1 ];
+		if ( lastItem.typename.match( /pathitem/i ) && lastItem.width > ( item.width * .4 ) )
+		{
+			bgPath = lastItem;
+		}
+		else if ( lastItem.typename === "GroupItem" )
+		{
+			dig( lastItem );
+		}
+	}
 }
 
 
@@ -3703,6 +3975,7 @@ function curlData ( url, arg )
 {
 	var curlTimer = new Stopwatch();
 	curlTimer.logStart();
+	arg = arg.replace( /\s*/g, "" );
 	log.h( "Beginning execution of curlData(" + url + arg + ")" );
 	var result, status = "empty";;
 	var htmlRegex = /<html>/gmi;
@@ -3788,7 +4061,7 @@ function curlData ( url, arg )
 	var currentExecutorCalls = 0;
 
 	var checkDelay = 200;
-	var numberOfChecks = 200;
+	var numberOfChecks = 25;
 	var totalChecks = 0;
 
 	var parseFailResults = 0;
@@ -3805,6 +4078,8 @@ function curlData ( url, arg )
 		//check the data
 		for ( var a = 0; a < numberOfChecks && status !== "valid"; a++ )
 		{
+			log.l( "on check " + a + " of " + numberOfChecks + ": status = " + status );
+			log.l( readDataFile() )
 			if ( status != "valid" )
 			{
 				checkData()
@@ -4105,6 +4380,39 @@ function rotatePieces ( rotationSets, parentLayer )
 
 
 }
+
+
+// function exportJpg ( outFilePath, bounds, resolution )
+// {
+// 	var clipBounds = bounds;
+// 	var imgCapOptions = new ImageCaptureOptions();
+// 	imgCapOptions.resolution = resolution;
+// 	imgCapOptions.antiAliasing = true;
+
+// 	app.activeDocument.imageCapture( File( outFilePath ), clipBounds, imgCapOptions );
+
+// }
+
+
+function exportJpg ( outFilePath, artboardIndex )
+{
+	var doc = app.activeDocument;
+	var prevActiveAbIndex = doc.artboards.getActiveArtboardIndex();
+	doc.artboards.setActiveArtboardIndex( artboardIndex );
+
+	var jpgExportType = ExportType.JPEG;
+
+	var jpgExportOptions = new ExportOptionsJPEG();
+	jpgExportOptions.verticalScale = 250;
+	jpgExportOptions.horizontalScale = 250;
+	jpgExportOptions.qualitySetting = 100;
+	jpgExportOptions.artBoardClipping = true;
+
+	doc.exportFile( File( outFilePath ), jpgExportType, jpgExportOptions );
+
+	doc.artboards.setActiveArtboardIndex( prevActiveAbIndex );
+}
+
 
 
 //
@@ -5059,6 +5367,97 @@ const CLEANUP_SWATCHES_ACTION_STRING =
 
 	]
 
+const OFFSET_PATH_ACTION_STRING =
+	[
+		"/version 3",
+		"/name [ 6",
+		"	6f6666736574",
+		"]",
+		"/isOpen 1",
+		"/actionCount 1",
+		"/action-1 {",
+		"	/name [ 6",
+		"		6f6666736574",
+		"	]",
+		"	/keyIndex 0",
+		"	/colorIndex 0",
+		"	/isOpen 1",
+		"	/eventCount 1",
+		"	/event-1 {",
+		"		/useRulersIn1stQuadrant 0",
+		"		/internalName (ai_plugin_offset)",
+		"		/localizedName [ 11",
+		"			4f66667365742050617468",
+		"		]",
+		"		/isOpen 1",
+		"		/isOn 1",
+		"		/hasDialog 1",
+		"		/showDialog 0",
+		"		/parameterCount 3",
+		"		/parameter-1 {",
+		"			/key 1868985204",
+		"			/showInPalette 4294967295",
+		"			/type (unit real)",
+		"			/value **OFFSET_VALUE**",
+		"			/unit 592476268",
+		"		}",
+		"		/parameter-2 {",
+		"			/key 1835627634",
+		"			/showInPalette 4294967295",
+		"			/type (real)",
+		"			/value 4.0",
+		"		}",
+		"		/parameter-3 {",
+		"			/key 1785623664",
+		"			/showInPalette 4294967295",
+		"			/type (enumerated)",
+		"			/name [ 5",
+		"				4d69746572",
+		"			]",
+		"			/value 2",
+		"		}",
+		"	}",
+		"}"
+	];
+
+
+const LUMINOSITY_ACTION_STRING =
+	[ "/version 3",
+		"/name [ 10",
+		"	6c756d696e6f73697479",
+		"]",
+		"/isOpen 1",
+		"/actionCount 1",
+		"/action-1 {",
+		"	/name [ 10",
+		"		6c756d696e6f73697479",
+		"	]",
+		"	/keyIndex 0",
+		"	/colorIndex 0",
+		"	/isOpen 1",
+		"	/eventCount 1",
+		"	/event-1 {",
+		"		/useRulersIn1stQuadrant 0",
+		"		/internalName (ai_plugin_transparency)",
+		"		/localizedName [ 12",
+		"			5472616e73706172656e6379",
+		"		]",
+		"		/isOpen 0",
+		"		/isOn 1",
+		"		/hasDialog 0",
+		"		/parameterCount 1",
+		"		/parameter-1 {",
+		"			/key 1836016741",
+		"			/showInPalette 4294967295",
+		"			/type (enumerated)",
+		"			/name [ 10",
+		"				4c756d696e6f73697479",
+		"			]",
+		"			/value 15",
+		"		}",
+		"	}",
+		"}"
+	]
 
 
 //
@@ -5111,6 +5510,7 @@ var BOOMBAH_APPROVED_COLORS =
 		"Gray B",
 		"Gray 2 B",
 		"Steel B",
+		"Steel 2 B",
 		"Navy B",
 		"Navy 2 B",
 		"Royal Blue B",
@@ -5128,6 +5528,7 @@ var BOOMBAH_APPROVED_COLORS =
 		"Red B",
 		"Cardinal B",
 		"Maroon B",
+		"Maroon 2 B",
 		"Hot Pink B",
 		"Pink B",
 		"Soft Pink B",
@@ -5210,12 +5611,17 @@ var BOOMBAH_PRODUCTION_COLORS =
 		'Info B',
 		'cutline',
 		'CUTLINE',
+		'CALLOUT',
 		'SEW LINE',
 		'SEW LINES',
 		'SEWLINE',
 		'EDGE',
 		'EDGES',
 		'Jock Tag B',
+		"Rhinestone Shine 1",
+		"Rhinestone Shine 2",
+		"Rhinestone Shadow",
+		"FLAG YELLOW"
 	];
 
 var BUILDER_COLOR_CODES = {
@@ -5240,7 +5646,7 @@ var BUILDER_COLOR_CODES = {
 	"KG": "Kelly Green B",
 	"LG": "Lime Green B",
 	"MG": "Magenta 2 B",
-	"MRN": "Maroon B",
+	"MRN": "Maroon 2 B",
 	"MN": "MINT B",
 	"N": "Navy 2 B",
 	"NC": "NEON CORAL B",
@@ -5251,7 +5657,7 @@ var BUILDER_COLOR_CODES = {
 	"RD": "Red B",
 	"RB": "Royal Blue B",
 	"SP": "Soft Pink B",
-	"STL": "Steel B",
+	"STL": "Steel 2 B",
 	"TL": "Teal B",
 	"TO": "Texas Orange B",
 	"TW": "Twitch B",
@@ -5298,1037 +5704,887 @@ var BUILDER_COLOR_CODES = {
 
 var BOOMBAH_APPROVED_COLOR_VALUES =
 {
-	"[Registration]":
-	{
-		"cyan": 100,
-		"magenta": 100,
-		"yellow": 100,
-		"black": 100
+	"Black B": {
+		"cyan": 72.0000028610229,
+		"magenta": 67.0000016689301,
+		"yellow": 62.9999995231628,
+		"black": 72.0000028610229
 	},
-	"Black B":
-	{
-		"cyan": 72,
-		"magenta": 67,
-		"yellow": 63,
-		"black": 72
-	},
-	"White B":
-	{
+	"White B": {
 		"cyan": 0,
 		"magenta": 0,
 		"yellow": 0,
 		"black": 0
 	},
-	"Gray B":
-	{
-		"cyan": 44,
-		"magenta": 40,
-		"yellow": 41,
-		"black": 3
+	"Gray B": {
+		"cyan": 43.9999997615814,
+		"magenta": 40.0000005960464,
+		"yellow": 40.9999996423721,
+		"black": 2.99999993294477
 	},
-	"Gray 2 B":
-	{
-		"cyan": 43,
-		"magenta": 30,
-		"yellow": 26,
+	"Gray 2 B": {
+		"cyan": 42.9694056510925,
+		"magenta": 29.8344373703003,
+		"yellow": 25.6137937307358,
 		"black": 0
 	},
-	"Steel B":
-	{
-		"cyan": 53,
-		"magenta": 49,
-		"yellow": 43,
-		"black": 10
+	"Steel B": {
+		"cyan": 52.9999971389771,
+		"magenta": 49.0000009536743,
+		"yellow": 43.0000007152557,
+		"black": 10.0000001490116
 	},
-	"Navy B":
-	{
-		"cyan": 83,
-		"magenta": 73,
-		"yellow": 53,
-		"black": 61
+	"Steel 2 B": {
+		"cyan": 52.9999971389771,
+		"magenta": 49.0000009536743,
+		"yellow": 43.0000007152557,
+		"black": 10.0000001490116
 	},
-	"Navy 2 B":
-	{
+	"Charcoal B": {
+		"cyan": 65.389484167099,
+		"magenta": 55.8037638664246,
+		"yellow": 52.3552298545837,
+		"black": 27.9301136732101
+	},
+	"Charcoal 2 B": {
+		"cyan": 70.9999978542328,
+		"magenta": 64.9999976158142,
+		"yellow": 57.9999983310699,
+		"black": 52.9999971389771
+	},
+	"Navy B": {
+		"cyan": 82.9999983310699,
+		"magenta": 73.0000019073486,
+		"yellow": 52.9999971389771,
+		"black": 61.0000014305115
+	},
+	"Navy 2 B": {
 		"cyan": 100,
-		"magenta": 87,
-		"yellow": 42,
-		"black": 53
+		"magenta": 86.9474291801453,
+		"yellow": 42.2125577926636,
+		"black": 52.6726126670837
 	},
-	"Royal Blue B":
-	{
+	"Royal Blue B": {
 		"cyan": 100,
-		"magenta": 89,
-		"yellow": 33,
-		"black": 23
+		"magenta": 88.9999985694885,
+		"yellow": 33.0000013113022,
+		"black": 23.0000004172325
 	},
-	"Columbia B":
-	{
-		"cyan": 68,
-		"magenta": 30,
-		"yellow": 5,
+	"Columbia B": {
+		"cyan": 68.0000007152557,
+		"magenta": 30.0000011920929,
+		"yellow": 5.00000007450581,
 		"black": 0
 	},
-	"Cyan B":
-	{
-		"cyan": 88,
-		"magenta": 48,
-		"yellow": 15,
-		"black": 1
+	"Cyan B": {
+		"cyan": 88.3000016212463,
+		"magenta": 48.0300009250641,
+		"yellow": 14.6300002932549,
+		"black": 0.71000000461936
 	},
-	"Teal B":
-	{
-		"cyan": 87,
-		"magenta": 40,
-		"yellow": 44,
-		"black": 11
+	"Teal B": {
+		"cyan": 87.0000004768372,
+		"magenta": 40.0000005960464,
+		"yellow": 43.9999997615814,
+		"black": 10.9999999403954
 	},
-	"Dark Green B":
-	{
-		"cyan": 85,
-		"magenta": 48,
-		"yellow": 76,
-		"black": 54
+	"Dark Green B": {
+		"cyan": 88.9999985694885,
+		"magenta": 55.0000011920929,
+		"yellow": 100,
+		"black": 44.9999988079071
 	},
-	"Kelly Green B":
-	{
-		"cyan": 94,
-		"magenta": 26,
-		"yellow": 87,
-		"black": 13
+	"Kelly Green B": {
+		"cyan": 93.9999997615814,
+		"magenta": 25.9999990463257,
+		"yellow": 87.0000004768372,
+		"black": 12.9999995231628
 	},
-	"Lime Green B":
-	{
-		"cyan": 51,
+	"Lime Green B": {
+		"cyan": 50.9999990463257,
 		"magenta": 0,
-		"yellow": 87,
+		"yellow": 87.0000004768372,
 		"black": 0
 	},
-	"Yellow B":
-	{
+	"Yellow B": {
 		"cyan": 0,
 		"magenta": 0,
 		"yellow": 100,
 		"black": 0
 	},
-	"Optic Yellow B":
-	{
-		"cyan": 22,
-		"magenta": 2,
-		"yellow": 98,
+	"Optic Yellow B": {
+		"cyan": 21.9999998807907,
+		"magenta": 1.99999995529652,
+		"yellow": 98.0000019073486,
 		"black": 0
 	},
-	"Athletic Gold B":
-	{
-		"cyan": 5,
-		"magenta": 40,
-		"yellow": 95,
+	"Athletic Gold B": {
+		"cyan": 5.00000007450581,
+		"magenta": 40.0000005960464,
+		"yellow": 94.9999988079071,
 		"black": 0
 	},
-	"Vegas Gold B":
-	{
-		"cyan": 26,
-		"magenta": 31,
-		"yellow": 57,
-		"black": 1
+	"Vegas Gold B": {
+		"cyan": 25.9999990463257,
+		"magenta": 31.0000002384186,
+		"yellow": 56.9999992847443,
+		"black": 0.99999997764826
 	},
-	"Orange B":
-	{
-		"cyan": 11,
-		"magenta": 85,
+	"Orange B": {
+		"cyan": 10.9999999403954,
+		"magenta": 85.0000023841858,
 		"yellow": 100,
-		"black": 2
+		"black": 1.99999995529652
 	},
-	"Texas Orange B":
-	{
-		"cyan": 27,
-		"magenta": 78,
-		"yellow": 99,
-		"black": 20
+	"Texas Orange B": {
+		"cyan": 27.0000010728836,
+		"magenta": 77.9999971389771,
+		"yellow": 99.0000009536743,
+		"black": 20.0000002980232
 	},
-	"Red B":
-	{
-		"cyan": 22,
+	"Red B": {
+		"cyan": 21.9999998807907,
 		"magenta": 100,
-		"yellow": 93,
-		"black": 16
+		"yellow": 93.0000007152557,
+		"black": 15.9999996423721
 	},
-	"Cardinal B":
-	{
-		"cyan": 35,
-		"magenta": 95,
-		"yellow": 71,
-		"black": 44
+	"Cardinal B": {
+		"cyan": 34.9999994039536,
+		"magenta": 94.9999988079071,
+		"yellow": 70.9999978542328,
+		"black": 43.9999997615814
 	},
-	"Maroon B":
-	{
+	"Maroon B": {
 		"cyan": 50,
-		"magenta": 76,
-		"yellow": 61,
-		"black": 57
+		"magenta": 75.9999990463257,
+		"yellow": 61.0000014305115,
+		"black": 56.9999992847443
 	},
-	"Hot Pink B":
-	{
-		"cyan": 35,
-		"magenta": 98,
-		"yellow": 31,
-		"black": 5
+	"Maroon 2 B": {
+		"cyan": 50,
+		"magenta": 75.9999990463257,
+		"yellow": 61.0000014305115,
+		"black": 56.9999992847443
 	},
-	"Pink B":
-	{
-		"cyan": 11,
-		"magenta": 71,
-		"yellow": 17,
+	"Pink B": {
+		"cyan": 10.9999999403954,
+		"magenta": 70.9999978542328,
+		"yellow": 17.0000001788139,
 		"black": 0
 	},
-	"Soft Pink B":
-	{
-		"cyan": 4,
-		"magenta": 30,
-		"yellow": 1,
+	"Hot Pink B": {
+		"cyan": 17.0000001788139,
+		"magenta": 98.0895698070526,
+		"yellow": 34.9999994039536,
+		"black": 15.9999996423721
+	},
+	"Soft Pink B": {
+		"cyan": 3.99999991059303,
+		"magenta": 30.0000011920929,
+		"yellow": 0.99999997764826,
 		"black": 0
 	},
-	"Purple B":
-	{
-		"cyan": 91,
-		"magenta": 99,
-		"yellow": 27,
-		"black": 15
+	"Purple B": {
+		"cyan": 91.0000026226044,
+		"magenta": 99.0000009536743,
+		"yellow": 27.0000010728836,
+		"black": 15.0000005960464
 	},
-	"Flesh B":
-	{
-		"cyan": 7,
-		"magenta": 17,
-		"yellow": 34,
+	"Flesh B": {
+		"cyan": 7.00000002980232,
+		"magenta": 17.0000001788139,
+		"yellow": 34.0000003576279,
 		"black": 0
 	},
-	"Dark Flesh B":
-	{
-		"cyan": 24,
-		"magenta": 41,
-		"yellow": 51,
-		"black": 1
+	"Brown B": {
+		"cyan": 43.0000007152557,
+		"magenta": 70.9999978542328,
+		"yellow": 81.0000002384186,
+		"black": 50.9999990463257
 	},
-	"Brown B":
-	{
-		"cyan": 43,
-		"magenta": 71,
-		"yellow": 81,
-		"black": 51
+	"FLO ORANGE B": {
+		"cyan": 1.31000000983477,
+		"magenta": 72.3699986934662,
+		"yellow": 98.1500029563904,
+		"black": 0.06999999750406
 	},
-	"FLO ORANGE B":
-	{
-		"cyan": 1,
-		"magenta": 72,
-		"yellow": 98,
-		"black": 0
-	},
-	"FLO YELLOW B":
-	{
-		"cyan": 3,
+	"FLO YELLOW B": {
+		"cyan": 2.99999993294477,
 		"magenta": 0,
 		"yellow": 100,
-		"black": 3
+		"black": 2.99999993294477
 	},
-	"FLO PINK B":
-	{
+	"FLO PINK B": {
 		"cyan": 0,
 		"magenta": 100,
 		"yellow": 0,
 		"black": 0
 	},
-	"Twitch B":
-	{
-		"cyan": 15,
+	"Twitch B": {
+		"cyan": 21.9999998807907,
 		"magenta": 0,
-		"yellow": 97,
+		"yellow": 96.5799987316132,
 		"black": 0
 	},
-	"MINT B":
-	{
-		"cyan": 57,
+	"MINT B": {
+		"cyan": 57.3800027370453,
 		"magenta": 0,
-		"yellow": 62,
+		"yellow": 62.2399985790253,
 		"black": 0
 	},
-	"NEON CORAL B":
-	{
+	"NEON CORAL B": {
 		"cyan": 0,
-		"magenta": 82,
-		"yellow": 57,
-		"black": 0
+		"magenta": 82.3300004005432,
+		"yellow": 56.8700015544891,
+		"black": 0.01999999949476
 	},
-	"FLAME B":
-	{
+	"FLAME B": {
 		"cyan": 0,
-		"magenta": 87,
+		"magenta": 87.0000004768372,
 		"yellow": 100,
 		"black": 0
 	},
-	"Magenta B":
-	{
-		"cyan": 7,
+	"Magenta 2 B": {
+		"cyan": 20.0000002980232,
 		"magenta": 100,
-		"yellow": 64,
-		"black": 26
+		"yellow": 64.9999976158142,
+		"black": 0
 	},
-	"Magenta 2 B":
-	{
-		"cyan": 12,
+	"Magenta B": {
+		"cyan": 7.00000002980232,
 		"magenta": 100,
-		"yellow": 36,
+		"yellow": 63.9999985694885,
+		"black": 25.9999990463257
+	},
+	"BRIGHT PURPLE B": {
+		"cyan": 40.3899997472763,
+		"magenta": 67.4600005149841,
+		"yellow": 1.36000001803041,
 		"black": 0
 	},
-	"BRIGHT PURPLE B":
-	{
-		"cyan": 40,
-		"magenta": 67,
-		"yellow": 1,
+	"Dark Charcoal B": {
+		"cyan": 64.9999976158142,
+		"magenta": 56.9999992847443,
+		"yellow": 56.0000002384186,
+		"black": 34.0000003576279
+	},
+	"Dark Flesh B": {
+		"cyan": 20.0000002980232,
+		"magenta": 56.9999992847443,
+		"yellow": 68.9999997615814,
+		"black": 5.99999986588955
+	},
+	"Khaki B": {
+		"cyan": 29.8771619796753,
+		"magenta": 33.1212311983109,
+		"yellow": 43.3875024318695,
+		"black": 0.51880674436688
+	},
+	"Olive Drab B": {
+		"cyan": 60.0732386112213,
+		"magenta": 42.6977932453156,
+		"yellow": 87.2495591640472,
+		"black": 28.4428149461746
+	},
+	"Wolf Gray B": {
+		"cyan": 25.9999990463257,
+		"magenta": 18.0000007152557,
+		"yellow": 15.0000005960464,
 		"black": 0
 	},
-	"Dark Charcoal B":
-	{
-		"cyan": 65,
-		"magenta": 57,
-		"yellow": 56,
-		"black": 34
-	},
-	"Charcoal B":
-	{
-		"cyan": 65,
-		"magenta": 55,
-		"yellow": 52,
-		"black": 28
-
-	},
-	"Charcoal 2 B":
-	{
-		"cyan": 71,
-		"magenta": 65,
-		"yellow": 58,
-		"black": 53
-
-	},
-	"Fuschia Neon B":
-	{
-		"cyan": 39.62,
-		"magenta": 92.28,
-		"yellow": 0,
+	"Arctic Gray B": {
+		"cyan": 17.1877607703209,
+		"magenta": 11.9337737560272,
+		"yellow": 10.2455161511898,
 		"black": 0
 	},
-	"Fuschia B":
-	{
-		"cyan": 39.62,
-		"magenta": 92.28,
-		"yellow": 0,
-		"black": 0
-	},
-	"Khaki B":
-	{
-		"cyan": 29.88,
-		"magenta": 33.12,
-		"yellow": 43.39,
-		"black": 0.52
-	},
-	"Wolf Gray B":
-	{
-		"cyan": 25.999,
-		"magenta": 18,
-		"yellow": 15,
-		"black": 0
-	},
-	"Arctic Gray B":
-	{
-		"cyan": 17.187,
-		"magenta": 11.933,
-		"yellow": 10.245,
-		"black": 0
-	},
-	"Storm B":
-	{
-		"cyan": 78.515,
-		"magenta": 61.328,
+	"Storm B": {
+		"cyan": 78.515625,
+		"magenta": 61.328125,
 		"yellow": 50,
-		"black": 35.546
+		"black": 35.546875
 	},
-	"Slate B":
-	{
-		"cyan": 67.186,
-		"magenta": 52.355,
-		"yellow": 44.663,
-		"black": 17.541
+	"Slate B": {
+		"cyan": 67.1869933605194,
+		"magenta": 52.3552298545837,
+		"yellow": 44.6631550788879,
+		"black": 17.5417706370354
 	},
-	"Gun Metal B":
-	{
-		"cyan": 57.918,
-		"magenta": 47.446,
-		"yellow": 46.933,
-		"black": 13.687
+	"Gun Metal B": {
+		"cyan": 46.9999998807907,
+		"magenta": 40.0000005960464,
+		"yellow": 47.9999989271164,
+		"black": 54.0000021457672
 	},
-	"Steel B copy":
-	{
-		"cyan": 52.999,
-		"magenta": 49,
-		"yellow": 43,
-		"black": 10
+	"Foliage B": {
+		"cyan": 60.7232749462128,
+		"magenta": 41.8554961681366,
+		"yellow": 44.1260367631912,
+		"black": 9.28664058446884
 	},
-	"Foliage B":
-	{
-		"cyan": 60.723,
-		"magenta": 41.855,
-		"yellow": 44.126,
-		"black": 9.286
-	},
-	"Cobalt B":
-	{
+	"Cobalt B": {
 		"cyan": 100,
-		"magenta": 98.626,
-		"yellow": 17.767,
-		"black": 5.581
+		"magenta": 98.6266851425171,
+		"yellow": 17.7676036953926,
+		"black": 5.5817499756813
 	},
-	"Azure B":
-	{
+	"Azure B": {
 		"cyan": 100,
-		"magenta": 44.999,
+		"magenta": 75.9999990463257,
 		"yellow": 0,
-		"black": 28.999
+		"black": 20.9999993443489
 	},
-	"Peacock B":
-	{
-		"cyan": 96.932,
-		"magenta": 44.077,
-		"yellow": 57.46,
-		"black": 27.078
+	"Peacock B": {
+		"cyan": 96.9329357147217,
+		"magenta": 44.0772086381912,
+		"yellow": 57.4608981609344,
+		"black": 27.0786583423615
 	},
-	"Tropical Green B":
-	{
-		"cyan": 97.476,
-		"magenta": 26.486,
-		"yellow": 54.433,
-		"black": 6.842
+	"Tropical Green B": {
+		"cyan": 97.4761545658112,
+		"magenta": 26.4866083860397,
+		"yellow": 54.4335067272186,
+		"black": 6.84214532375336
 	},
-	"Turquoise B":
-	{
-		"cyan": 64.831,
+	"Turquoise B": {
+		"cyan": 62.0000004768372,
+		"magenta": 9.00000035762787,
+		"yellow": 32.2087407112122,
+		"black": 0
+	},
+	"Aqua B": {
+		"cyan": 66.030365228653,
 		"magenta": 0,
-		"yellow": 32.208,
+		"yellow": 21.4236661791801,
 		"black": 0
 	},
-	"Aqua B":
-	{
-		"cyan": 66.03,
+	"Ice Blue B": {
+		"cyan": 40.9999996423721,
+		"magenta": 10.9999999403954,
+		"yellow": 10.9999999403954,
+		"black": 9.00000035762787
+	},
+	"Desert B": {
+		"cyan": 26.7704278230667,
+		"magenta": 21.6037228703499,
+		"yellow": 43.9093589782715,
+		"black": 0
+	},
+	"Teak Brown B": {
+		"cyan": 39.4384652376175,
+		"magenta": 48.020139336586,
+		"yellow": 65.2826726436615,
+		"black": 13.2143124938011
+	},
+	"Oak Brown B": {
+		"cyan": 45.4352617263794,
+		"magenta": 62.0000004768372,
+		"yellow": 75.0576019287109,
+		"black": 38.9999985694885
+	},
+	"Tree Bark B": {
+		"cyan": 56.2218606472015,
+		"magenta": 57.7935397624969,
+		"yellow": 81.9999992847443,
+		"black": 56.0000002384186
+	},
+	"Sand B": {
+		"cyan": 39.682611823082,
+		"magenta": 34.406042098999,
+		"yellow": 71.5907514095306,
+		"black": 6.13412670791149
+	},
+	"Coyote B": {
+		"cyan": 43.0000007152557,
+		"magenta": 38.0559980869293,
+		"yellow": 91.0000026226044,
+		"black": 15.9999996423721
+	},
+	"Kiwi B": {
+		"cyan": 40.6286716461182,
 		"magenta": 0,
-		"yellow": 21.423,
+		"yellow": 81.5091133117676,
 		"black": 0
 	},
-	"Ice Blue B":
-	{
-		"cyan": 33,
-		"magenta": 10.999,
-		"yellow": 10.999,
-		"black": 9
+	"Forest Green B": {
+		"cyan": 72.7077126502991,
+		"magenta": 50.8049130439758,
+		"yellow": 87.2007310390472,
+		"black": 59.7619533538818
 	},
-	"Desert B":
-	{
-		"cyan": 26.77,
-		"magenta": 21.603,
-		"yellow": 43.909,
-		"black": 0
+	"Mulch B": {
+		"cyan": 63.8971507549286,
+		"magenta": 66.1249697208405,
+		"yellow": 63.4668469429016,
+		"black": 61.6693317890167
 	},
-	"Khaki B":
-	{
-		"cyan": 29.877,
-		"magenta": 33.121,
-		"yellow": 43.387,
-		"black": 0.518
+	"Plum B": {
+		"cyan": 37.9999995231628,
+		"magenta": 79.0000021457672,
+		"yellow": 7.99999982118607,
+		"black": 64.9999976158142
 	},
-	"Teak Brown B":
-	{
-		"cyan": 39.438,
-		"magenta": 48.02,
-		"yellow": 65.282,
-		"black": 13.214
+	"Eggplant B": {
+		"cyan": 33.0000013113022,
+		"magenta": 62.9999995231628,
+		"yellow": 25,
+		"black": 49.0000009536743
 	},
-	"Oak Brown B":
-	{
-		"cyan": 45.435,
-		"magenta": 58.782,
-		"yellow": 75.057,
-		"black": 34.668
+	"Wine B": {
+		"cyan": 47.614249587059,
+		"magenta": 91.0612642765045,
+		"yellow": 49.6559083461761,
+		"black": 41.1047518253326
 	},
-	"Tree Bark B":
-	{
-		"cyan": 56.221,
-		"magenta": 57.793,
-		"yellow": 79.143,
-		"black": 51.497
-	},
-	"Sand B":
-	{
-		"cyan": 39.682,
-		"magenta": 34.406,
-		"yellow": 71.59,
-		"black": 6.134
-	},
-	"Coyote B":
-	{
-		"cyan": 45.77,
-		"magenta": 38.055,
-		"yellow": 90.24,
-		"black": 13.464
-	},
-	"Olive Drab B":
-	{
-		"cyan": 60.073,
-		"magenta": 42.697,
-		"yellow": 87.249,
-		"black": 28.442
-	},
-	"Kiwi B":
-	{
-		"cyan": 40.628,
-		"magenta": 0,
-		"yellow": 81.509,
-		"black": 0
-	},
-	"Forest Green B":
-	{
-		"cyan": 72.707,
-		"magenta": 50.804,
-		"yellow": 87.2,
-		"black": 59.761
-	},
-	"Mulch B":
-	{
-		"cyan": 63.897,
-		"magenta": 66.124,
-		"yellow": 63.466,
-		"black": 61.669
-	},
-	"Plum B":
-	{
-		"cyan": 37.999,
-		"magenta": 79,
-		"yellow": 7.999,
-		"black": 64.999
-	},
-	"Eggplant B":
-	{
-		"cyan": 33,
-		"magenta": 62.999,
-		"yellow": 27,
-		"black": 64.999
-	},
-	"Wine B":
-	{
-		"cyan": 47.614,
-		"magenta": 91.061,
-		"yellow": 49.655,
-		"black": 41.104
-	},
-	"Sangria B":
-	{
+	"Sangria B": {
 		"cyan": 0,
-		"magenta": 98,
-		"yellow": 40,
-		"black": 62
+		"magenta": 98.0000019073486,
+		"yellow": 40.0000005960464,
+		"black": 62.0000004768372
 	},
-	"Violet B":
-	{
-		"cyan": 81.493,
+	"Violet B": {
+		"cyan": 81.4938545227051,
 		"magenta": 100,
-		"yellow": 11.581,
-		"black": 1.724
+		"yellow": 11.5815974771976,
+		"black": 1.7242694273591
 	},
-	"Amethyst Orchid B":
-	{
-		"cyan": 53.099,
-		"magenta": 68.337,
+	"Amethyst Orchid B": {
+		"cyan": 53.0998647212982,
+		"magenta": 68.3375239372253,
 		"yellow": 0,
 		"black": 0
 	},
-	"Dusty Rose B":
-	{
-		"cyan": 11.999,
-		"magenta": 50.999,
-		"yellow": 38.999,
-		"black": 28
+	"Fuschia B": {
+		"cyan": 39.6185219287872,
+		"magenta": 92.2789335250854,
+		"yellow": 0,
+		"black": 0
 	},
-	"Hot Coral B":
-	{
+	"Dusty Rose B": {
+		"cyan": 11.9999997317791,
+		"magenta": 49.0000009536743,
+		"yellow": 23.0000004172325,
+		"black": 12.9999995231628
+	},
+	"Hot Coral B": {
 		"cyan": 0,
-		"magenta": 82.999,
-		"yellow": 66,
+		"magenta": 80.0000011920929,
+		"yellow": 56.0000002384186,
 		"black": 0
 	},
-	"Poppy B":
-	{
-		"cyan": 2.999,
-		"magenta": 91,
-		"yellow": 86,
+	"Poppy B": {
+		"cyan": 2.99999993294477,
+		"magenta": 91.0000026226044,
+		"yellow": 86.0000014305115,
 		"black": 0
 	},
-	"Autumn Glory B":
-	{
+	"Autumn Glory B": {
 		"cyan": 0,
-		"magenta": 53.579,
-		"yellow": 95.175,
+		"magenta": 53.5790026187897,
+		"yellow": 95.1750934123993,
 		"black": 0
 	},
-	"PerfCutContour":
-	{
-		"cyan": 78,
+	"PerfCutContour": {
+		"cyan": 77.9999971389771,
 		"magenta": 0,
 		"yellow": 100,
 		"black": 0
 	},
-	"CutContour":
-	{
+	"CutContour": {
 		"cyan": 0,
 		"magenta": 100,
 		"yellow": 0,
 		"black": 0
 	},
-	"Info B":
-	{
-		"cyan": 30,
-		"magenta": 30,
-		"yellow": 30,
+	"Info B": {
+		"cyan": 30.0000011920929,
+		"magenta": 30.0000011920929,
+		"yellow": 30.0000011920929,
 		"black": 100
 	},
-	"Jock Tag B":
-	{
-		"cyan": 30,
-		"magenta": 30,
-		"yellow": 30,
+	"Jock Tag B": {
+		"cyan": 30.0000011920929,
+		"magenta": 30.0000011920929,
+		"yellow": 30.0000011920929,
 		"black": 100
 	},
-	"Thru-cut":
-	{
+	"EDGE": {
+		"cyan": 75.0209808349609,
+		"magenta": 67.9682552814484,
+		"yellow": 67.0221984386444,
+		"black": 90.1640295982361
+	},
+	"Thru-cut": {
 		"cyan": 100,
-		"magenta": 40,
+		"magenta": 40.0000005960464,
 		"yellow": 0,
 		"black": 0
 	},
-	"SEW LINE":
-	{
+	"SEW LINE": {
 		"cyan": 0,
 		"magenta": 100,
 		"yellow": 100,
 		"black": 0
 	},
-	"CUT LINE":
-	{
-		"cyan": 10,
+	"CUT LINE": {
+		"cyan": 10.0000001490116,
 		"magenta": 0,
 		"yellow": 100,
 		"black": 0
 	},
-	"Collar B":
-	{
-		"cyan": 33,
-		"magenta": 34,
-		"yellow": 2,
+	"Collar B": {
+		"cyan": 32.8125,
+		"magenta": 33.59375,
+		"yellow": 1.5625,
 		"black": 0
 	},
-	"Collar Info B":
-	{
-		"cyan": 42,
-		"magenta": 58,
-		"yellow": 79,
-		"black": 30
+	"Collar Info B": {
+		"cyan": 41.796875,
+		"magenta": 57.8125,
+		"yellow": 78.515625,
+		"black": 30.46875
 	},
-	"C1":
-	{
-		"cyan": 100,
-		"magenta": 0,
-		"yellow": 0,
-		"black": 0
-	},
-	"C2":
-	{
-		"cyan": 0,
-		"magenta": 100,
-		"yellow": 0,
-		"black": 0
-	},
-	"C3":
-	{
-		"cyan": 0,
-		"magenta": 0,
-		"yellow": 100,
-		"black": 0
-	},
-	"C4":
-	{
-		"cyan": 82,
-		"magenta": 4,
-		"yellow": 100,
-		"black": 0
-	},
-	"C5":
-	{
-		"cyan": 40,
-		"magenta": 53,
-		"yellow": 0,
-		"black": 0
-	},
-	"C6":
-	{
-		"cyan": 0,
-		"magenta": 54,
-		"yellow": 100,
-		"black": 0
-	},
-	"C7":
-	{
-		"cyan": 92,
-		"magenta": 27,
-		"yellow": 41,
-		"black": 26
-	},
-	"C8":
-	{
-		"cyan": 0,
-		"magenta": 100,
-		"yellow": 55,
-		"black": 30
-	},
-	"C9":
-	{
-		"cyan": 42,
-		"magenta": 1,
-		"yellow": 100,
-		"black": 0
-	},
-	"C10":
-	{
-		"cyan": 60,
-		"magenta": 85,
-		"yellow": 0,
-		"black": 0
-	},
-	"C11":
-	{
-		"cyan": 100,
-		"magenta": 69,
-		"yellow": 0,
-		"black": 0
-	},
-	"C12":
-	{
-		"cyan": 81,
-		"magenta": 0,
-		"yellow": 82,
-		"black": 65
-	},
-	"C13":
-	{
-		"cyan": 0,
-		"magenta": 54,
-		"yellow": 100,
-		"black": 23
-	},
-	"C14":
-	{
-		"cyan": 9,
-		"magenta": 0,
-		"yellow": 0,
-		"black": 76
-	},
-	"Boombah Logo B":
-	{
-		"cyan": 70,
-		"magenta": 100,
-		"yellow": 0,
-		"black": 0
-	},
-	"Boombah Logo 2 B":
-	{
-		"cyan": 35,
-		"magenta": 35,
-		"yellow": 0,
-		"black": 0
-	},
-	"Drawstring":
-	{
-		"cyan": 67,
-		"magenta": 0,
-		"yellow": 34,
-		"black": 0
-	},
-	"Zipper":
-	{
-		"cyan": 1,
-		"magenta": 16,
-		"yellow": 71,
-		"black": 0
-	},
-	"Binding":
-	{
-		"cyan": 0,
-		"magenta": 82,
-		"yellow": 100,
-		"black": 0
-	},
-	"Buttons":
-	{
-		"cyan": 57,
-		"magenta": 0,
-		"yellow": 71,
-		"black": 0
-	},
-	"Pocket Welt 1":
-	{
-		"cyan": 35,
-		"magenta": 88,
-		"yellow": 94,
-		"black": 53
-	},
-	"Pocket Welt 2":
-	{
-		"cyan": 0,
-		"magenta": 56,
-		"yellow": 35,
-		"black": 0
-	},
-	"Pocket Facing":
-	{
-		"cyan": 93,
-		"magenta": 74,
-		"yellow": 45,
-		"black": 40
-	},
-	"C15":
-	{
-		"cyan": 0,
-		"magenta": 69,
-		"yellow": 0,
-		"black": 62
-	},
-	"Num1":
-	{
+	"C1": {
 		"cyan": 100,
 		"magenta": 0,
 		"yellow": 0,
 		"black": 0
 	},
-	"Num2":
-	{
+	"C2": {
 		"cyan": 0,
 		"magenta": 100,
 		"yellow": 0,
 		"black": 0
 	},
-	"Num3":
-	{
+	"C3": {
 		"cyan": 0,
 		"magenta": 0,
 		"yellow": 100,
 		"black": 0
 	},
-	"Num4":
-	{
-		"cyan": 82,
-		"magenta": 4,
+	"C4": {
+		"cyan": 81.9607973098755,
+		"magenta": 4.31369990110397,
 		"yellow": 100,
-		"black": 0
+		"black": 0.39220000617206
 	},
-	"Num5":
-	{
-		"cyan": 40,
-		"magenta": 53,
+	"C5": {
+		"cyan": 40.3921991586685,
+		"magenta": 52.5489985942841,
 		"yellow": 0,
 		"black": 0
 	},
-	"Num6":
-	{
+	"C6": {
 		"cyan": 0,
-		"magenta": 54,
+		"magenta": 54.0428757667542,
+		"yellow": 99.801629781723,
+		"black": 0
+	},
+	"C7": {
+		"cyan": 91.869992017746,
+		"magenta": 27.0000010728836,
+		"yellow": 41.4984345436096,
+		"black": 26.2180507183075
+	},
+	"C8": {
+		"cyan": 0,
+		"magenta": 100,
+		"yellow": 55.0000011920929,
+		"black": 30.0000011920929
+	},
+	"C9": {
+		"cyan": 41.7700439691544,
+		"magenta": 1.44655527547002,
 		"yellow": 100,
 		"black": 0
 	},
-	"Name1":
-	{
+	"C10": {
+		"cyan": 59.7985804080963,
+		"magenta": 85.1071894168854,
+		"yellow": 0,
+		"black": 0
+	},
+	"C11": {
+		"cyan": 100,
+		"magenta": 68.9999997615814,
+		"yellow": 0,
+		"black": 0
+	},
+	"C12": {
+		"cyan": 81.0000002384186,
+		"magenta": 0,
+		"yellow": 81.9999992847443,
+		"black": 64.9999976158142
+	},
+	"C13": {
+		"cyan": 0,
+		"magenta": 54.0000021457672,
+		"yellow": 100,
+		"black": 23.0000004172325
+	},
+	"C14": {
+		"cyan": 9.00000035762787,
+		"magenta": 0,
+		"yellow": 0,
+		"black": 75.9999990463257
+	},
+	"Boombah Logo B": {
+		"cyan": 69.9999988079071,
+		"magenta": 100,
+		"yellow": 0,
+		"black": 0
+	},
+	"Boombah Logo 2 B": {
+		"cyan": 34.9999994039536,
+		"magenta": 34.9999994039536,
+		"yellow": 0,
+		"black": 0
+	},
+	"Drawstring": {
+		"cyan": 66.5400147438049,
+		"magenta": 0,
+		"yellow": 33.9726835489273,
+		"black": 0
+	},
+	"Zipper": {
+		"cyan": 1.44350342452526,
+		"magenta": 15.5123203992844,
+		"yellow": 71.4198470115662,
+		"black": 0
+	},
+	"Binding": {
+		"cyan": 0,
+		"magenta": 81.9088995456696,
+		"yellow": 100,
+		"black": 0
+	},
+	"Buttons": {
+		"cyan": 56.786447763443,
+		"magenta": 0,
+		"yellow": 71.0627853870392,
+		"black": 0
+	},
+	"Pocket Welt 1": {
+		"cyan": 35.3551536798477,
+		"magenta": 87.7470016479492,
+		"yellow": 94.3846762180328,
+		"black": 53.0205190181732
+	},
+	"Pocket Welt 2": {
+		"cyan": 0,
+		"magenta": 55.6023478507996,
+		"yellow": 34.818035364151,
+		"black": 0
+	},
+	"Pocket Facing": {
+		"cyan": 93.4081017971039,
+		"magenta": 74.0566074848175,
+		"yellow": 45.1697558164597,
+		"black": 39.5147621631622
+	},
+	"C15": {
+		"cyan": 0,
+		"magenta": 68.9999997615814,
+		"yellow": 0,
+		"black": 62.0000004768372
+	},
+	"Num1": {
 		"cyan": 100,
 		"magenta": 0,
 		"yellow": 0,
 		"black": 0
 	},
-	"Name2":
-	{
+	"Num2": {
 		"cyan": 0,
 		"magenta": 100,
 		"yellow": 0,
 		"black": 0
 	},
-	"Name3":
-	{
+	"Num3": {
 		"cyan": 0,
 		"magenta": 0,
 		"yellow": 100,
 		"black": 0
 	},
-	"Name4":
-	{
-		"cyan": 82,
-		"magenta": 4,
+	"Num4": {
+		"cyan": 81.9607973098755,
+		"magenta": 4.31369990110397,
 		"yellow": 100,
-		"black": 0
+		"black": 0.39220000617206
 	},
-	"Name5":
-	{
-		"cyan": 40,
-		"magenta": 53,
+	"Num5": {
+		"cyan": 40.3921991586685,
+		"magenta": 52.5489985942841,
 		"yellow": 0,
 		"black": 0
 	},
-	"Name6":
-	{
+	"Num6": {
 		"cyan": 0,
-		"magenta": 54,
-		"yellow": 100,
+		"magenta": 54.0428757667542,
+		"yellow": 99.801629781723,
 		"black": 0
 	},
-	"Logo1":
-	{
+	"Name1": {
 		"cyan": 100,
 		"magenta": 0,
 		"yellow": 0,
 		"black": 0
 	},
-	"Logo2":
-	{
+	"Name2": {
 		"cyan": 0,
 		"magenta": 100,
 		"yellow": 0,
 		"black": 0
 	},
-	"Logo3":
-	{
+	"Name3": {
 		"cyan": 0,
 		"magenta": 0,
 		"yellow": 100,
 		"black": 0
 	},
-	"Logo4":
-	{
-		"cyan": 82,
-		"magenta": 4,
+	"Name4": {
+		"cyan": 81.9607973098755,
+		"magenta": 4.31369990110397,
 		"yellow": 100,
-		"black": 0
+		"black": 0.39220000617206
 	},
-	"Logo5":
-	{
-		"cyan": 40,
-		"magenta": 53,
+	"Name5": {
+		"cyan": 40.3921991586685,
+		"magenta": 52.5489985942841,
 		"yellow": 0,
 		"black": 0
 	},
-	"Logo6":
-	{
+	"Name6": {
 		"cyan": 0,
-		"magenta": 54,
-		"yellow": 100,
+		"magenta": 54.0428757667542,
+		"yellow": 99.801629781723,
 		"black": 0
 	},
-	"B1":
-	{
+	"Logo1": {
 		"cyan": 100,
 		"magenta": 0,
 		"yellow": 0,
 		"black": 0
 	},
-	"B2":
-	{
+	"Logo2": {
 		"cyan": 0,
 		"magenta": 100,
 		"yellow": 0,
 		"black": 0
 	},
-	"B3":
-	{
+	"Logo3": {
 		"cyan": 0,
 		"magenta": 0,
 		"yellow": 100,
 		"black": 0
 	},
-	"B4":
-	{
-		"cyan": 82,
-		"magenta": 4,
+	"Logo4": {
+		"cyan": 81.9607973098755,
+		"magenta": 4.31369990110397,
 		"yellow": 100,
-		"black": 0
+		"black": 0.39220000617206
 	},
-	"B5":
-	{
-		"cyan": 40,
-		"magenta": 53,
+	"Logo5": {
+		"cyan": 40.3921991586685,
+		"magenta": 52.5489985942841,
 		"yellow": 0,
 		"black": 0
 	},
-	"B6":
-	{
+	"Logo6": {
 		"cyan": 0,
-		"magenta": 54,
-		"yellow": 100,
+		"magenta": 54.0428757667542,
+		"yellow": 99.801629781723,
 		"black": 0
 	},
-	"B7":
-	{
-		"cyan": 92,
-		"magenta": 27,
-		"yellow": 41,
-		"black": 26
-	},
-	"B8":
-	{
-		"cyan": 0,
-		"magenta": 100,
-		"yellow": 55,
-		"black": 30
-	},
-	"B9":
-	{
-		"cyan": 42,
-		"magenta": 1,
-		"yellow": 100,
-		"black": 0
-	},
-	"B10":
-	{
-		"cyan": 60,
-		"magenta": 85,
-		"yellow": 0,
-		"black": 0
-	},
-	"B11":
-	{
+	"B1": {
 		"cyan": 100,
-		"magenta": 69,
+		"magenta": 0,
 		"yellow": 0,
 		"black": 0
 	},
-	"B14":
-	{
-		"cyan": 9,
+	"B2": {
+		"cyan": 0,
+		"magenta": 100,
+		"yellow": 0,
+		"black": 0
+	},
+	"B3": {
+		"cyan": 0,
+		"magenta": 0,
+		"yellow": 100,
+		"black": 0
+	},
+	"B4": {
+		"cyan": 81.9607973098755,
+		"magenta": 4.31369990110397,
+		"yellow": 100,
+		"black": 0.39220000617206
+	},
+	"B5": {
+		"cyan": 40.3921991586685,
+		"magenta": 52.5489985942841,
+		"yellow": 0,
+		"black": 0
+	},
+	"B6": {
+		"cyan": 0,
+		"magenta": 54.0428757667542,
+		"yellow": 99.801629781723,
+		"black": 0
+	},
+	"B7": {
+		"cyan": 91.869992017746,
+		"magenta": 27.0000010728836,
+		"yellow": 41.4984345436096,
+		"black": 26.2180507183075
+	},
+	"B8": {
+		"cyan": 0,
+		"magenta": 100,
+		"yellow": 55.0000011920929,
+		"black": 30.0000011920929
+	},
+	"B9": {
+		"cyan": 41.7700439691544,
+		"magenta": 1.44655527547002,
+		"yellow": 100,
+		"black": 0
+	},
+	"B10": {
+		"cyan": 59.7985804080963,
+		"magenta": 85.1071894168854,
+		"yellow": 0,
+		"black": 0
+	},
+	"B11": {
+		"cyan": 100,
+		"magenta": 68.9999997615814,
+		"yellow": 0,
+		"black": 0
+	},
+	"B14": {
+		"cyan": 9.00000035762787,
 		"magenta": 0,
 		"yellow": 0,
-		"black": 76
+		"black": 75.9999990463257
 	},
-	"B13":
-	{
+	"B13": {
 		"cyan": 0,
-		"magenta": 54,
+		"magenta": 54.0000021457672,
 		"yellow": 100,
-		"black": 23
+		"black": 23.0000004172325
 	},
-	"B12":
-	{
-		"cyan": 81,
+	"B12": {
+		"cyan": 81.0000002384186,
 		"magenta": 0,
-		"yellow": 82,
-		"black": 65
+		"yellow": 81.9999992847443,
+		"black": 64.9999976158142
 	},
-
+	"CALLOUT": {
+		"cyan": 40.0000005960464,
+		"magenta": 40.0000005960464,
+		"yellow": 60.0000023841858,
+		"black": 0
+	}
 }
 
