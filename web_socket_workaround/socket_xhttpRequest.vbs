@@ -43,7 +43,7 @@ Dim MyFile, FileName, TextLine
 ' Open the file for output.
 FileName = tempFilePath
 
-Set MyFile = fso.OpenTextFile(FileName, ForWriting, True, -1)
+Set MyFile = fso.OpenTextFile(FileName, ForWriting, True)
 
 ' Write to the file.
 MyFile.WriteLine responseTextString

@@ -4061,7 +4061,7 @@ function curlData ( url, arg )
 	var currentExecutorCalls = 0;
 
 	var checkDelay = 200;
-	var numberOfChecks = 200;
+	var numberOfChecks = 25;
 	var totalChecks = 0;
 
 	var parseFailResults = 0;
@@ -4078,6 +4078,8 @@ function curlData ( url, arg )
 		//check the data
 		for ( var a = 0; a < numberOfChecks && status !== "valid"; a++ )
 		{
+			log.l( "on check " + a + " of " + numberOfChecks + ": status = " + status );
+			log.l( readDataFile() )
 			if ( status != "valid" )
 			{
 				checkData()
