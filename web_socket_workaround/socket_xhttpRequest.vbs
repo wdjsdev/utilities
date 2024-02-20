@@ -1,6 +1,9 @@
 Function EliminarCaracteresEspeciales(texto)
     Set dic = CreateObject("Scripting.Dictionary")
     dic.Add "char1", ChrW(&H2193)
+    dic.Add "char2",  ChrW(&H3A3)
+    dic.Add "char3",  ChrW(&H39B)
+    dic.Add "char4",  ChrW(&H039A)
 
     For Each clave In dic.Keys
         forbidden = dic(clave)
