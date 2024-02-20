@@ -1987,16 +1987,13 @@ function getPPLay ( parent )
 		for ( var x = 0; x < len && !result; x++ )
 		{
 			lay = parent[ x ];
-			if ( pat.test( lay.name ) )
+			subLayLen = lay.layers.length;
+			for ( var y = 0; y < subLayLen && !result; y++ )
 			{
-				subLayLen = lay.layers.length;
-				for ( var y = 0; y < subLayLen && !result; y++ )
+				subLay = lay.layers[ y ];
+				if ( subLay.name === "Prepress" && subLay.layers.length > 0 && subLay.layers[ 0 ].pageItems.length > 0 )
 				{
-					subLay = lay.layers[ y ];
-					if ( subLay.name === "Prepress" && subLay.layers.length > 0 && subLay.layers[ 0 ].pageItems.length > 0 )
-					{
-						result = subLay;
-					}
+					result = subLay;
 				}
 			}
 		}
@@ -4379,6 +4376,24 @@ function rotatePieces ( rotationSets, parentLayer )
 	} )
 
 
+}
+
+function colorNameIsProdColor ( name )
+{
+	return name.match( /callout|cut|sew|info|edge|rhine|flag yellow|jock/i );
+
+}
+
+function itemIsProdColor ( item )
+{
+	var result = false;
+	if ( !item.typename.match( /pathitem/i ) ) { return false; }
+	var fill = item.fillColor && item.fillColor.spot ? item.fillColor.spot : undefined;
+	var stroke = item.strokeColor && item.strokeColor.spot ? item.strokeColor.spot : undefined;
+	if ( !fill && !stroke ) { return false; }
+	fill ? result = colorNameIsProdColor( fill.name ) : null;
+	stroke && !result ? result = colorNameIsProdColor( stroke.name ) : null;
+	return result;
 }
 
 
