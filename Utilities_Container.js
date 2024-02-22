@@ -3028,14 +3028,14 @@ function uiConfirm ( msg )
 }
 
 //standard prompt window
-function uiPrompt ( msg, title )
+function uiPrompt ( msg, title, defaultText )
 {
 	var result;
 	if ( !title ) { title = "" };
 	var w = new Window( "dialog", title );
 	w.orientation = "column";
 	var topMsg = UI.static( w, msg );
-	var input = UI.edit( w, "" );
+	var input = UI.edit( w, defaultText || "" );
 	input.characters = 20;
 	input.active = true;
 	var btnGroup = UI.group( w );
