@@ -3967,6 +3967,13 @@ function removeAction ( actionName )
 	}
 }
 
+function runAction ( actionName, actionString )
+{
+	createAction( actionName, actionString );
+	app.doScript( actionName, actionName );
+	removeAction( actionName );
+}
+
 //curl data from a specified url and return the data as an anonymous object
 function curlData ( url, arg )
 {
@@ -4388,8 +4395,9 @@ function itemIsProdColor ( item )
 {
 	var result = false;
 	if ( !item.typename.match( /pathitem/i ) ) { return false; }
-	var fill = item.fillColor && item.fillColor.spot ? item.fillColor.spot : undefined;
-	var stroke = item.strokeColor && item.strokeColor.spot ? item.strokeColor.spot : undefined;
+	var testItem = item.typename.match( /compound/i ) ? item = cleanupCompoundPath( item ).pathItems[ 0 ] : item;
+	var fill = testItem.fillColor && testItem.fillColor.spot ? testItem.fillColor.spot : undefined;
+	var stroke = testItem.strokeColor && testItem.strokeColor.spot ? testItem.strokeColor.spot : undefined;
 	if ( !fill && !stroke ) { return false; }
 	fill ? result = colorNameIsProdColor( fill.name ) : null;
 	stroke && !result ? result = colorNameIsProdColor( stroke.name ) : null;
@@ -5615,7 +5623,8 @@ var BOOMBAH_APPROVED_COLORS =
 		"Hot Coral B",
 		"Poppy B",
 		"Autumn Glory B",
-		"Electric Blue B"
+		"Electric Blue B",
+		"Cream B"
 	];
 
 var BOOMBAH_PRODUCTION_COLORS =
@@ -5715,6 +5724,7 @@ var BUILDER_COLOR_CODES = {
 	'V': 'Violet B',
 	'WI': 'Wine B',
 	'WG': 'Wolf Gray B',
+	'CRM': 'Cream B'
 }
 
 var BOOMBAH_APPROVED_COLOR_VALUES =
@@ -6197,6 +6207,12 @@ var BOOMBAH_APPROVED_COLOR_VALUES =
 		"cyan": 0,
 		"magenta": 53.5790026187897,
 		"yellow": 95.1750934123993,
+		"black": 0
+	},
+	"Cream B": {
+		"cyan": 2.99999993294477,
+		"magenta": 5.99999986588955,
+		"yellow": 15.0000005960464,
 		"black": 0
 	},
 	"PerfCutContour": {
