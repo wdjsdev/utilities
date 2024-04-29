@@ -2057,6 +2057,71 @@ function touchEveryPrepressItem ( func )
 
 }
 
+function getItemColor ( item )
+{
+	var color = { fill: null, stroke: null };
+	if ( !item.typename.match( /pathitem/i ) )
+	{
+		log.e( "getItemColor() only works with pathItems and compoundPathItems." );
+		return null;
+	}
+	if ( item.typename.match( /^pathItem/i ) )
+	{
+		testItem = item;
+	}
+	else if ( item.typename.match( /^compoundPath/i ) )
+	{
+		if ( !item.pathItems.length )
+		{
+			item = cleanupCompoundPath( item );
+			if ( !item.pathItems.length )
+			{
+				log.e( "getItemColor() failed to find any pathItems in this compoundPath." );
+				return null;
+			}
+		}
+		testItem = item.pathItems[ 0 ];
+	}
+	color.fill = testItem.filled ? testItem.fillColor : new NoColor();
+	color.stroke = testItem.stroked ? testItem.strokeColor : new NoColor();
+	return color;
+}
+
+function setItemColor ( item, fill, stroke )
+{
+	// fill.spot ? fill = fill.spot.color;
+	if ( !item.typename.match( /pathitem/i ) )
+	{
+		log.e( "setItemColor() only works with pathItems and compoundPathItems." );
+		return;
+	}
+	if ( item.typename.match( /^pathItem/i ) )
+	{
+		testItem = item;
+	}
+	else if ( item.typename.match( /^compoundPath/i ) )
+	{
+		if ( !item.pathItems.length )
+		{
+			item = cleanupCompoundPath( item );
+			if ( !item.pathItems.length )
+			{
+				log.e( "setItemColor() failed to find any pathItems in this compoundPath." );
+				return;
+			}
+		}
+		testItem = item.pathItems[ 0 ];
+	}
+	if ( fill )
+	{
+		testItem.fillColor = fill;
+	}
+	if ( stroke )
+	{
+		testItem.strokeColor = stroke;
+	}
+}
+
 
 
 
@@ -3708,6 +3773,13 @@ function getVisibleBounds ( item )
 	}
 }
 
+function setItemPosition ( item, coords )
+{
+	var vb = getBoundsData( item );
+	item.left = coords[ 0 ] - vb.clipped.left;
+	item.top = coords[ 1 ] + vb.clipped.top;
+}
+
 function getBoundsData ( item )
 {
 	if ( !item ) return;
@@ -3972,6 +4044,13 @@ function runAction ( actionName, actionString )
 	createAction( actionName, actionString );
 	app.doScript( actionName, actionName );
 	removeAction( actionName );
+}
+
+function pathfinder ( pathfinderFunctionName )
+{
+	createAction( "pathfinder", PATHFINDER_ACTION_STRING );
+	app.doScript( pathfinderFunctionName, "pathfinder" );
+	removeAction( "pathfinder" );
 }
 
 //curl data from a specified url and return the data as an anonymous object
@@ -4442,7 +4521,313 @@ function exportJpg ( outFilePath, artboardIndex )
 //action string arrays
 //
 
-const EXPAND_STROKE_ACTION_STRING =
+var CLEAR_APPEARANCE_ACTION_STRING =
+	[
+		"/version 3",
+		"/name [ 16",
+		"	636c6561725f617070656172616e6365",
+		"]",
+		"/isOpen 1",
+		"/actionCount 1",
+		"/action-1 {",
+		"	/name [ 16",
+		"		636c6561725f617070656172616e6365",
+		"	]",
+		"	/keyIndex 0",
+		"	/colorIndex 0",
+		"	/isOpen 1",
+		"	/eventCount 1",
+		"	/event-1 {",
+		"		/useRulersIn1stQuadrant 0",
+		"		/internalName (ai_plugin_appearance)",
+		"		/localizedName [ 10",
+		"			417070656172616e6365",
+		"		]",
+		"		/isOpen 0",
+		"		/isOn 1",
+		"		/hasDialog 0",
+		"		/parameterCount 1",
+		"		/parameter-1 {",
+		"			/key 1835363957",
+		"			/showInPalette 4294967295",
+		"			/type (enumerated)",
+		"			/name [ 16",
+		"				436c65617220417070656172616e6365",
+		"			]",
+		"			/value 6",
+		"		}",
+		"	}",
+		"}"
+
+	]
+
+var TWILL_LOGO_ACTION_STRING =
+	[
+		"/version 3",
+		"/name [ 10",
+		"	7477696c6c5f6c6f676f",
+		"]",
+		"/isOpen 1",
+		"/actionCount 1",
+		"/action-1 {",
+		"	/name [ 10",
+		"		7477696c6c5f6c6f676f",
+		"	]",
+		"	/keyIndex 0",
+		"	/colorIndex 0",
+		"	/isOpen 1",
+		"	/eventCount 9",
+		"	/event-1 {",
+		"		/useRulersIn1stQuadrant 0",
+		"		/internalName (ai_plugin_appearance)",
+		"		/localizedName [ 10",
+		"			417070656172616e6365",
+		"		]",
+		"		/isOpen 0",
+		"		/isOn 1",
+		"		/hasDialog 0",
+		"		/parameterCount 1",
+		"		/parameter-1 {",
+		"			/key 1835363957",
+		"			/showInPalette 4294967295",
+		"			/type (enumerated)",
+		"			/name [ 16",
+		"				436c65617220417070656172616e6365",
+		"			]",
+		"			/value 6",
+		"		}",
+		"	}",
+		"	/event-2 {",
+		"		/useRulersIn1stQuadrant 0",
+		"		/internalName (ai_plugin_setColor)",
+		"		/localizedName [ 9",
+		"			53657420636f6c6f72",
+		"		]",
+		"		/isOpen 0",
+		"		/isOn 1",
+		"		/hasDialog 0",
+		"		/parameterCount 4",
+		"		/parameter-1 {",
+		"			/key 1768186740",
+		"			/showInPalette 4294967295",
+		"			/type (ustring)",
+		"			/value [ 12",
+		"				5374726f6b6520636f6c6f72",
+		"			]",
+		"		}",
+		"		/parameter-2 {",
+		"			/key 1718185068",
+		"			/showInPalette 4294967295",
+		"			/type (boolean)",
+		"			/value 0",
+		"		}",
+		"		/parameter-3 {",
+		"			/key 1836349808",
+		"			/showInPalette 4294967295",
+		"			/type (enumerated)",
+		"			/name [ 4",
+		"				4e6f6e65",
+		"			]",
+		"			/value 4294967295",
+		"		}",
+		"		/parameter-4 {",
+		"			/key 1954115685",
+		"			/showInPalette 4294967295",
+		"			/type (enumerated)",
+		"			/name [ 0",
+		"",
+		"			]",
+		"			/value 4294967295",
+		"		}",
+		"	}",
+		"	/event-3 {",
+		"		/useRulersIn1stQuadrant 0",
+		"		/internalName (ai_plugin_setColor)",
+		"		/localizedName [ 9",
+		"			53657420636f6c6f72",
+		"		]",
+		"		/isOpen 0",
+		"		/isOn 1",
+		"		/hasDialog 0",
+		"		/parameterCount 1",
+		"		/parameter-1 {",
+		"			/key 1836349808",
+		"			/showInPalette 4294967295",
+		"			/type (enumerated)",
+		"			/name [ 20",
+		"				537761702066696c6c20616e64207374726f6b65",
+		"			]",
+		"			/value 7",
+		"		}",
+		"	}",
+		"	/event-4 {",
+		"		/useRulersIn1stQuadrant 0",
+		"		/internalName (ai_plugin_setColor)",
+		"		/localizedName [ 9",
+		"			53657420636f6c6f72",
+		"		]",
+		"		/isOpen 0",
+		"		/isOn 1",
+		"		/hasDialog 0",
+		"		/parameterCount 4",
+		"		/parameter-1 {",
+		"			/key 1768186740",
+		"			/showInPalette 4294967295",
+		"			/type (ustring)",
+		"			/value [ 12",
+		"				5374726f6b6520636f6c6f72",
+		"			]",
+		"		}",
+		"		/parameter-2 {",
+		"			/key 1718185068",
+		"			/showInPalette 4294967295",
+		"			/type (boolean)",
+		"			/value 0",
+		"		}",
+		"		/parameter-3 {",
+		"			/key 1836349808",
+		"			/showInPalette 4294967295",
+		"			/type (enumerated)",
+		"			/name [ 4",
+		"				4e6f6e65",
+		"			]",
+		"			/value 4294967295",
+		"		}",
+		"		/parameter-4 {",
+		"			/key 1954115685",
+		"			/showInPalette 4294967295",
+		"			/type (enumerated)",
+		"			/name [ 0",
+		"",
+		"			]",
+		"			/value 4294967295",
+		"		}",
+		"	}",
+		"	/event-5 {",
+		"		/useRulersIn1stQuadrant 0",
+		"		/internalName (ai_plugin_expand)",
+		"		/localizedName [ 6",
+		"			457870616e64",
+		"		]",
+		"		/isOpen 0",
+		"		/isOn 1",
+		"		/hasDialog 1",
+		"		/showDialog 0",
+		"		/parameterCount 4",
+		"		/parameter-1 {",
+		"			/key 1868720756",
+		"			/showInPalette 4294967295",
+		"			/type (boolean)",
+		"			/value 1",
+		"		}",
+		"		/parameter-2 {",
+		"			/key 1718185068",
+		"			/showInPalette 4294967295",
+		"			/type (boolean)",
+		"			/value 1",
+		"		}",
+		"		/parameter-3 {",
+		"			/key 1937011307",
+		"			/showInPalette 4294967295",
+		"			/type (boolean)",
+		"			/value 0",
+		"		}",
+		"		/parameter-4 {",
+		"			/key 1936553064",
+		"			/showInPalette 4294967295",
+		"			/type (boolean)",
+		"			/value 0",
+		"		}",
+		"	}",
+		"	/event-6 {",
+		"		/useRulersIn1stQuadrant 0",
+		"		/internalName (ai_plugin_pathfinder)",
+		"		/localizedName [ 10",
+		"			5061746866696e646572",
+		"		]",
+		"		/isOpen 0",
+		"		/isOn 1",
+		"		/hasDialog 0",
+		"		/parameterCount 1",
+		"		/parameter-1 {",
+		"			/key 1851878757",
+		"			/showInPalette 4294967295",
+		"			/type (enumerated)",
+		"			/name [ 3",
+		"				416464",
+		"			]",
+		"			/value 0",
+		"		}",
+		"	}",
+		"	/event-7 {",
+		"		/useRulersIn1stQuadrant 0",
+		"		/internalName (ai_plugin_styles)",
+		"		/localizedName [ 14",
+		"			47726170686963205374796c6573",
+		"		]",
+		"		/isOpen 0",
+		"		/isOn 1",
+		"		/hasDialog 0",
+		"		/parameterCount 2",
+		"		/parameter-1 {",
+		"			/key 1937013100",
+		"			/showInPalette 4294967295",
+		"			/type (ustring)",
+		"			/value [ 20",
+		"				46726f6e74204c6f676f205072696e742d454d42",
+		"			]",
+		"		}",
+		"		/parameter-2 {",
+		"			/key 1633969268",
+		"			/showInPalette 4294967295",
+		"			/type (boolean)",
+		"			/value 0",
+		"		}",
+		"	}",
+		"	/event-8 {",
+		"		/useRulersIn1stQuadrant 0",
+		"		/internalName (adobe_commandManager)",
+		"		/localizedName [ 16",
+		"			416363657373204d656e75204974656d",
+		"		]",
+		"		/isOpen 0",
+		"		/isOn 1",
+		"		/hasDialog 0",
+		"		/parameterCount 2",
+		"		/parameter-1 {",
+		"			/key 1769238125",
+		"			/showInPalette 4294967295",
+		"			/type (ustring)",
+		"			/value [ 11",
+		"				657870616e645374796c65",
+		"			]",
+		"		}",
+		"		/parameter-2 {",
+		"			/key 1818455661",
+		"			/showInPalette 4294967295",
+		"			/type (ustring)",
+		"			/value [ 17",
+		"				457870616e6420417070656172616e6365",
+		"			]",
+		"		}",
+		"	}",
+		"	/event-9 {",
+		"		/useRulersIn1stQuadrant 0",
+		"		/internalName (adobe_deselectAll)",
+		"		/localizedName [ 12",
+		"			446573656c65637420416c6c",
+		"		]",
+		"		/isOpen 0",
+		"		/isOn 1",
+		"		/hasDialog 0",
+		"		/parameterCount 0",
+		"	}",
+		"}",
+
+
+	]
+
+var EXPAND_STROKE_ACTION_STRING =
 	[
 		"/version 3",
 		"/name [ 13",
@@ -4498,7 +4883,7 @@ const EXPAND_STROKE_ACTION_STRING =
 
 	]
 
-const PATHFINDER_ACTION_STRING =
+var PATHFINDER_ACTION_STRING =
 	[
 		"/version 3",
 		"/name [ 10",
@@ -4798,68 +5183,8 @@ const PATHFINDER_ACTION_STRING =
 		"}"
 	]
 
-//cleanup swatches action
-// const CLEANUP_SWATCHES_ACTION_STRING =
-// 	[
-// 		"/version 3",
-// 		"/name [ 16",
-// 		"	636c65616e75705f7377617463686573",
-// 		"]",
-// 		"/isOpen 1",
-// 		"/actionCount 1",
-// 		"/action-1 {",
-// 		"	/name [ 16",
-// 		"		636c65616e75705f7377617463686573",
-// 		"	]",
-// 		"	/keyIndex 5",
-// 		"	/colorIndex 0",
-// 		"	/isOpen 1",
-// 		"	/eventCount 2",
-// 		"	/event-1 {",
-// 		"		/useRulersIn1stQuadrant 0",
-// 		"		/internalName (ai_plugin_swatches)",
-// 		"		/localizedName [ 8",
-// 		"			5377617463686573",
-// 		"		]",
-// 		"		/isOpen 0",
-// 		"		/isOn 1",
-// 		"		/hasDialog 0",
-// 		"		/parameterCount 1",
-// 		"		/parameter-1 {",
-// 		"			/key 1835363957",
-// 		"			/showInPalette 4294967295",
-// 		"			/type (enumerated)",
-// 		"			/name [ 17",
-// 		"				53656c65637420416c6c20556e75736564",
-// 		"			]",
-// 		"			/value 11",
-// 		"		}",
-// 		"	}",
-// 		"	/event-2 {",
-// 		"		/useRulersIn1stQuadrant 0",
-// 		"		/internalName (ai_plugin_swatches)",
-// 		"		/localizedName [ 8",
-// 		"			5377617463686573",
-// 		"		]",
-// 		"		/isOpen 0",
-// 		"		/isOn 1",
-// 		"		/hasDialog 1",
-// 		"		/showDialog 0",
-// 		"		/parameterCount 1",
-// 		"		/parameter-1 {",
-// 		"			/key 1835363957",
-// 		"			/showInPalette 4294967295",
-// 		"			/type (enumerated)",
-// 		"			/name [ 13",
-// 		"				44656c65746520537761746368",
-// 		"			]",
-// 		"			/value 3",
-// 		"		}",
-// 		"	}",
-// 		"}"
-// 	]
 
-const UNLOCK_GUIDES_ACTION_STRING = [
+var UNLOCK_GUIDES_ACTION_STRING = [
 	"/version 3",
 	"/name [ 13",
 	"	756e6c6f636b5f677569646573",
@@ -4894,7 +5219,7 @@ const UNLOCK_GUIDES_ACTION_STRING = [
 	"}"
 ]
 
-const TURN_OFF_OVERPRINT_ACTION_STRING =
+var TURN_OFF_OVERPRINT_ACTION_STRING =
 	[
 		"/version 3",
 		"/name [ 18",
@@ -4947,7 +5272,7 @@ const TURN_OFF_OVERPRINT_ACTION_STRING =
 		"}"
 	]
 
-const GRAPHIC_STYLE_FROM_SELECTION_ACTION_STRING =
+var GRAPHIC_STYLE_FROM_SELECTION_ACTION_STRING =
 	[
 		"/version 3",
 		"/name [ 28",
@@ -4987,7 +5312,7 @@ const GRAPHIC_STYLE_FROM_SELECTION_ACTION_STRING =
 		"}"
 	];
 
-const CLEAR_APPEARANCE_ACTION_STRING =
+var CLEAR_APPEARANCE_ACTION_STRING =
 	[
 		"/version 3",
 		"/name [ 16",
@@ -5026,7 +5351,7 @@ const CLEAR_APPEARANCE_ACTION_STRING =
 		"}",
 	];
 
-const ADD_NEW_FILL_ACTION_STRING =
+var ADD_NEW_FILL_ACTION_STRING =
 	[
 		"/version 3",
 		"/name [ 12",
@@ -5065,7 +5390,7 @@ const ADD_NEW_FILL_ACTION_STRING =
 		"}"
 	]
 
-const EXPORT_JPG_HIGH_QUALITY_ACTION_STRING =
+var EXPORT_JPG_HIGH_QUALITY_ACTION_STRING =
 	[
 		"/version 3",
 		"/name [ 10",
@@ -5154,7 +5479,7 @@ const EXPORT_JPG_HIGH_QUALITY_ACTION_STRING =
 
 	]
 
-const CLEANUP_SWATCHES_ACTION_STRING =
+var CLEANUP_SWATCHES_ACTION_STRING =
 	[
 		"/version 3",
 		"/name [ 16",
@@ -5390,7 +5715,7 @@ const CLEANUP_SWATCHES_ACTION_STRING =
 
 	]
 
-const OFFSET_PATH_ACTION_STRING =
+var OFFSET_PATH_ACTION_STRING =
 	[
 		"/version 3",
 		"/name [ 6",
@@ -5444,7 +5769,7 @@ const OFFSET_PATH_ACTION_STRING =
 	];
 
 
-const LUMINOSITY_ACTION_STRING =
+var LUMINOSITY_ACTION_STRING =
 	[ "/version 3",
 		"/name [ 10",
 		"	6c756d696e6f73697479",
