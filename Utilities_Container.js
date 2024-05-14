@@ -2022,6 +2022,27 @@ function getPPLay ( parent )
 	return result;
 }
 
+function fixPrepressSizing ( ppLay )
+{
+	var pat = /(^w[xsml2345])|(one.*piece)/i;
+
+	function renameTheThing ( thing )
+	{
+		if ( !thing.name.match( pat ) ) { return; }
+		thing.name = thing.name.replace( /^w/i, "" );
+		thing.name = thing.name.replace( /\s*one\s*piece\s*/i, "ONE SIZE" )
+	}
+
+	afc( ppLay, "layers" ).forEach( function ( lay )
+	{
+		renameTheThing( lay );
+		afc( lay, "pageItems" ).forEach( function ( pi )
+		{
+			renameTheThing( pi );
+		} );
+	} );
+}
+
 
 //for every layer in the active document
 //look for a prepress layer, 
