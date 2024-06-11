@@ -918,13 +918,13 @@ function ungroup ( item, dest, maxDepth, callback, curDepth, parentOpacity )
 var titleCaseDotRegEx = /((\w\S)|(\w\.))*/g;
 String.prototype.toTitleCaseAfterDots = function ()
 {
-	return this.replace( titleCaseDotRegEx, function ( txt ) { return txt.charAt( 0 ).toUpperCase() + txt.substr( 1 ).toLowerCase(); } );
+	return this.replace( titleCaseDotRegEx, function ( txt ) { return txt.charAt( 0 ).toUpperCase() + txt.substring( 1 ).toLowerCase(); } );
 };
 
 var titleCaseRegex = /\w\S*/g;
 String.prototype.toTitleCase = function ()
 {
-	return this.replace( titleCaseRegex, function ( txt ) { return txt.charAt( 0 ).toUpperCase() + txt.substr( 1 ).toLowerCase(); } );
+	return this.replace( titleCaseRegex, function ( txt ) { return txt.charAt( 0 ).toUpperCase() + txt.substring( 1 ).toLowerCase(); } );
 };
 
 
@@ -1609,13 +1609,20 @@ function findSpecificGraphicStyle ( doc, name )
 function findSpecificSwatch ( doc, name )
 {
 	var result;
-	for ( var x = 0; x < doc.swatches.length && !result; x++ )
+	afc( doc, "swatches" ).forEach( function ( swatch )
 	{
-		if ( doc.swatches[ x ].toString() === "[Swatch " + name + "]" )
+		if ( !result && swatch.toString().match( name ) )
 		{
-			result = doc.swatches[ x ];
+			result = swatch;
 		}
-	}
+	} );
+	// for ( var x = 0; x < doc.swatches.length && !result; x++ )
+	// {
+	// 	if ( doc.swatches[ x ].toString() === "[Swatch " + name + "]" )
+	// 	{
+	// 		result = doc.swatches[ x ];
+	// 	}
+	// }
 	return result;
 }
 
