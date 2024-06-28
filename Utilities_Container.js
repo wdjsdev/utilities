@@ -633,8 +633,11 @@ function getMaxDimension ( item )
 {
 	// var bounds = getVisibleBounds(item);
 	// var bounds = item.visibleBounds;
-	var w = item.width;
-	var h = item.height;
+	// var w = item.width;
+	// var h = item.height;
+	var bounds = getBoundsData( item );
+	var w = bounds.width;
+	var h = bounds.height;
 	return w > h ? w : h;
 }
 
@@ -3782,10 +3785,7 @@ function getVisibleBounds ( item )
 				if ( textClip ) { return; }
 				if ( subItem.clipped && g.typename.match( /textframe/i ) )
 				{
-					bounds[ 0 ].push( g.visibleBounds[ 0 ] );
-					bounds[ 1 ].push( g.visibleBounds[ 1 ] );
-					bounds[ 2 ].push( g.visibleBounds[ 2 ] );
-					bounds[ 3 ].push( g.visibleBounds[ 3 ] );
+					pushBounds( g );
 					textClip = true;
 				}
 				dig( g );
@@ -3793,11 +3793,16 @@ function getVisibleBounds ( item )
 		}
 		else 
 		{
-			bounds[ 0 ].push( subItem.visibleBounds[ 0 ] );
-			bounds[ 1 ].push( subItem.visibleBounds[ 1 ] );
-			bounds[ 2 ].push( subItem.visibleBounds[ 2 ] );
-			bounds[ 3 ].push( subItem.visibleBounds[ 3 ] );
+			pushBounds( subItem );
 		}
+	}
+
+	function pushBounds ( item )
+	{
+		bounds[ 0 ].push( item.visibleBounds[ 0 ] );
+		bounds[ 1 ].push( item.visibleBounds[ 1 ] );
+		bounds[ 2 ].push( item.visibleBounds[ 2 ] );
+		bounds[ 3 ].push( item.visibleBounds[ 3 ] );
 	}
 }
 
