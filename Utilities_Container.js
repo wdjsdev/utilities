@@ -972,6 +972,17 @@ function getUnique ( arr )
 }
 
 
+// Function to subtract vectors
+function subtractVectors ( v1, v2 )
+{
+	return [ v1[ 0 ] - v2[ 0 ], v1[ 1 ] - v2[ 1 ] ];
+}
+
+// Function to calculate the length of a vector
+function vectorLength ( v )
+{
+	return Math.sqrt( v[ 0 ] * v[ 0 ] + v[ 1 ] * v[ 1 ] );
+}
 
 
 
@@ -3834,6 +3845,7 @@ function getBoundsData ( item )
 	result.hw = result.halfWidth = result.w / 2; //half of item width
 	result.hc = result.horizontalCenter = result.l + result.halfWidth; //horizontal center
 	result.vc = result.verticalCenter = result.t - result.halfHeight; //vertical center
+	result.center = [ result.hc, result.vc ]; //center point
 	result.maxDimProp = result.w > result.h ? "width" : "height"; // larger dimension of width and height
 	result.maxDim = result.maxDimProp.match( /w/i ) ? result.w : result.h; // larger dimension of width and height
 
@@ -5982,7 +5994,8 @@ var BOOMBAH_APPROVED_COLORS =
 		"Poppy B",
 		"Autumn Glory B",
 		"Electric Blue B",
-		"Cream B"
+		"Cream B",
+
 	];
 
 var BOOMBAH_PRODUCTION_COLORS =
@@ -6003,7 +6016,8 @@ var BOOMBAH_PRODUCTION_COLORS =
 		"Rhinestone Shine 1",
 		"Rhinestone Shine 2",
 		"Rhinestone Shadow",
-		"FLAG YELLOW"
+		"FLAG YELLOW",
+		"Stitch"
 	];
 
 var BUILDER_COLOR_CODES = {
@@ -6974,6 +6988,12 @@ var BOOMBAH_APPROVED_COLOR_VALUES =
 		"magenta": 40.0000005960464,
 		"yellow": 60.0000023841858,
 		"black": 0
-	}
+	},
+	"Stitch": {
+		"cyan": 20.76,
+		"magenta": 48.65,
+		"yellow": 0,
+		"black": 0
+	},
 }
 
