@@ -2799,6 +2799,11 @@ function hAlignRight ( key, otherObjects )
 //whatever tickles your brain just right.
 function align ( key, otherObjects, alignType )
 {
+	if ( !key || !otherObjects.length )
+	{
+		$.writeln( "Error: No key object or no other objects found to align." );
+		return undefined;
+	}
 	switch ( alignType )
 	{
 		//center horizontally and vertically
@@ -2889,6 +2894,11 @@ function doTheAligning ( key, otherObjects, va, ha )
 	if ( !destBounds )
 	{
 		$.writeln( "Error: No bounds data found for key object" );
+		return undefined;
+	}
+	if ( !otherObjects.length )
+	{
+		$.writeln( "Error: No other objects found to align" );
 		return undefined;
 	}
 	otherObjects.forEach( function ( item )
@@ -4511,7 +4521,7 @@ function rotatePieces ( rotationSets, parentLayer )
 
 function colorNameIsProdColor ( name )
 {
-	return name.match( /callout|cut|sew|info|edge|rhine|flag yellow|jock/i );
+	return name.match( /callout|cut|sew|info|edge|rhine|flag yellow|jock|notch/i );
 
 }
 
